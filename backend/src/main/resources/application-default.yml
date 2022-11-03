@@ -1,0 +1,49 @@
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://localhost:5432/UsefulArticlesDb
+    username: UaUser
+    password: uaupass10
+#    properties:
+#       sslMode: REQUIRE
+
+  cloud:
+    config:
+      enabled: false
+
+
+jwt:
+  secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
+  sessionTime: 86400
+
+debug:
+  logging.http-requests: true
+  
+logging:
+  level:
+    ROOT: INFO
+    io:
+      ROOT: INFO
+      spring: DEBUG
+    org:
+      apache: INFO
+      springframework:
+        web: DEBUG
+#          filter:
+#            CommonsRequestLoggingFilter: TRACE 
+#        http:
+#          converter: DEBUG
+#    com:
+#      fasterxml:
+#        jackson: DEBUG
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: FULL

@@ -1,0 +1,9 @@
+plugins {
+	id 'java'
+}
+
+
+allprojects {
+  group = 'com.engilyin'
+  version = project.getProperty("version")=='unspecified'? "${baseVersion}-SNAPSHOT" : project.getProperty("version")
+}

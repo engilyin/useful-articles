@@ -1,0 +1,91 @@
+plugins {
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+	id 'java'
+    id 'project-report'
+}
+
+sourceCompatibility = "${targetCompatibility}"
+targetCompatibility = "${targetCompatibility}"
+
+dependencyManagement {
+
+   imports {
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+   }
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+	integrationTestImplementation {
+		extendsFrom testImplementation
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	
+	implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+
+	//runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'org.postgresql:r2dbc-postgresql'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	    
+    integrationTestImplementation 'org.springframework.security:spring-security-test'
+    integrationTestImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    integrationTestImplementation "io.rest-assured:rest-assured-all:${restAssuredVersion}"
+    integrationTestImplementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+sourceSets {
+
+    integrationTest {
+       compileClasspath += main.output + test.output
+       runtimeClasspath += main.output + test.output
+       java.srcDir file('src/integration-test/java')
+       resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+task integrationTest(type: Test) {
+   group = LifecycleBasePlugin.VERIFICATION_GROUP
+   description = 'Integration tests'
+   maxHeapSize = '1024m'
+   testClassesDirs = sourceSets.integrationTest.output.classesDirs
+   classpath = sourceSets.integrationTest.runtimeClasspath
+   outputs.upToDateWhen { false }
+}
+
+
+bootJar.dependsOn ':useful-articles-frontend:npm_install'
+bootJar.dependsOn ':useful-articles-frontend:buildFrontend'

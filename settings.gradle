@@ -1,0 +1,7 @@
+rootProject.name = 'useful-articles'
+
+include ':useful-articles-frontend'
+include ':useful-articles-backend'
+
+project(':useful-articles-frontend').projectDir = "$rootDir/frontend" as File
+project(':useful-articles-backend').projectDir = "$rootDir/backend" as File
