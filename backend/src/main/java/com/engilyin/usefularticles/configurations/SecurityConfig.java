@@ -2,7 +2,6 @@ package com.engilyin.usefularticles.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -26,7 +25,7 @@ public class SecurityConfig {
     
     @Bean
     SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
-        String[] patterns = new String[] {"/auth/**", "/actuator/**", "/actuator"};
+        String[] protectedPatterns = new String[] {"/api/**"};
         return http.cors().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
@@ -38,9 +37,8 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
-                .pathMatchers(patterns).permitAll()
-                .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .anyExchange().authenticated()
+                .pathMatchers(protectedPatterns).authenticated()
+                .anyExchange().permitAll()
                 .and()
                 .build();
     }
