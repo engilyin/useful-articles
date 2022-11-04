@@ -8,14 +8,11 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
-        },
-        "@schematics/angular:application": {
-          "strict": true
         }
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "ua",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -31,7 +28,19 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              {
+                "input": "src/light.scss",
+                "bundleName": "light",
+                "inject": false
+              },
+              {
+                "input": "src/dark.scss",
+                "bundleName": "dark",
+                "inject": false
+              }
             ],
             "scripts": []
           },
@@ -106,6 +115,5 @@
         }
       }
     }
-  },
-  "defaultProject": "useful-articles-frontend"
+  }
 }
