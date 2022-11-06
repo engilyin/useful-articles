@@ -22,7 +22,7 @@ public class AuthService {
 
 	public Mono<AuthResult> authenticate(String username, String password) {
 		return userRepository.findByUsername(username)
-				.switchIfEmpty(Mono.error(() -> new UserNotFoundExeception()))
+				.switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(username)))
 				.flatMap(user -> doAuthentication(user, password));
 	}
 

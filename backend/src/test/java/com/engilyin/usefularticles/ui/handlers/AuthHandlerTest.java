@@ -44,7 +44,7 @@ class AuthHandlerTest {
 		when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
 
 		client.post()
-				.uri(uriBuilder -> uriBuilder.path("/auth/login").build())
+				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
 				.bodyValue(loginRequest)
 				.exchange()
 				.expectStatus()
@@ -53,34 +53,30 @@ class AuthHandlerTest {
 				.jsonPath("username")
 				.isEqualTo(TEST_USERNAME);
 	}
-	
+
 	@Test
 	void testLoginUserNotFound() {
 		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
-		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
-		when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception());
-		
+		when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
+
 		client.post()
-		.uri(uriBuilder -> uriBuilder.path("/auth/login").build())
-		.bodyValue(loginRequest)
-		.exchange()
-		.expectStatus()
-		.isNotFound();
+				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
+				.bodyValue(loginRequest)
+				.exchange()
+				.expectStatus()
+				.isNotFound();
 	}
 
-	
-	
 	@Test
 	void testLoginWrongPassword() {
 		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
-		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
 		when(authService.authenticate(anyString(), anyString())).thenThrow(new WrongPasswordExeception());
-		
+
 		client.post()
-		.uri(uriBuilder -> uriBuilder.path("/auth/login").build())
-		.bodyValue(loginRequest)
-		.exchange()
-		.expectStatus()
-		.isUnauthorized();
+				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
+				.bodyValue(loginRequest)
+				.exchange()
+				.expectStatus()
+				.isUnauthorized();
 	}
 }
