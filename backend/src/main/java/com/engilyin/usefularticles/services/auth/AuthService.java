@@ -31,6 +31,7 @@ public class AuthService {
 			return Mono.just(AuthResult.builder()
 					.name(user.getName())
 					.username(user.getUsername())
+					.role(user.getRole())
 					.token(generateToken(user.getUsername()))
 					.build());
 		} else {

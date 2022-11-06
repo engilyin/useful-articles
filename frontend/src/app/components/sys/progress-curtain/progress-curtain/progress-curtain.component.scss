@@ -1,0 +1,23 @@
+
+
+.progress-curtain {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	margin: 0;
+	background: rgba(60, 60, 60, 0.5);
+	position: fixed;
+	z-index: 100;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.progress-indicator {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.spinner-label {
+	color: white;
+}

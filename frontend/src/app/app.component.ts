@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { ThemeService } from './services/sys/theme/theme.service';
+import { AppState } from './store/app.state';
+import { selectIsBusy } from './store/global-progress/global-progress.selectors';
 
 @Component({
   selector: 'ua-root',
@@ -9,13 +13,9 @@ import { ThemeService } from './services/sys/theme/theme.service';
 export class AppComponent {
   title = 'useful-articles-frontend';
 
-  constructor(private themeService: ThemeService) {}
+  globallyBusy: Observable<boolean>;
 
-  lightTheme() {
-    this.themeService.switchTheme('light');
-  }
-
-  darkTheme() {
-    this.themeService.switchTheme('dark');
+  constructor(private store: Store<AppState>) {
+    this.globallyBusy = this.store.select(selectIsBusy);
   }
 }

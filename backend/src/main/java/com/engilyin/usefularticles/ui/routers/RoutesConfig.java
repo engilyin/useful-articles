@@ -27,8 +27,8 @@ public class RoutesConfig {
 
 	@Bean
 	public RouterFunction<ServerResponse> authApis(AuthHandler authHandler) {
-		return route().path("/auth", builder -> builder.POST("/login",
-				contentType(APPLICATION_JSON).and(accept(APPLICATION_JSON)), authHandler::login)
+		return route().path("/auth", builder -> builder.POST("/signin",
+				contentType(APPLICATION_JSON).and(accept(APPLICATION_JSON)), authHandler::signin)
 //	                                .GET("/{id}", userHandler::getUser)
 //	                                .GET("", userHandler::getUsers)
 //	                                .GET("/{id}/posts", userHandler::getPostsByUser)

@@ -1,2 +1,2 @@
-<button pButton type="button" label="Light" (click)="lightTheme()"></button>
-<button pButton type="button" label="Dark" (click)="darkTheme()"></button>
+<router-outlet></router-outlet>
+<ua-progress-curtain *ngIf="globallyBusy | async"></ua-progress-curtain>

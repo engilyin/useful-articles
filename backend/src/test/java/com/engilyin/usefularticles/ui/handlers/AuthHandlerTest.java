@@ -15,7 +15,7 @@ import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
 import com.engilyin.usefularticles.exceptions.WrongPasswordExeception;
 import com.engilyin.usefularticles.services.auth.AuthService;
-import com.engilyin.usefularticles.ui.data.auth.LoginRequest;
+import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
 
 import reactor.core.publisher.Mono;
@@ -39,7 +39,7 @@ class AuthHandlerTest {
 
 	@Test
 	void testLogin() {
-		LoginRequest loginRequest = LoginRequest.builder().username(TEST_USERNAME).password("").build();
+		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
 		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
 		when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
 
@@ -56,7 +56,7 @@ class AuthHandlerTest {
 	
 	@Test
 	void testLoginUserNotFound() {
-		LoginRequest loginRequest = LoginRequest.builder().username(TEST_USERNAME).password("").build();
+		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
 		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
 		when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception());
 		
@@ -72,7 +72,7 @@ class AuthHandlerTest {
 	
 	@Test
 	void testLoginWrongPassword() {
-		LoginRequest loginRequest = LoginRequest.builder().username(TEST_USERNAME).password("").build();
+		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
 		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
 		when(authService.authenticate(anyString(), anyString())).thenThrow(new WrongPasswordExeception());
 		

@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.services.auth.AuthService;
-import com.engilyin.usefularticles.ui.data.auth.LoginRequest;
+import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -19,10 +19,10 @@ public class AuthHandler {
 
 	private final AuthService authService;
 
-	public Mono<ServerResponse> login(ServerRequest request) {
+	public Mono<ServerResponse> signin(ServerRequest request) {
 
 		return ok().body(
-				request.bodyToMono(LoginRequest.class)
+				request.bodyToMono(SigninRequest.class)
 						.flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
 				AuthResult.class);
 
