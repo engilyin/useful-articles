@@ -29,7 +29,7 @@ export class SessionEffects {
         .pipe(
           map(data => SessionActions.signinSuccess(data)),
           catchError(error => of(
-            SessionActions.signinFail({errorMessage: error.message})))
+            SessionActions.signinFail({errorMessage: error.error.message})))
         )))
   );
 
