@@ -14,4 +14,6 @@
  limitations under the License.
  */
 
-@import "primeng/resources/themes/md-dark-indigo/theme.css";
+ @import 'scss/variables-dark';
+ @import '~bootstrap/scss/bootstrap.scss';
+ @import 'scss/bootswatch-simplex';
