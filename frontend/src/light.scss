@@ -14,4 +14,7 @@
  limitations under the License.
  */
 
-@import "primeng/resources/themes/saga-blue/theme.css";
+
+ @import 'scss/variables-light';
+ @import '~bootstrap/scss/bootstrap.scss';
+ @import 'scss/bootswatch-simplex';
