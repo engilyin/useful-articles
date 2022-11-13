@@ -27,6 +27,9 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { TestComponent } from './screens/test/test/test.component';
 import { RootStoreModule } from './store/root-store.module';
 import { MainComponent } from './screens/main/main/main.component';
+import { HeaderComponent } from './components/main/header/header/header.component';
+import { FooterComponent } from './components/main/footer/footer/footer.component';
+import { SidebarComponent } from './components/main/sidebar/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { MainComponent } from './screens/main/main/main.component';
     SigninComponent,
     ProgressCurtainComponent,
     TestComponent,
-    MainComponent
+    MainComponent,
+    HeaderComponent,
+    FooterComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,

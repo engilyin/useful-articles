@@ -1,5 +1,14 @@
-<div>
+<ua-header (toggleSidebar)="toggleSidebar()"></ua-header>
+<div class="wrapper">
 
+  <!-- Sidebar -->
+  <div #sidebar id="sidebar" class="collapse">
+     <ua-sidebar></ua-sidebar>
+  </div>
 
+  <!-- Page Content -->
+  <div id="content">
+      <h1>Hello there</h1>
+  </div>
 
 </div>
