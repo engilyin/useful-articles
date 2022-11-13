@@ -18,7 +18,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { SigninComponent } from './screens/auth/signin/signin.component';
-import { TestComponent } from './screens/test/test/test.component';
+import { MainComponent } from './screens/main/main/main.component';
 
 const routes: Routes = [
   {
@@ -33,7 +33,7 @@ const routes: Routes = [
     children: [
       {
         path: 'home',
-        component: TestComponent,
+        component: MainComponent,
       },
       // {
       //   path: AppRoutes.Search,

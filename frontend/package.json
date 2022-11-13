@@ -25,6 +25,7 @@
     "@ngrx/router-store": "^14.3.2",
     "@ngrx/store": "^14.3.2",
     "bootstrap": "^5.2.2",
+    "font-awesome": "^4.7.0",
     "ngrx-store-localstorage": "^14.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

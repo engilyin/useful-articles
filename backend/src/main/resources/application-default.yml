@@ -9,7 +9,9 @@ spring:
   cloud:
     config:
       enabled: false
-
+  devtools:
+    restart:
+      enabled: false
 
 jwt:
   secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
