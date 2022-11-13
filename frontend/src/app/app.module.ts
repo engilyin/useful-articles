@@ -30,6 +30,7 @@ import { MainComponent } from './screens/main/main/main.component';
 import { HeaderComponent } from './components/main/header/header/header.component';
 import { FooterComponent } from './components/main/footer/footer/footer.component';
 import { SidebarComponent } from './components/main/sidebar/sidebar/sidebar.component';
+import { SidebarTitleComponent } from './components/main/sidebar/sidebar-title/sidebar-title.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SidebarComponent } from './components/main/sidebar/sidebar/sidebar.comp
     MainComponent,
     HeaderComponent,
     FooterComponent,
-    SidebarComponent
+    SidebarComponent,
+    SidebarTitleComponent
   ],
   imports: [
     BrowserModule,
