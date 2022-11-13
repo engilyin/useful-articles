@@ -18,7 +18,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { SigninComponent } from './screens/auth/signin/signin.component';
-import { MainComponent } from './screens/main/main/main.component';
+import { MainComponent } from './screens/main/_node/main.component';
 
 const routes: Routes = [
   {
@@ -29,16 +29,21 @@ const routes: Routes = [
 
   {
     path: '',
+    component: MainComponent,
     canActivate: [AuthGuard],
     children: [
       {
         path: 'home',
-        component: MainComponent,
+        loadChildren: () => import('@screens/main/home/home.module').then((m) => m.HomeModule)
       },
-      // {
-      //   path: AppRoutes.Search,
-      //   loadChildren: () => import('@pages/search/search.module').then((m) => m.SearchModule)
-      // }
+      {
+        path: 'users',
+        loadChildren: () => import('@screens/main/users/users.module').then((m) => m.UsersModule)
+      },
+      {
+        path: 'articles',
+        loadChildren: () => import('@screens/main/articles/articles.module').then((m) => m.ArticlesModule)
+      },
     ]
   },
   {

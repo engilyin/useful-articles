@@ -39,6 +39,11 @@ export const selectLoggedin = createSelector(
     (userState) => userState.username
   );
 
+  export const selectCurrentUserName = createSelector(
+    selectSession,
+    (userState) => userState.name
+  );
+
   export const selectWelcomeUser = createSelector(
     selectSession,
     (userState) => `Welcome, <b>${userState.name}</b> you are acting as <b>${userState.role}</b>`
