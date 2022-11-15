@@ -16,8 +16,9 @@
 
 package com.engilyin.usefularticles.dao.entities.users;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -42,7 +43,8 @@ public class User {
     
     String role;
     
-    LocalDate created;
+    @CreatedDate
+    Instant created;
     
     boolean locked;
 }
