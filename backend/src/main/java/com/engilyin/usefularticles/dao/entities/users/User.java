@@ -35,6 +35,8 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
+    long id;
+    
     String username;
 
     String password;
