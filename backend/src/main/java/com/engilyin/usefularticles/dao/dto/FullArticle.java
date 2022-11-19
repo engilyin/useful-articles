@@ -13,19 +13,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.dao.dto;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import com.engilyin.usefularticles.dao.entities.articles.Article;
+import com.engilyin.usefularticles.dao.entities.users.User;
+
+import lombok.Builder;
+import lombok.Value;
+
+@Value
+@Builder
+public class FullArticle {
+
+	private final Article article;
+
+	private final User user;
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

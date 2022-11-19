@@ -13,19 +13,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.utils;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.AutoConfigureDataR2dbc;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
+
+@Configuration
+@AutoConfigureDataR2dbc
+@EnableR2dbcAuditing
+@EnableAutoConfiguration
+public class DbTestConfig {
+
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

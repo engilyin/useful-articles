@@ -13,8 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-
-package com.engilyin.usefularticles.dao.entities.users;
+package com.engilyin.usefularticles.dao.entities.articles;
 
 import java.time.Instant;
 
@@ -31,22 +30,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table("users")
-public class User {
-
+@Table("articles")
+public class Article {
+	
     @Id
-    long userId;
+    long articleId;
     
-    String username;
-
-    String password;
+    String articleName;
     
-    String fullname;
+    long authorId;
     
-    String role;
+    String articleDescription;
+    
+    String articleAttachment;
     
     @CreatedDate
-    Instant created;
-    
-    boolean locked;
+    Instant articleCreated;
+
 }

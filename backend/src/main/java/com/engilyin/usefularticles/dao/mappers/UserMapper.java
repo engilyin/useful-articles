@@ -13,19 +13,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.dao.mappers;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import java.util.Map;
+
+import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
+
+import com.engilyin.usefularticles.dao.entities.users.User;
+
+@Mapper
+@Component
+public interface UserMapper extends BaseMapper {
+
+	User fromMap(Map<String, String> source);
+	
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

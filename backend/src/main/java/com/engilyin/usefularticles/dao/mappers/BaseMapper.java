@@ -13,19 +13,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.dao.mappers;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import java.time.Instant;
+
+import com.engilyin.usefularticles.util.Util;
+
+
+public interface BaseMapper {
+
+    default Instant map(String dateValue) {
+        return Util.instantFromString(dateValue);
+    }
+	
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

@@ -13,19 +13,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.dao.entities.articles;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+
+public class Comment {
+	
+	@Id
+	long commentId;
+	
+    long articleId;
+    
+    long authorId;
+    
+    String commentDescription;
+    
+    String commentAttachment;
+    
+    @CreatedDate
+    Instant commentCreated;
+
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

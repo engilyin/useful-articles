@@ -13,19 +13,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.dao.repositories.articles;
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+
+import com.engilyin.usefularticles.dao.entities.articles.Article;
+
+import reactor.core.publisher.Flux;
+
+public interface ArticlesRepository extends ReactiveCrudRepository<Article, String> {
+
+	Flux<Article> findByAuthorId(long authorId);
+
 }
-
-#sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
-}
-
-#sidebar.collapse {
-  margin-left: -250px;
-}
-

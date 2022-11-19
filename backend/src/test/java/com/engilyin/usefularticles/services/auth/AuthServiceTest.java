@@ -60,7 +60,7 @@ class AuthServiceTest {
 	@Test
 	void normalAuth() {
 
-		User user = User.builder().username(TEST_USERNAME).name("ABC").password(TEST_ENCODED_PASSWORD).build();
+		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password(TEST_ENCODED_PASSWORD).build();
 
 		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
 		when(tokenProvider.generateToken(TEST_USERNAME)).thenReturn("12345");
@@ -72,7 +72,7 @@ class AuthServiceTest {
 			assertNotNull(auth);
 			assertThat(user.getUsername(), is(notNullValue()));
 			assertThat(user.getUsername(), equalTo(TEST_USERNAME));
-			assertThat(user.getName(), is(notNullValue()));
+			assertThat(user.getFullname(), is(notNullValue()));
 		}).verifyComplete();
 	}
 
@@ -89,7 +89,7 @@ class AuthServiceTest {
 	@Test
 	void wrongPassword() {
 
-		User user = User.builder().username(TEST_USERNAME).name("ABC").password("").build();
+		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password("").build();
 
 		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
 

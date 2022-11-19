@@ -26,10 +26,15 @@ logging:
     io:
       ROOT: INFO
       spring: DEBUG
+      r2dbc:
+        postgresql:
+          QUERY: DEBUG # for queries
+          PARAM: DEBUG # for parameters
     org:
       apache: INFO
       springframework:
         web: DEBUG
+
 #          filter:
 #            CommonsRequestLoggingFilter: TRACE 
 #        http:
