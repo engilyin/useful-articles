@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import com.engilyin.usefularticles.security.UaReactiveAuthenticationManager;
 import com.engilyin.usefularticles.security.UaServerSecurityContextRepository;
@@ -37,7 +38,7 @@ public class SecurityConfig {
 
 	private final UaReactiveAuthenticationManager authenticationManager;
 
-	private final UaServerSecurityContextRepository securityContextRepository;
+	//private final UaServerSecurityContextRepository securityContextRepository;
 
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
@@ -51,13 +52,13 @@ public class SecurityConfig {
 				.csrf()
 				.disable()
 				.authenticationManager(authenticationManager)
-				.securityContextRepository(securityContextRepository)
+				//.securityContextRepository(securityContextRepository)
 				.authorizeExchange()
-				.pathMatchers(protectedPatterns)
-				.authenticated()
+//				.pathMatchers(protectedPatterns)
+//				.authenticated()
 				.anyExchange()
 				.permitAll()
-				.and()
+				.and().securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 				.build();
 	}
 

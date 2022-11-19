@@ -13,20 +13,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.dao.mappers;
+package com.engilyin.usefularticles.dao.services.sys;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
+import com.engilyin.usefularticles.util.Util;
 
-import com.engilyin.usefularticles.configurations.MappingConfig;
-import com.engilyin.usefularticles.dao.entities.users.User;
+import io.r2dbc.spi.Row;
 
-@Mapper(config = MappingConfig.class)
-@Component
-public interface UserMapper extends BaseMapper {
+public class Db {
 
-	User fromMap(Map<String, String> source);
-	
+	public static Map<String, String> rowToMap(Row row) {
+		return row.getMetadata()
+				.getColumnMetadatas()
+				.stream()
+				.collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()),
+						col -> Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")));
+	}
+
 }

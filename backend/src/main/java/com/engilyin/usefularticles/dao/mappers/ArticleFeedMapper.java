@@ -21,12 +21,12 @@ import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 import com.engilyin.usefularticles.configurations.MappingConfig;
-import com.engilyin.usefularticles.dao.entities.users.User;
+import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 
 @Mapper(config = MappingConfig.class)
 @Component
-public interface UserMapper extends BaseMapper {
+public interface ArticleFeedMapper extends BaseMapper {
 
-	User fromMap(Map<String, String> source);
-	
+	ArticleFeedItem fromMap(Map<String, String> source);
+
 }
