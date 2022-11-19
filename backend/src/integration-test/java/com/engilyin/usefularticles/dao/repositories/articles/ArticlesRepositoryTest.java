@@ -40,10 +40,10 @@ class ArticlesRepositoryTest {
 				.as(StepVerifier::create)
 //				.expectNextCount(2)
 				.consumeNextWith(article -> {
-					assertThat(article.getName(), equalTo("first-article"));
+					assertThat(article.getArticleName(), equalTo("first-article"));
 				  } )
 				.consumeNextWith(article -> {
-					assertThat(article.getName(), equalTo("another-article"));
+					assertThat(article.getArticleName(), equalTo("another-article"));
 				} )
 				// .expectNext(article)
 				.verifyComplete();

@@ -45,7 +45,7 @@ public class AuthService {
 	private Mono<AuthResult> doAuthentication(User user, String requestPassword) {
 		if (passwordMatches(requestPassword, user.getPassword())) {
 			return Mono.just(AuthResult.builder()
-					.name(user.getName())
+					.name(user.getFullname())
 					.username(user.getUsername())
 					.role(user.getRole())
 					.token(generateToken(user.getUsername()))

@@ -6,8 +6,8 @@ import com.engilyin.usefularticles.dao.entities.articles.Article;
 
 import reactor.core.publisher.Flux;
 
-public interface ArticlesRepository  extends ReactiveCrudRepository<Article, String> {
+public interface ArticlesRepository extends ReactiveCrudRepository<Article, String> {
 
-    Flux<Article> findByAuthorId(long authorId);
+	Flux<Article> findByAuthorId(long authorId);
 
 }

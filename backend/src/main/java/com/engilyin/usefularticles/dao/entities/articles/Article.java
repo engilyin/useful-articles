@@ -19,17 +19,17 @@ import lombok.NoArgsConstructor;
 public class Article {
 	
     @Id
-    long id;
+    long articleId;
     
-    String name;
+    String articleName;
     
     long authorId;
     
-    String description;
+    String articleDescription;
     
-    String attachment;
+    String articleAttachment;
     
     @CreatedDate
-    Instant created;
+    Instant articleCreated;
 
 }

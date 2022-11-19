@@ -35,13 +35,13 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    long id;
+    long userId;
     
     String username;
 
     String password;
     
-    String name;
+    String fullname;
     
     String role;
     

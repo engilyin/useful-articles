@@ -8,17 +8,17 @@ import org.springframework.data.annotation.Id;
 public class Comment {
 	
 	@Id
-	long id;
+	long commentId;
 	
     long articleId;
     
     long authorId;
     
-    String description;
+    String commentDescription;
     
-    String attachment;
+    String commentAttachment;
     
     @CreatedDate
-    Instant created;
+    Instant commentCreated;
 
 }

@@ -30,9 +30,9 @@ class UserRepositoryTest {
 	void testFindByUsername() {
 		
 		var user = User.builder()
-				.id(1)
+				.userId(1)
 				.username("test")
-				.name("Test user")
+				.fullname("Test user")
 				.password("testpass")
 				.role("generic")
 				.build();
