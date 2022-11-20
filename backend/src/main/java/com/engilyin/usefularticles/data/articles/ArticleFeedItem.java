@@ -13,20 +13,33 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.dao.mappers;
+package com.engilyin.usefularticles.data.articles;
 
-import java.util.Map;
+import java.time.Instant;
 
-import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-import com.engilyin.usefularticles.configurations.MappingConfig;
-import com.engilyin.usefularticles.dao.entities.users.User;
-
-@Mapper(config = MappingConfig.class)
-@Component
-public interface UserMapper extends BaseMapper {
-
-	User fromMap(Map<String, String> source);
+@Value
+@Builder
+@Jacksonized
+public class ArticleFeedItem {
 	
+	long articleId;
+	
+	String articleName;
+    
+    String articleDescription;
+    
+    String articleAttachment;
+    
+    Instant articleCreated;
+    
+    String authorUsername;
+    
+    String authorFullname;
+    
+    int commentCount;
+
 }

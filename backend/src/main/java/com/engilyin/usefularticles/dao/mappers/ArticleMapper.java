@@ -20,9 +20,10 @@ import java.util.Map;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
+import com.engilyin.usefularticles.configurations.MappingConfig;
 import com.engilyin.usefularticles.dao.entities.articles.Article;
 
-@Mapper
+@Mapper(config = MappingConfig.class)
 @Component
 public interface ArticleMapper extends BaseMapper {
 

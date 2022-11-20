@@ -13,20 +13,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.dao.mappers;
+package com.engilyin.usefularticles.services.articles;
 
-import java.util.Map;
+import org.springframework.stereotype.Service;
 
-import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
+import com.engilyin.usefularticles.dao.services.articles.FeedArticlesService;
+import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 
-import com.engilyin.usefularticles.configurations.MappingConfig;
-import com.engilyin.usefularticles.dao.entities.users.User;
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 
-@Mapper(config = MappingConfig.class)
-@Component
-public interface UserMapper extends BaseMapper {
-
-	User fromMap(Map<String, String> source);
+@Service
+@RequiredArgsConstructor
+public class ListArticleService {
 	
+	private final FeedArticlesService feedArticlesService;
+
+	public Flux<ArticleFeedItem> list() {
+		return feedArticlesService.articleFeed();
+	}
+
 }
