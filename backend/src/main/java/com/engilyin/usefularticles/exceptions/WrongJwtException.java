@@ -13,12 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.exceptions;
 
-package com.engilyin.usefularticles.consts;
+public class WrongJwtException extends Exception {
+	
+	private static final long serialVersionUID = 1L;
 
-public class UaConsts {
-
-	public static final long ACCESS_TOKEN_VALIDITY_HOURS = 24;
-	public static final String AUTHORITIES_KEY = "AUTHORITIES";
-
+	public WrongJwtException(RuntimeException e) {
+		super(e.toString(), e);
+	}
 }

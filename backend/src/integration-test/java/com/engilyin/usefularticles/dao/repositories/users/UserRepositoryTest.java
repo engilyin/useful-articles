@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.dao.entities.users.User;
 
 import reactor.core.publisher.Hooks;
@@ -34,7 +35,7 @@ class UserRepositoryTest {
 				.username("test")
 				.fullname("Test user")
 				.password("testpass")
-				.role("generic")
+				.role(Consts.GENERIC_ROLE)
 				.build();
 		
 		userRepository.findByUsername("test")
