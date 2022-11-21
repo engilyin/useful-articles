@@ -13,12 +13,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+package com.engilyin.usefularticles.utils;
 
-package com.engilyin.usefularticles.consts;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class UaConsts {
+import lombok.extern.slf4j.Slf4j;
 
-	public static final long ACCESS_TOKEN_VALIDITY_HOURS = 24;
-	public static final String AUTHORITIES_KEY = "AUTHORITIES";
+@Slf4j
+public class BCryptPasswordTest {
 
+	@Test
+	void testSecretGeneration() {
+		var bc = new BCryptPasswordEncoder();
+
+		log.info("Secret testpass: {}", bc.encode("testpass"));
+		log.info("Secret 1: {}", bc.encode("1"));
+	}
 }

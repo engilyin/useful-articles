@@ -17,6 +17,7 @@
 package com.engilyin.usefularticles.services.auth;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +27,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.dao.entities.users.User;
 import com.engilyin.usefularticles.dao.repositories.users.UserRepository;
 import com.engilyin.usefularticles.data.auth.AuthResult;
@@ -50,20 +54,24 @@ class AuthServiceTest {
 
 	@Mock
 	TokenProvider tokenProvider;
+	
+	@Mock
+	PasswordEncoder passwordEncoder;
 
 	@BeforeEach
 	void setUp() throws Exception {
 
-		authService = new AuthService(userRepository, tokenProvider);
+		authService = new AuthService(userRepository, tokenProvider, passwordEncoder);
 	}
 
 	@Test
 	void normalAuth() {
 
-		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password(TEST_ENCODED_PASSWORD).build();
+		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password(TEST_ENCODED_PASSWORD).role(Consts.GENERIC_ROLE).build();
 
 		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
-		when(tokenProvider.generateToken(TEST_USERNAME)).thenReturn("12345");
+		when(tokenProvider.generateToken(TEST_USERNAME, Consts.GENERIC_ROLE)).thenReturn("12345");
+		when(passwordEncoder.encode(anyString())).thenReturn(TEST_ENCODED_PASSWORD);
 
 		Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
 

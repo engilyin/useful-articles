@@ -50,7 +50,7 @@ public class AuthenticatedUser implements Authentication {
 
 	@Override
 	public Object getCredentials() {
-		return null;
+		return username;
 	}
 
 	@Override

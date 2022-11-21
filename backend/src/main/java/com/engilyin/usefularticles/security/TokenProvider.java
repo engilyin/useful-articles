@@ -18,24 +18,32 @@ package com.engilyin.usefularticles.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.crypto.SecretKey;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import com.engilyin.usefularticles.consts.UaConsts;
+import com.engilyin.usefularticles.consts.Consts;
+import com.engilyin.usefularticles.exceptions.WrongJwtException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class TokenProvider {
+
+	private final JwtProperties jwtProperties;
 
 	public String getUsernameFromToken(String token) {
 		final Claims claims = getAllClaimsFromToken(token);
@@ -48,8 +56,7 @@ public class TokenProvider {
 	}
 
 	public Claims getAllClaimsFromToken(String token) {
-		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+		return Jwts.parserBuilder().setSigningKey(jwtProperties.getKey()).build().parseClaimsJws(token).getBody();
 	}
 
 	public Boolean isTokenExpired(String token) {
@@ -57,21 +64,67 @@ public class TokenProvider {
 		return expiration.before(new Date());
 	}
 
-	public String generateToken(String subject) {
+	public String generateToken(String subject, String... roles) {
 
 		Claims claims = Jwts.claims().setSubject(subject);
-		claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+		claims.put(Consts.AUTHORITIES_KEY, roles);
 
-		return Jwts.builder().setClaims(claims).setIssuer("http://engilyin.com")
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuer("http://engilyin.com")
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(Date.from(Instant.now().plus(UaConsts.ACCESS_TOKEN_VALIDITY_HOURS, ChronoUnit.HOURS)))
-				.signWith(key).compact();
+				.setExpiration(Date.from(Instant.now().plus(jwtProperties.getSessionTime(), ChronoUnit.SECONDS)))
+				.signWith(jwtProperties.getKey())
+				.compact();
 	}
 
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		final String username = getUsernameFromToken(token);
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+//	public Boolean validateToken(String token, UserDetails userDetails) {
+//		final String username = getUsernameFromToken(token);
+//		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+//	}
+
+	public Authentication getAuthentication(String token) throws WrongJwtException {
+
+		try {
+			Claims claims = Jwts.parserBuilder()
+					.setSigningKey(jwtProperties.getKey())
+					.build()
+					.parseClaimsJws(token)
+					.getBody();
+
+			log.debug("The request user: {}", claims.getSubject());
+			log.debug("The expiration date: {}", claims.getExpiration());
+
+			@SuppressWarnings("unchecked")
+			List<SimpleGrantedAuthority> authorities = buildAuthorityList(
+					claims.get(Consts.AUTHORITIES_KEY, List.class));
+
+			User principal = new User(claims.getSubject(), "", authorities);
+
+			return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+		} catch (JwtException | IllegalArgumentException e) {
+			log.info("Invalid JWT token: {}", e.getMessage());
+			log.trace("Invalid JWT token trace.", e);
+			throw new WrongJwtException();
+		}
 	}
 
+	private List<SimpleGrantedAuthority> buildAuthorityList(List<String> roles) {
+		return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+	}
+
+	public boolean validateToken(String token) {
+		try {
+			Jws<Claims> claims = Jwts.parserBuilder()
+					.setSigningKey(jwtProperties.getKey())
+					.build()
+					.parseClaimsJws(token);
+			log.info("The expiration date: {}", claims.getBody().getExpiration());
+			return true;
+		} catch (JwtException | IllegalArgumentException e) {
+			log.info("Invalid JWT token: {}", e.getMessage());
+			log.trace("Invalid JWT token trace.", e);
+		}
+		return false;
+	}
 }

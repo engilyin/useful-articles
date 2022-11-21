@@ -1,10 +1,10 @@
 INSERT INTO users(
     username, password, fullname, role, locked)
-    VALUES ('test', 'testpass', 'Test user', 'generic', false);
+    VALUES ('test', '$2a$10$hzJAx1lp16h09T4zBwkBZO1LeuFYW/5Smw6hb51MZZftPiLehkACW', 'Test user', 'generic', false);
     
 INSERT INTO users(
     username, password, fullname, role, locked)
-    VALUES ('second', '1', 'Bob Cat', 'generic', false);
+    VALUES ('second', '$2a$10$hT4Qv0wwnB5vVPwmaC2sHel2b22YUp8u1jTmy0W4U0sX.X6qgNnHO', 'Bob Cat', 'generic', false);
     
     
 INSERT INTO articles(
