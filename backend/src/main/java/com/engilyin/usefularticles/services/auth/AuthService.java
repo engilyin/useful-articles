@@ -16,6 +16,7 @@
 
 package com.engilyin.usefularticles.services.auth;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.entities.users.User;
@@ -36,6 +37,8 @@ public class AuthService {
 
 	private final TokenProvider tokenProvider;
 
+	private final PasswordEncoder passwordEncoder;
+
 	public Mono<AuthResult> authenticate(String username, String password) {
 		return userRepository.findByUsername(username)
 				.switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(username)))
@@ -48,18 +51,18 @@ public class AuthService {
 					.name(user.getFullname())
 					.username(user.getUsername())
 					.role(user.getRole())
-					.token(generateToken(user.getUsername()))
+					.token(generateToken(user.getUsername(), user.getRole()))
 					.build());
 		} else {
 			throw new WrongPasswordExeception();
 		}
 	}
 
-	private String generateToken(String username) {
-		return tokenProvider.generateToken(username);
+	private String generateToken(String username, String role) {
+		return tokenProvider.generateToken(username, role);
 	}
 
 	private boolean passwordMatches(String requestPassword, String userPassword) {
-		return userPassword.equals(requestPassword);
+		return passwordEncoder.matches(requestPassword, userPassword);
 	}
 }

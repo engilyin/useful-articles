@@ -14,8 +14,8 @@ spring:
       enabled: false
 
 jwt:
-  secret: nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA
-  sessionTime: 86400
+  secret: koYiuqmB5IMgbrkdRAyhd6g/ypfAdYr3Ocm4biq+ESUaLPNdmwRnZyZlvQgNh7cewa+hw9/2ZQGE2c/cR+ZYgg==
+  session-time: 86400
 
 debug:
   logging.http-requests: true
