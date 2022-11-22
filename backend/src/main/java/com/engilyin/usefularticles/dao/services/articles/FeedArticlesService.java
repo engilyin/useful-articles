@@ -40,15 +40,17 @@ public class FeedArticlesService {
                      ) as comment_count
             FROM articles a
             INNER JOIN users u ON a.author_id = u.user_id
+            ORDER BY a.article_id DESC
+            OFFSET %d LIMIT %d
                   """;
 
     private final DatabaseClient client;
 
     private final ArticleFeedMapper articleFeedMapper;
 
-    public Flux<ArticleFeedItem> articleFeed() {
+    public Flux<ArticleFeedItem> articleFeed(long offset, long limit) {
 
-        return client.sql(ARTICLE_FEED_SQL)
+        return client.sql(String.format(ARTICLE_FEED_SQL, offset, limit))
                 // .bind("authorId", authorId)
                 .map(this::createItem)
                 .all();

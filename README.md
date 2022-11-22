@@ -7,7 +7,13 @@ Every label can has parent labels and you basically has the tree where the label
 
 And of course, all info is indexed and can be searched.
 
+# The project backlog and issue tracker
+
+You can track the progress, tell about the bug or request the new feature at the [Project Backlog](https://www.pivotaltracker.com/n/projects/2611059)
+
 # Architecture
+
+Please check the project [Inception Desk presentation](docs/Useful-Articles_Inception-Desk.odp) for better understanding what is it.
 
 The project consists from server-side backed written with Java and [Spring Boot](https://spring.io/projects/spring-boot) and [Spring Cloud](https://spring.io/projects/spring-cloud). It uses asynchronous approach based on [WebFlux](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html).
 

@@ -22,4 +22,12 @@ public class Consts {
 
     public static final String GENERIC_ROLE = "generic";
 
+    public static final String DEFAULT_PAGE_SIZE = "25";
+    
+    
+    public static final String LIMIT_PARAM = "limit";
+
+    public static final String OFFSET_PARAM = "offset";
+
+
 }
