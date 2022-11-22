@@ -1,10 +1,17 @@
 spring:
   r2dbc:
-    url: r2dbc:pool:postgres://localhost:5432/UsefulArticlesDb
+    url: r2dbc:postgresql://localhost:5432/UsefulArticlesDb
     username: UaUser
     password: uaupass10
+    pool:
+      name: MAIN-POOL
+      initial-size: 1
+      max-size: 10
+      max-idle-time: 4m
+      max-life-time: 9m
 #    properties:
 #       sslMode: REQUIRE
+
 
   cloud:
     config:
@@ -23,6 +30,8 @@ debug:
 logging:
   level:
     ROOT: INFO
+    com:
+      engilyin: DEBUG
     io:
       ROOT: INFO
       spring: DEBUG

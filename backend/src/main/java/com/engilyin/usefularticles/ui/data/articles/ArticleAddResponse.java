@@ -13,21 +13,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.exceptions;
+package com.engilyin.usefularticles.ui.data.articles;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Wrong or no JWT")
-public class WrongJwtException extends Exception {
+@Value
+@Builder
+@Jacksonized
+public class ArticleAddResponse {
 	
-	private static final long serialVersionUID = 1L;
-	
-	public WrongJwtException() {
-		super("Authentication failure. You need to supply the right authentication token for the request.");
-	}
+	String articleName;
 
-	public WrongJwtException(RuntimeException e) {
-		super(e.toString(), e);
-	}
 }

@@ -15,27 +15,50 @@
  */
 package com.engilyin.usefularticles.ui.handlers;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
+import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
+import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
+import com.engilyin.usefularticles.ui.data.articles.ArticleAddResponse;
+import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
+import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import reactor.core.publisher.Mono;
 
 @Component
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class ArticleHandler {
-	
-	private final ListArticleService listArticleService;
-	
-	public Mono<ServerResponse> list(ServerRequest request) {
 
-        return ServerResponse
-                .ok()
-                .body(listArticleService.list(), ArticleFeedItem.class);
+	private final ListArticleService listArticleService;
+
+	private final AddArticleService addArticleService;
+
+	private final WebArticleMapper articleMapper;
+
+	private final ObjectValidator validator;
+
+	public Mono<ServerResponse> list(ServerRequest request) {
+		return ServerResponse.ok().body(listArticleService.list(), ArticleFeedItem.class);
+	}
+
+	public Mono<ServerResponse> add(ServerRequest request) {
+		return Mono
+				.zip(request.principal().map(Principal::getName).defaultIfEmpty(""),
+						request.bodyToMono(ArticleAddRequest.class)
+								.doOnNext(body -> validator.validate(body))
+								.map(articleMapper::fromAddRequest))
+				.flatMap(tuple -> ServerResponse.ok()
+						.body(addArticleService.add(tuple.getT1(), tuple.getT2()), ArticleAddResponse.class));
 	}
 
 }

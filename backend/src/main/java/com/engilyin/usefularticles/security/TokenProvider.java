@@ -32,7 +32,6 @@ import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.exceptions.WrongJwtException;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;

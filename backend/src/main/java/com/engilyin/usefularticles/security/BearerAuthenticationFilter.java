@@ -61,4 +61,5 @@ public class BearerAuthenticationFilter implements WebFilter {
 				? bearerToken.substring(HEADER_PREFIX.length())
 				: null;
 	}
+
 }
