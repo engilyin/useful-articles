@@ -13,14 +13,14 @@ import lombok.Getter;
 @Getter
 @Configuration
 public class JwtProperties {
-	
-	private final int sessionTime;
 
-	private final SecretKey key;
-	
-	public JwtProperties(@Value("${jwt.secret}") String secret,@Value("${jwt.session-time}") int sessionTime) {
-		this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
-		this.sessionTime = sessionTime;
-	}
-	
+    private final int sessionTime;
+
+    private final SecretKey key;
+
+    public JwtProperties(@Value("${jwt.secret}") String secret, @Value("${jwt.session-time}") int sessionTime) {
+        this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+        this.sessionTime = sessionTime;
+    }
+
 }

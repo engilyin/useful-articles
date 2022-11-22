@@ -27,6 +27,6 @@ import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 @Component
 public interface ArticleFeedMapper extends BaseMapper {
 
-	ArticleFeedItem fromMap(Map<String, String> source);
+    ArticleFeedItem fromMap(Map<String, String> source);
 
 }

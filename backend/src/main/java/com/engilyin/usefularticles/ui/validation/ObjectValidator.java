@@ -17,6 +17,7 @@ package com.engilyin.usefularticles.ui.validation;
 
 import java.util.stream.Collectors;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.stereotype.Component;
@@ -29,15 +30,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ObjectValidator {
 
-	private final Validator validator;
+    private final Validator validator;
 
-	public <T> T validate(T object) {
-		var errors = validator.validate(object);
-		if (errors.isEmpty()) {
-			return object;
-		} else {
-			String errorDetails = errors.stream().map(er -> er.getMessage()).collect(Collectors.joining(", "));
-			throw new ObjectValidationException(errorDetails);
-		}
-	}
+    public <T> T validate(T object) {
+        var errors = validator.validate(object);
+        if (errors.isEmpty()) {
+            return object;
+        } else {
+            String errorDetails = errors.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(", "));
+            throw new ObjectValidationException(errorDetails);
+        }
+    }
 }

@@ -25,7 +25,7 @@ import lombok.Value;
 @Builder
 public class FullArticle {
 
-	private final Article article;
+    private final Article article;
 
-	private final User user;
+    private final User user;
 }

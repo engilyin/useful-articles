@@ -42,48 +42,48 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TokenProvider {
 
-	private final JwtProperties jwtProperties;
+    private final JwtProperties jwtProperties;
 
-	public String generateToken(String subject, String... roles) {
+    public String generateToken(String subject, String... roles) {
 
-		Claims claims = Jwts.claims().setSubject(subject);
-		claims.put(Consts.AUTHORITIES_KEY, roles);
+        Claims claims = Jwts.claims().setSubject(subject);
+        claims.put(Consts.AUTHORITIES_KEY, roles);
 
-		return Jwts.builder()
-				.setClaims(claims)
-				.setIssuer("http://engilyin.com")
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(Date.from(Instant.now().plus(jwtProperties.getSessionTime(), ChronoUnit.SECONDS)))
-				.signWith(jwtProperties.getKey())
-				.compact();
-	}
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuer("http://engilyin.com")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(Date.from(Instant.now().plus(jwtProperties.getSessionTime(), ChronoUnit.SECONDS)))
+                .signWith(jwtProperties.getKey())
+                .compact();
+    }
 
-	public Authentication getAuthentication(String token) throws WrongJwtException {
+    public Authentication getAuthentication(String token) throws WrongJwtException {
 
-		try {
-			Claims claims = getAllClaimsFromToken(token);
+        try {
+            Claims claims = getAllClaimsFromToken(token);
 
-			log.debug("The request user: {}", claims.getSubject());
-			log.debug("The expiration date: {}", claims.getExpiration());
+            log.debug("The request user: {}", claims.getSubject());
+            log.debug("The expiration date: {}", claims.getExpiration());
 
-			@SuppressWarnings("unchecked")
-			List<SimpleGrantedAuthority> authorities = buildAuthorityList(
-					claims.get(Consts.AUTHORITIES_KEY, List.class));
+            @SuppressWarnings("unchecked")
+            List<SimpleGrantedAuthority> authorities = buildAuthorityList(
+                    claims.get(Consts.AUTHORITIES_KEY, List.class));
 
-			User principal = new User(claims.getSubject(), "", authorities);
+            User principal = new User(claims.getSubject(), "", authorities);
 
-			return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-		} catch (JwtException | IllegalArgumentException e) {
-			throw new WrongJwtException(e);
-		}
-	}
+            return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new WrongJwtException(e);
+        }
+    }
 
-	private Claims getAllClaimsFromToken(String token) {
-		return Jwts.parserBuilder().setSigningKey(jwtProperties.getKey()).build().parseClaimsJws(token).getBody();
-	}
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(jwtProperties.getKey()).build().parseClaimsJws(token).getBody();
+    }
 
-	private List<SimpleGrantedAuthority> buildAuthorityList(List<String> roles) {
-		return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
-	}
+    private List<SimpleGrantedAuthority> buildAuthorityList(List<String> roles) {
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
 
 }

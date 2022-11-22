@@ -45,66 +45,71 @@ import reactor.test.StepVerifier;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-	private static final String TEST_USERNAME = "test";
-	private static final String TEST_ENCODED_PASSWORD = "testEncodedPassword";
+    private static final String TEST_USERNAME = "test";
+    private static final String TEST_ENCODED_PASSWORD = "testEncodedPassword";
 
-	AuthService authService;
+    AuthService authService;
 
-	@Mock
-	UserRepository userRepository;
+    @Mock
+    UserRepository userRepository;
 
-	@Mock
-	TokenProvider tokenProvider;
-	
-	@Mock
-	PasswordEncoder passwordEncoder;
+    @Mock
+    TokenProvider tokenProvider;
 
-	@BeforeEach
-	void setUp() throws Exception {
+    @Mock
+    PasswordEncoder passwordEncoder;
 
-		authService = new AuthService(userRepository, tokenProvider, passwordEncoder);
-	}
+    @BeforeEach
+    void setUp() throws Exception {
 
-	@Test
-	void normalAuth() {
+        authService = new AuthService(userRepository, tokenProvider, passwordEncoder);
+    }
 
-		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password(TEST_ENCODED_PASSWORD).role(Consts.GENERIC_ROLE).build();
+    @Test
+    void normalAuth() {
 
-		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
-		when(tokenProvider.generateToken(TEST_USERNAME, Consts.GENERIC_ROLE)).thenReturn("12345");
-		when(passwordEncoder.encode(anyString())).thenReturn(TEST_ENCODED_PASSWORD);
+        User user = User.builder()
+                .username(TEST_USERNAME)
+                .fullname("ABC")
+                .password(TEST_ENCODED_PASSWORD)
+                .role(Consts.GENERIC_ROLE)
+                .build();
 
-		Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
+        when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
+        when(tokenProvider.generateToken(TEST_USERNAME, Consts.GENERIC_ROLE)).thenReturn("12345");
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
 
-		StepVerifier.create(authResult).assertNext(auth -> {
+        Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
 
-			assertNotNull(auth);
-			assertThat(user.getUsername(), is(notNullValue()));
-			assertThat(user.getUsername(), equalTo(TEST_USERNAME));
-			assertThat(user.getFullname(), is(notNullValue()));
-		}).verifyComplete();
-	}
+        StepVerifier.create(authResult).assertNext(auth -> {
 
-	@Test
-	void userNotFound() {
+            assertNotNull(auth);
+            assertThat(user.getUsername(), is(notNullValue()));
+            assertThat(user.getUsername(), equalTo(TEST_USERNAME));
+            assertThat(user.getFullname(), is(notNullValue()));
+        }).verifyComplete();
+    }
 
-		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.empty());
+    @Test
+    void userNotFound() {
 
-		Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
+        when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.empty());
 
-		StepVerifier.create(authResult).expectError(UserNotFoundExeception.class);
-	}
+        Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
 
-	@Test
-	void wrongPassword() {
+        StepVerifier.create(authResult).expectError(UserNotFoundExeception.class);
+    }
 
-		User user = User.builder().username(TEST_USERNAME).fullname("ABC").password("").build();
+    @Test
+    void wrongPassword() {
 
-		when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
+        User user = User.builder().username(TEST_USERNAME).fullname("ABC").password("").build();
 
-		Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
+        when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
 
-		StepVerifier.create(authResult).expectError(WrongPasswordExeception.class);
-	}
+        Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
+
+        StepVerifier.create(authResult).expectError(WrongPasswordExeception.class);
+    }
 
 }

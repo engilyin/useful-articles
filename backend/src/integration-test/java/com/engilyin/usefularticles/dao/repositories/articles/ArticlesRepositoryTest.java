@@ -1,5 +1,8 @@
 package com.engilyin.usefularticles.dao.repositories.articles;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,24 +14,21 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DataR2dbcTest
 class ArticlesRepositoryTest {
 
-	@Autowired
-	ArticlesRepository articlesRepository;
+    @Autowired
+    ArticlesRepository articlesRepository;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Hooks.onOperatorDebug();
-	}
+    @BeforeEach
+    void setUp() throws Exception {
+        Hooks.onOperatorDebug();
+    }
 
-	@Test
-	void testFindByAuthor() {
+    @Test
+    void testFindByAuthor() {
 
 //		var article = Article.builder()
 //				.articleId("first-article")
@@ -36,17 +36,16 @@ class ArticlesRepositoryTest {
 //				.description("This is just a test article")
 //				.attachment("/user/te/test/2022/11/my-attach.mp3")
 //				.build();
-		articlesRepository.findByAuthorId(1)
-				.as(StepVerifier::create)
+        articlesRepository.findByAuthorId(1).as(StepVerifier::create)
 //				.expectNextCount(2)
-				.consumeNextWith(article -> {
-					assertThat(article.getArticleName(), equalTo("first-article"));
-				  } )
-				.consumeNextWith(article -> {
-					assertThat(article.getArticleName(), equalTo("another-article"));
-				} )
-				// .expectNext(article)
-				.verifyComplete();
-	}
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticleName(), equalTo("first-article"));
+                })
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticleName(), equalTo("another-article"));
+                })
+                // .expectNext(article)
+                .verifyComplete();
+    }
 
 }

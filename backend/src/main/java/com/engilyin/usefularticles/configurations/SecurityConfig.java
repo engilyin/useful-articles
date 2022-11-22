@@ -35,40 +35,40 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-	private final String[] protectedPatterns = { "/api/**" };
+    private final String[] protectedPatterns = { "/api/**" };
 
-	@Bean
-	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
-			BearerAuthenticationFilter authenticationFilter,
-			PasswordEncoder passwordEncoder) {
+    @Bean
+    SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
+            BearerAuthenticationFilter authenticationFilter,
+            PasswordEncoder passwordEncoder) {
 
-		return http.cors().disable().exceptionHandling().authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
-			swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-		})).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
-			swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-		}))
-				.and()
-				.csrf()
-				.disable()
-				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-				.httpBasic()
-				.disable()
-				.formLogin()
-				.disable()
-				.logout()
-				.disable()
-				.authorizeExchange()
-				.pathMatchers(protectedPatterns)
-				.authenticated()
-				// .hasRole(Consts.GENERIC_ROLE)
-				// .pathMatchers("/api/profile/{user}/**").access(this::currentUserMatchesPath)
-				.anyExchange()
-				.permitAll()
-				.and()
-				.addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+        return http.cors().disable().exceptionHandling().authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
+            swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        })).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
+            swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+        }))
+                .and()
+                .csrf()
+                .disable()
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                .httpBasic()
+                .disable()
+                .formLogin()
+                .disable()
+                .logout()
+                .disable()
+                .authorizeExchange()
+                .pathMatchers(protectedPatterns)
+                .authenticated()
+                // .hasRole(Consts.GENERIC_ROLE)
+                // .pathMatchers("/api/profile/{user}/**").access(this::currentUserMatchesPath)
+                .anyExchange()
+                .permitAll()
+                .and()
+                .addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
 
-				.build();
-	}
+                .build();
+    }
 
 //	private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication,
 //			AuthorizationContext context) {
@@ -98,9 +98,9 @@ public class SecurityConfig {
 //		return bearerAuthenticationFilter;
 //	}
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

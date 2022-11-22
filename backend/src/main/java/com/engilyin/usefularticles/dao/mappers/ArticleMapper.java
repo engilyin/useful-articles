@@ -27,6 +27,6 @@ import com.engilyin.usefularticles.dao.entities.articles.Article;
 @Component
 public interface ArticleMapper extends BaseMapper {
 
-	Article fromMap(Map<String, String> source);
-	
+    Article fromMap(Map<String, String> source);
+
 }

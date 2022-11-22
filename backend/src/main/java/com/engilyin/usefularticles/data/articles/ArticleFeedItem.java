@@ -25,21 +25,21 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class ArticleFeedItem {
-	
-	long articleId;
-	
-	String articleName;
-    
+
+    long articleId;
+
+    String articleName;
+
     String articleDescription;
-    
+
     String articleAttachment;
-    
+
     Instant articleCreated;
-    
+
     String authorUsername;
-    
+
     String authorFullname;
-    
+
     int commentCount;
 
 }

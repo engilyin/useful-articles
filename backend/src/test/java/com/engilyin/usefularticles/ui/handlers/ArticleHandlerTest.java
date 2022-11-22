@@ -36,67 +36,64 @@ import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
 import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
-@Slf4j
 class ArticleHandlerTest {
 
-	private static final String TEST_ARTICLE_NAME = "test-art";
+    private static final String TEST_ARTICLE_NAME = "test-art";
 
-	@Mock
-	ListArticleService listArticleService;
+    @Mock
+    ListArticleService listArticleService;
 
-	@Mock
-	AddArticleService addArticleService;
+    @Mock
+    AddArticleService addArticleService;
 
-	@Mock
-	WebArticleMapper articleMapper;
-	
-	@Mock
-	ObjectValidator validator;
+    @Mock
+    WebArticleMapper articleMapper;
 
-	WebTestClient client;
+    @Mock
+    ObjectValidator validator;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		ArticleHandler articleHandler = new ArticleHandler(listArticleService, addArticleService, articleMapper, validator);
-		RouterFunction<?> routes = new RoutesConfig().articlesApis(articleHandler);
-		client = WebTestClient.bindToRouterFunction(routes).build();
-	}
+    WebTestClient client;
 
-	@Test
-	void testList() {
-		when(listArticleService.list()).thenReturn(Flux.empty());
+    @BeforeEach
+    void setUp() throws Exception {
+        ArticleHandler articleHandler = new ArticleHandler(listArticleService, addArticleService, articleMapper,
+                validator);
+        RouterFunction<?> routes = new RoutesConfig().articlesApis(articleHandler);
+        client = WebTestClient.bindToRouterFunction(routes).build();
+    }
 
-		client.get().uri(uriBuilder -> uriBuilder.path("/api/articles").build()).exchange().expectStatus().isOk();
+    @Test
+    void testList() {
+        when(listArticleService.list()).thenReturn(Flux.empty());
+
+        client.get().uri(uriBuilder -> uriBuilder.path("/api/articles").build()).exchange().expectStatus().isOk();
 //				.expectBody()
 //				.jsonPath("username")
 //				.isEqualTo(TEST_USERNAME);
-	}
+    }
 
-	@Test
-	void testAddArticle() {
-		
-		var response = ArticleAddResponse.builder().articleName(TEST_ARTICLE_NAME).build();
-		when(addArticleService.add(nullable(String.class), nullable(Article.class)))
-				.thenReturn(Mono.just(response));
+    @Test
+    void testAddArticle() {
 
-		when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
-		when(articleMapper.fromAddRequest(any())).thenReturn(Article.builder().build());
-		
-		
-		client.post()
-				.uri(uriBuilder -> uriBuilder.path("/api/articles").build())
-				.bodyValue(ArticleAddRequest.builder().build())
-				.exchange()
-				.expectStatus()
-				.isOk()
-				.expectBody()
-				.jsonPath("articleName")
-				.isEqualTo(TEST_ARTICLE_NAME);
-	}
+        var response = ArticleAddResponse.builder().articleName(TEST_ARTICLE_NAME).build();
+        when(addArticleService.add(nullable(String.class), nullable(Article.class))).thenReturn(Mono.just(response));
+
+        when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
+        when(articleMapper.fromAddRequest(any())).thenReturn(Article.builder().build());
+
+        client.post()
+                .uri(uriBuilder -> uriBuilder.path("/api/articles").build())
+                .bodyValue(ArticleAddRequest.builder().build())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("articleName")
+                .isEqualTo(TEST_ARTICLE_NAME);
+    }
 
 }

@@ -34,18 +34,18 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthHandler {
 
-	private final AuthService authService;
-	
-	private final ObjectValidator validator;
+    private final AuthService authService;
 
-	public Mono<ServerResponse> signin(ServerRequest request) {
+    private final ObjectValidator validator;
 
-		return ok().body(
-				request.bodyToMono(SigninRequest.class)
-				.doOnNext(validator::validate)
-						.flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
-				AuthResult.class);
+    public Mono<ServerResponse> signin(ServerRequest request) {
 
-	}
+        return ok().body(
+                request.bodyToMono(SigninRequest.class)
+                        .doOnNext(validator::validate)
+                        .flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
+                AuthResult.class);
+
+    }
 
 }

@@ -20,7 +20,7 @@ import lombok.Value;
 @Value
 public class UserId {
 
-	long userId;
-	
-	String username;
+    long userId;
+
+    String username;
 }

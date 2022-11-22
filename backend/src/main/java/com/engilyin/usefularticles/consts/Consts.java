@@ -18,8 +18,8 @@ package com.engilyin.usefularticles.consts;
 
 public class Consts {
 
-	public static final String AUTHORITIES_KEY = "roles";
-	
-	public static final String GENERIC_ROLE = "generic";
+    public static final String AUTHORITIES_KEY = "roles";
+
+    public static final String GENERIC_ROLE = "generic";
 
 }

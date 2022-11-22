@@ -25,17 +25,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 public class JwtTest {
-	
-	
-	@Test
-	void testSecretGeneration() {
-		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512); //or HS384 or HS512
-		String secret = Base64.getEncoder().encodeToString(key.getEncoded());
-		
-		log.info("Secret: {}", secret);
-	}
+
+    @Test
+    void testSecretGeneration() {
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512); // or HS384 or HS512
+        String secret = Base64.getEncoder().encodeToString(key.getEncoded());
+
+        log.info("Secret: {}", secret);
+    }
 
 }

@@ -27,7 +27,7 @@ public class AuthResult {
     String username;
 
     String name;
-    
+
     String role;
 
     String token;

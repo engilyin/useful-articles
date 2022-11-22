@@ -21,18 +21,18 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
 public class Comment {
-	
-	@Id
-	long commentId;
-	
+
+    @Id
+    long commentId;
+
     long articleId;
-    
+
     long authorId;
-    
+
     String commentDescription;
-    
+
     String commentAttachment;
-    
+
     @CreatedDate
     Instant commentCreated;
 

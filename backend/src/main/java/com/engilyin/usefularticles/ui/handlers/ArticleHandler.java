@@ -39,26 +39,26 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ArticleHandler {
 
-	private final ListArticleService listArticleService;
+    private final ListArticleService listArticleService;
 
-	private final AddArticleService addArticleService;
+    private final AddArticleService addArticleService;
 
-	private final WebArticleMapper articleMapper;
+    private final WebArticleMapper articleMapper;
 
-	private final ObjectValidator validator;
+    private final ObjectValidator validator;
 
-	public Mono<ServerResponse> list(ServerRequest request) {
-		return ServerResponse.ok().body(listArticleService.list(), ArticleFeedItem.class);
-	}
+    public Mono<ServerResponse> list(ServerRequest request) {
+        return ServerResponse.ok().body(listArticleService.list(), ArticleFeedItem.class);
+    }
 
-	public Mono<ServerResponse> add(ServerRequest request) {
-		return Mono
-				.zip(request.principal().map(Principal::getName).defaultIfEmpty(""),
-						request.bodyToMono(ArticleAddRequest.class)
-								.doOnNext(body -> validator.validate(body))
-								.map(articleMapper::fromAddRequest))
-				.flatMap(tuple -> ServerResponse.ok()
-						.body(addArticleService.add(tuple.getT1(), tuple.getT2()), ArticleAddResponse.class));
-	}
+    public Mono<ServerResponse> add(ServerRequest request) {
+        return Mono
+                .zip(request.principal().map(Principal::getName).defaultIfEmpty(""),
+                        request.bodyToMono(ArticleAddRequest.class)
+                                .doOnNext(body -> validator.validate(body))
+                                .map(articleMapper::fromAddRequest))
+                .flatMap(tuple -> ServerResponse.ok()
+                        .body(addArticleService.add(tuple.getT1(), tuple.getT2()), ArticleAddResponse.class));
+    }
 
 }

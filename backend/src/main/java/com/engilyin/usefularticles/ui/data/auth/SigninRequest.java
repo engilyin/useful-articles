@@ -27,11 +27,11 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class SigninRequest {
-	
+
     @NotBlank(message = "The username is mandatory")
     @Email(message = "The username should be valid Email")
-	String username;
-    
+    String username;
+
     @NotBlank(message = "The password is mandatory")
-	String password;
+    String password;
 }

@@ -27,6 +27,6 @@ import com.engilyin.usefularticles.dao.entities.users.User;
 @Component
 public interface UserMapper extends BaseMapper {
 
-	User fromMap(Map<String, String> source);
-	
+    User fromMap(Map<String, String> source);
+
 }

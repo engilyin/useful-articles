@@ -36,17 +36,17 @@ public class User {
 
     @Id
     long userId;
-    
+
     String username;
 
     String password;
-    
+
     String fullname;
-    
+
     String role;
-    
+
     @CreatedDate
     Instant created;
-    
+
     boolean locked;
 }

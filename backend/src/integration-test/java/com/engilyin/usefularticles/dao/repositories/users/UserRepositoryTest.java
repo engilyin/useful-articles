@@ -18,30 +18,27 @@ import reactor.test.StepVerifier;
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DataR2dbcTest
 class UserRepositoryTest {
-	
-	@Autowired
-	UserRepository userRepository;
 
-	@BeforeEach
-	void setUp() throws Exception {
+    @Autowired
+    UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() throws Exception {
         Hooks.onOperatorDebug();
-	}
+    }
 
-	@Test
-	void testFindByUsername() {
-		
-		var user = User.builder()
-				.userId(1)
-				.username("test")
-				.fullname("Test user")
-				.password("testpass")
-				.role(Consts.GENERIC_ROLE)
-				.build();
-		
-		userRepository.findByUsername("test")
-		     .as(StepVerifier::create)
-		     .expectNext(user)
-		     .verifyComplete();
-	}
+    @Test
+    void testFindByUsername() {
+
+        var user = User.builder()
+                .userId(1)
+                .username("test")
+                .fullname("Test user")
+                .password("testpass")
+                .role(Consts.GENERIC_ROLE)
+                .build();
+
+        userRepository.findByUsername("test").as(StepVerifier::create).expectNext(user).verifyComplete();
+    }
 
 }

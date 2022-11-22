@@ -30,33 +30,32 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class FeedArticlesService {
 
-	private final static String ARTICLE_FEED_SQL = """
-			SELECT a.*,
-			       u.username as author_username,
-			       u.fullname as author_fullname, (
-			         	SELECT COUNT(*)
-			         	FROM comments c
-			         	WHERE c.article_id = a.article_id
-			         ) as comment_count
-			FROM articles a
-			INNER JOIN users u ON a.author_id = u.user_id
-			      """;
+    private final static String ARTICLE_FEED_SQL = """
+            SELECT a.*,
+                   u.username as author_username,
+                   u.fullname as author_fullname, (
+                     	SELECT COUNT(*)
+                     	FROM comments c
+                     	WHERE c.article_id = a.article_id
+                     ) as comment_count
+            FROM articles a
+            INNER JOIN users u ON a.author_id = u.user_id
+                  """;
 
-	private final DatabaseClient client;
+    private final DatabaseClient client;
 
-	private final ArticleFeedMapper articleFeedMapper;
+    private final ArticleFeedMapper articleFeedMapper;
 
-	public Flux<ArticleFeedItem> articleFeed() {
+    public Flux<ArticleFeedItem> articleFeed() {
 
-		return client.sql(ARTICLE_FEED_SQL)
-				// .bind("authorId", authorId)
-				.map(this::createItem)
-				.all();
-	}
+        return client.sql(ARTICLE_FEED_SQL)
+                // .bind("authorId", authorId)
+                .map(this::createItem)
+                .all();
+    }
 
-	private ArticleFeedItem createItem(Row row) {
-		return articleFeedMapper.fromMap(Db.rowToMap(row));
-	}
-
+    private ArticleFeedItem createItem(Row row) {
+        return articleFeedMapper.fromMap(Db.rowToMap(row));
+    }
 
 }
