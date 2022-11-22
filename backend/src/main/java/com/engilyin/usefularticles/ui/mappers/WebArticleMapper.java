@@ -13,21 +13,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.exceptions;
+package com.engilyin.usefularticles.ui.mappers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
-@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Wrong or no JWT")
-public class WrongJwtException extends Exception {
+import com.engilyin.usefularticles.configurations.MappingConfig;
+import com.engilyin.usefularticles.dao.entities.articles.Article;
+import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
+
+@Mapper(config = MappingConfig.class)
+@Component
+public interface WebArticleMapper {
 	
-	private static final long serialVersionUID = 1L;
-	
-	public WrongJwtException() {
-		super("Authentication failure. You need to supply the right authentication token for the request.");
-	}
+	Article fromAddRequest(ArticleAddRequest request);
 
-	public WrongJwtException(RuntimeException e) {
-		super(e.toString(), e);
-	}
 }

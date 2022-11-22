@@ -13,21 +13,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.exceptions;
+package com.engilyin.usefularticles.ui.data.articles;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
-@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Wrong or no JWT")
-public class WrongJwtException extends Exception {
-	
-	private static final long serialVersionUID = 1L;
-	
-	public WrongJwtException() {
-		super("Authentication failure. You need to supply the right authentication token for the request.");
-	}
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-	public WrongJwtException(RuntimeException e) {
-		super(e.toString(), e);
-	}
+@Value
+@Builder
+@Jacksonized
+public class ArticleAddRequest {
+
+    @NotBlank(message = "The article name is mandatory")
+    @Pattern(regexp = "[a-z0-9\\-]+", message="The article name must be kebab-case value")
+	String articleName;
+
+	String articleDescription;
+
+	String articleAttachment;
+
 }

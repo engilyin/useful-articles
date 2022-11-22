@@ -33,6 +33,7 @@ import com.engilyin.usefularticles.exceptions.WrongPasswordExeception;
 import com.engilyin.usefularticles.services.auth.AuthService;
 import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
+import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 
 import reactor.core.publisher.Mono;
 
@@ -43,12 +44,15 @@ class AuthHandlerTest {
 
 	@Mock
 	AuthService authService;
+	
+	@Mock
+	ObjectValidator validator;
 
 	WebTestClient client;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		AuthHandler authHandler = new AuthHandler(authService);
+		AuthHandler authHandler = new AuthHandler(authService, validator);
 		RouterFunction<?> routes = new RoutesConfig().authApis(authHandler);
 		client = WebTestClient.bindToRouterFunction(routes).build();
 	}

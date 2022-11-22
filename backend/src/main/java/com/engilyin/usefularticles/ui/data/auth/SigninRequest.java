@@ -16,6 +16,9 @@
 
 package com.engilyin.usefularticles.ui.data.auth;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -24,6 +27,11 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class SigninRequest {
+	
+    @NotBlank(message = "The username is mandatory")
+    @Email(message = "The username should be valid Email")
 	String username;
+    
+    @NotBlank(message = "The password is mandatory")
 	String password;
 }

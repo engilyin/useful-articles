@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.services.auth.AuthService;
 import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
+import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -34,11 +35,14 @@ import reactor.core.publisher.Mono;
 public class AuthHandler {
 
 	private final AuthService authService;
+	
+	private final ObjectValidator validator;
 
 	public Mono<ServerResponse> signin(ServerRequest request) {
 
 		return ok().body(
 				request.bodyToMono(SigninRequest.class)
+				.doOnNext(validator::validate)
 						.flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
 				AuthResult.class);
 

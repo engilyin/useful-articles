@@ -50,7 +50,11 @@ public class RoutesConfig {
 
 	@Bean
 	public RouterFunction<ServerResponse> articlesApis(ArticleHandler articleHandler) {
-		return route().path("/api", builder -> builder.GET("/articles", articleHandler::list)).build();
+		return route()
+				.path("/api",
+						builder -> builder.GET("/articles", articleHandler::list)
+								.POST("/articles", articleHandler::add))
+				.build();
 	}
 
 	@Bean
