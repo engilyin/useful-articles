@@ -68,7 +68,7 @@ class ArticleHandlerTest {
 
     @Test
     void testList() {
-        when(listArticleService.list()).thenReturn(Flux.empty());
+        when(listArticleService.list(0, 2)).thenReturn(Flux.empty());
 
         client.get().uri(uriBuilder -> uriBuilder.path("/api/articles").build()).exchange().expectStatus().isOk();
 //				.expectBody()

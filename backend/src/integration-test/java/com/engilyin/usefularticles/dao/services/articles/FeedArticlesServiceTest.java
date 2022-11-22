@@ -49,7 +49,7 @@ class FeedArticlesServiceTest {
 
     @Test
     void testArticleFeed() {
-        feedArticlesService.articleFeed().as(StepVerifier::create)
+        feedArticlesService.articleFeed(0, 2).as(StepVerifier::create)
 //		.expectNextCount(2)
                 .consumeNextWith(article -> {
                     assertThat(article.getArticleName(), equalTo("another-article"));

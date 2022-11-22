@@ -29,8 +29,8 @@ public class ListArticleService {
 
     private final FeedArticlesService feedArticlesService;
 
-    public Flux<ArticleFeedItem> list() {
-        return feedArticlesService.articleFeed();
+    public Flux<ArticleFeedItem> list(long offset, long limit) {
+        return feedArticlesService.articleFeed(offset, limit);
     }
 
 }

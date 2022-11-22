@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
@@ -48,7 +49,10 @@ public class ArticleHandler {
     private final ObjectValidator validator;
 
     public Mono<ServerResponse> list(ServerRequest request) {
-        return ServerResponse.ok().body(listArticleService.list(), ArticleFeedItem.class);
+        return ServerResponse.ok()
+                .body(listArticleService.list(Long.parseLong(request.queryParam(Consts.OFFSET_PARAM).orElse("0")),
+                        Long.parseLong(request.queryParam(Consts.LIMIT_PARAM).orElse(Consts.DEFAULT_PAGE_SIZE))),
+                        ArticleFeedItem.class);
     }
 
     public Mono<ServerResponse> add(ServerRequest request) {
