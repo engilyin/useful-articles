@@ -30,22 +30,14 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class TestSecurityConfig {
-	
-	@Bean
-	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
-		return http.cors().disable().exceptionHandling().authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
-			swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-		})).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
-			swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-		}))
-				.and()
-				.csrf()
-				.disable()
-				.authorizeExchange()
-				.anyExchange()
-				.permitAll()
-				.and()
-				.build();
-	}
+
+    @Bean
+    SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+        return http.cors().disable().exceptionHandling().authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
+            swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        })).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
+            swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+        })).and().csrf().disable().authorizeExchange().anyExchange().permitAll().and().build();
+    }
 
 }

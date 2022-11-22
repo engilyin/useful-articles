@@ -23,7 +23,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class ArticleAddResponse {
-	
-	String articleName;
+
+    String articleName;
 
 }

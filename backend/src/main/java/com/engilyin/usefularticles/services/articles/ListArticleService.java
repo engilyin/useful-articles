@@ -26,11 +26,11 @@ import reactor.core.publisher.Flux;
 @Service
 @RequiredArgsConstructor
 public class ListArticleService {
-	
-	private final FeedArticlesService feedArticlesService;
 
-	public Flux<ArticleFeedItem> list() {
-		return feedArticlesService.articleFeed();
-	}
+    private final FeedArticlesService feedArticlesService;
+
+    public Flux<ArticleFeedItem> list() {
+        return feedArticlesService.articleFeed();
+    }
 
 }

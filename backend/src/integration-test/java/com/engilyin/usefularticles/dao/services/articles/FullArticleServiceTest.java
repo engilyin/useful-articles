@@ -36,32 +36,32 @@ import reactor.test.StepVerifier;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@ContextConfiguration(classes = { UserMapperImpl.class, ArticleMapperImpl.class, FullArticlesService.class, DbTestConfig.class })
+@ContextConfiguration(classes = { UserMapperImpl.class, ArticleMapperImpl.class, FullArticlesService.class,
+        DbTestConfig.class })
 @DataR2dbcTest
 class FullArticleServiceTest {
-	
-	@Autowired
-	FullArticlesService fullArticleService;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Hooks.onOperatorDebug();
-	}
+    @Autowired
+    FullArticlesService fullArticleService;
 
-	@Test
-	void testFindByAuthorId() {
-		fullArticleService.findByAuthorId(1)
-		.as(StepVerifier::create)
+    @BeforeEach
+    void setUp() throws Exception {
+        Hooks.onOperatorDebug();
+    }
+
+    @Test
+    void testFindByAuthorId() {
+        fullArticleService.findByAuthorId(1).as(StepVerifier::create)
 //		.expectNextCount(2)
-		.consumeNextWith(article -> {
-			assertThat(article.getArticle().getArticleName(), equalTo("another-article"));
-			assertThat(article.getUser().getUsername(), equalTo("test"));
-		  } )
-		.consumeNextWith(article -> {
-			assertThat(article.getArticle().getArticleName(), equalTo("first-article"));
-			assertThat(article.getUser().getUsername(), equalTo("test"));
-		} )
-		.verifyComplete();
-	}
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticle().getArticleName(), equalTo("another-article"));
+                    assertThat(article.getUser().getUsername(), equalTo("test"));
+                })
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticle().getArticleName(), equalTo("first-article"));
+                    assertThat(article.getUser().getUsername(), equalTo("test"));
+                })
+                .verifyComplete();
+    }
 
 }

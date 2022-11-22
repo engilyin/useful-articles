@@ -25,7 +25,7 @@ import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
 @Mapper(config = MappingConfig.class)
 @Component
 public interface WebArticleMapper {
-	
-	Article fromAddRequest(ArticleAddRequest request);
+
+    Article fromAddRequest(ArticleAddRequest request);
 
 }

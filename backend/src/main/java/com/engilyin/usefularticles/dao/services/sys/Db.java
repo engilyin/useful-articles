@@ -25,12 +25,12 @@ import io.r2dbc.spi.Row;
 
 public class Db {
 
-	public static Map<String, String> rowToMap(Row row) {
-		return row.getMetadata()
-				.getColumnMetadatas()
-				.stream()
-				.collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()),
-						col -> Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")));
-	}
+    public static Map<String, String> rowToMap(Row row) {
+        return row.getMetadata()
+                .getColumnMetadatas()
+                .stream()
+                .collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()),
+                        col -> Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")));
+    }
 
 }

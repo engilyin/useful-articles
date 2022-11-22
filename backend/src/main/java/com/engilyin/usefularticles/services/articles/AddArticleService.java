@@ -34,20 +34,20 @@ import reactor.core.publisher.Mono;
 @Transactional
 public class AddArticleService {
 
-	private final ArticlesRepository articlesRepository;
+    private final ArticlesRepository articlesRepository;
 
-	private final UserIdRepository userIdRepository;
+    private final UserIdRepository userIdRepository;
 
-	public Mono<ArticleAddResponse> add(String authorUsername, Article addArticle) {
+    public Mono<ArticleAddResponse> add(String authorUsername, Article addArticle) {
 
-		log.debug("User: {} adding the articke: {}", authorUsername, addArticle.getArticleName());
+        log.debug("User: {} adding the articke: {}", authorUsername, addArticle.getArticleName());
 
-		return userIdRepository.findByUsername(authorUsername)
-				.switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(authorUsername)))
-				.doOnNext(u -> addArticle.setAuthorId(u.getUserId()))
-				.flatMap(u -> articlesRepository.save(addArticle)
-						.flatMap(r -> Mono.just(ArticleAddResponse.builder().articleName(r.getArticleName()).build())));
+        return userIdRepository.findByUsername(authorUsername)
+                .switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(authorUsername)))
+                .doOnNext(u -> addArticle.setAuthorId(u.getUserId()))
+                .flatMap(u -> articlesRepository.save(addArticle)
+                        .flatMap(r -> Mono.just(ArticleAddResponse.builder().articleName(r.getArticleName()).build())));
 
-	}
+    }
 
 }

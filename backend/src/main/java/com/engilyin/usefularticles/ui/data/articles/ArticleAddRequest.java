@@ -28,11 +28,11 @@ import lombok.extern.jackson.Jacksonized;
 public class ArticleAddRequest {
 
     @NotBlank(message = "The article name is mandatory")
-    @Pattern(regexp = "[a-z0-9\\-]+", message="The article name must be kebab-case value")
-	String articleName;
+    @Pattern(regexp = "[a-z0-9\\-]+", message = "The article name must be kebab-case value")
+    String articleName;
 
-	String articleDescription;
+    String articleDescription;
 
-	String articleAttachment;
+    String articleAttachment;
 
 }

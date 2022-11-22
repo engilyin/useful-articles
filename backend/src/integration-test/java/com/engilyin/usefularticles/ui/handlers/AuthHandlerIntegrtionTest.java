@@ -47,65 +47,66 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { RoutesConfig.class, AuthHandler.class, TestSecurityConfig.class, GlobalExceptionHandler.class, ErrorProperties.class, ServerCodecConfigurer.class })
+@ContextConfiguration(classes = { RoutesConfig.class, AuthHandler.class, TestSecurityConfig.class,
+        GlobalExceptionHandler.class, ErrorProperties.class, ServerCodecConfigurer.class })
 @WebFluxTest
 @Slf4j
 public class AuthHandlerIntegrtionTest {
 
-	private static final String TEST_USERNAME = "TEST_USERNAME";
+    private static final String TEST_USERNAME = "TEST_USERNAME";
 
-	@Autowired
-	ApplicationContext context;
+    @Autowired
+    ApplicationContext context;
 
-	@MockBean
+    @MockBean
     AuthService authService;
 
     WebTestClient webTestClient;
 
-	@BeforeEach
-	public void setUp() {
-		webTestClient = WebTestClient.bindToApplicationContext(context).build();
-	}
+    @BeforeEach
+    public void setUp() {
+        webTestClient = WebTestClient.bindToApplicationContext(context).build();
+    }
 
-	@Test
-	public void auth_validCreds_token() {
+    @Test
+    public void auth_validCreds_token() {
 
-		var authResult = AuthResult.builder().username(TEST_USERNAME).build();
+        var authResult = AuthResult.builder().username(TEST_USERNAME).build();
 
-		when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
+        when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
 
-		webTestClient.post()
-				.uri("/auth/signin") // GET method and URI
-				.bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
-				.accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
-				.exchange() // gives access to response
-				.expectStatus()
-				.isOk() // checking if response is OK
-				.expectBody(AuthResult.class)
-				.value(ar -> {
-					assertThat(ar.getUsername(), equalTo(TEST_USERNAME));
-				});
+        webTestClient.post()
+                .uri("/auth/signin") // GET method and URI
+                .bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
+                .accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
+                .exchange() // gives access to response
+                .expectStatus()
+                .isOk() // checking if response is OK
+                .expectBody(AuthResult.class)
+                .value(ar -> {
+                    assertThat(ar.getUsername(), equalTo(TEST_USERNAME));
+                });
 
-	}
+    }
 
-	@Test
-	public void auth_invalidCreds_userNotFound() {
+    @Test
+    public void auth_invalidCreds_userNotFound() {
 
-		when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
+        when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
 
-		webTestClient.post()
-				.uri("/auth/signin") // GET method and URI
-				.bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
-				.accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
-				.exchange() // gives access to response
-				.expectStatus()
-				.isNotFound() // checking if response is OK
-				.expectBody()
-				.consumeWith(r -> log.info("The Error Result: {}", new String(r.getResponseBody())))
-				.jsonPath("status")
-				.isEqualTo(404)
-				.jsonPath("message")
-				.isEqualTo(UserNotFoundExeception.ERROR_MESSAGE_PREFIX + TEST_USERNAME);
+        webTestClient.post()
+                .uri("/auth/signin") // GET method and URI
+                .bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
+                .accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
+                .exchange() // gives access to response
+                .expectStatus()
+                .isNotFound() // checking if response is OK
+                .expectBody()
+                .consumeWith(r -> log.info("The Error Result: {}", new String(r.getResponseBody())))
+                .jsonPath("status")
+                .isEqualTo(404)
+                .jsonPath("message")
+                .isEqualTo(UserNotFoundExeception.ERROR_MESSAGE_PREFIX + TEST_USERNAME);
 
-	}
+    }
 }

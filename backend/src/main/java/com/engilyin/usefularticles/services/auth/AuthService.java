@@ -33,36 +33,36 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	private final TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
-	private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-	public Mono<AuthResult> authenticate(String username, String password) {
-		return userRepository.findByUsername(username)
-				.switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(username)))
-				.flatMap(user -> doAuthentication(user, password));
-	}
+    public Mono<AuthResult> authenticate(String username, String password) {
+        return userRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(username)))
+                .flatMap(user -> doAuthentication(user, password));
+    }
 
-	private Mono<AuthResult> doAuthentication(User user, String requestPassword) {
-		if (passwordMatches(requestPassword, user.getPassword())) {
-			return Mono.just(AuthResult.builder()
-					.name(user.getFullname())
-					.username(user.getUsername())
-					.role(user.getRole())
-					.token(generateToken(user.getUsername(), user.getRole()))
-					.build());
-		} else {
-			throw new WrongPasswordExeception();
-		}
-	}
+    private Mono<AuthResult> doAuthentication(User user, String requestPassword) {
+        if (passwordMatches(requestPassword, user.getPassword())) {
+            return Mono.just(AuthResult.builder()
+                    .name(user.getFullname())
+                    .username(user.getUsername())
+                    .role(user.getRole())
+                    .token(generateToken(user.getUsername(), user.getRole()))
+                    .build());
+        } else {
+            throw new WrongPasswordExeception();
+        }
+    }
 
-	private String generateToken(String username, String role) {
-		return tokenProvider.generateToken(username, role);
-	}
+    private String generateToken(String username, String role) {
+        return tokenProvider.generateToken(username, role);
+    }
 
-	private boolean passwordMatches(String requestPassword, String userPassword) {
-		return passwordEncoder.matches(requestPassword, userPassword);
-	}
+    private boolean passwordMatches(String requestPassword, String userPassword) {
+        return passwordEncoder.matches(requestPassword, userPassword);
+    }
 }

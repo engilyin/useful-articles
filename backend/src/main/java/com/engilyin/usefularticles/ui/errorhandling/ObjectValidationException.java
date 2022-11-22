@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.UNPROCESSABLE_ENTITY)
 public class ObjectValidationException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ObjectValidationException(String errorDetails) {
-		super("Please supply the valid data: " + errorDetails);
-	}
+    public ObjectValidationException(String errorDetails) {
+        super("Please supply the valid data: " + errorDetails);
+    }
 
 }

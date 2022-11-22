@@ -39,31 +39,31 @@ import lombok.RequiredArgsConstructor;;
 @RequiredArgsConstructor
 public class RoutesConfig {
 
-	@Bean
-	public RouterFunction<ServerResponse> authApis(AuthHandler authHandler) {
-		return route().path("/auth", builder -> builder.POST("/signin", authHandler::signin)
+    @Bean
+    public RouterFunction<ServerResponse> authApis(AuthHandler authHandler) {
+        return route().path("/auth", builder -> builder.POST("/signin", authHandler::signin)
 //	                                .GET("/{id}", userHandler::getUser)
 //	                                .GET("", userHandler::getUsers)
 //	                                .GET("/{id}/posts", userHandler::getPostsByUser)
-		).build();
-	}
+        ).build();
+    }
 
-	@Bean
-	public RouterFunction<ServerResponse> articlesApis(ArticleHandler articleHandler) {
-		return route()
-				.path("/api",
-						builder -> builder.GET("/articles", articleHandler::list)
-								.POST("/articles", articleHandler::add))
-				.build();
-	}
+    @Bean
+    public RouterFunction<ServerResponse> articlesApis(ArticleHandler articleHandler) {
+        return route()
+                .path("/api",
+                        builder -> builder.GET("/articles", articleHandler::list)
+                                .POST("/articles", articleHandler::add))
+                .build();
+    }
 
-	@Bean
-	RouterFunction<ServerResponse> staticResourceRouter() {
-		return RouterFunctions.resources("/**", new ClassPathResource("static/"));
-	}
+    @Bean
+    RouterFunction<ServerResponse> staticResourceRouter() {
+        return RouterFunctions.resources("/**", new ClassPathResource("static/"));
+    }
 
-	@Bean
-	public RouterFunction<ServerResponse> indexRouter(@Value("classpath:/static/index.html") final Resource indexHtml) {
-		return route(GET("/"), request -> ok().contentType(MediaType.TEXT_HTML).bodyValue(indexHtml));
-	}
+    @Bean
+    public RouterFunction<ServerResponse> indexRouter(@Value("classpath:/static/index.html") final Resource indexHtml) {
+        return route(GET("/"), request -> ok().contentType(MediaType.TEXT_HTML).bodyValue(indexHtml));
+    }
 }

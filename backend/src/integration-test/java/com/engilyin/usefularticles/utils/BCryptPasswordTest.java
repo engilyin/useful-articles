@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BCryptPasswordTest {
 
-	@Test
-	void testSecretGeneration() {
-		var bc = new BCryptPasswordEncoder();
+    @Test
+    void testSecretGeneration() {
+        var bc = new BCryptPasswordEncoder();
 
-		log.info("Secret testpass: {}", bc.encode("testpass"));
-		log.info("Secret 1: {}", bc.encode("1"));
-	}
+        log.info("Secret testpass: {}", bc.encode("testpass"));
+        log.info("Secret 1: {}", bc.encode("1"));
+    }
 }

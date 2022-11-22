@@ -38,33 +38,32 @@ import reactor.test.StepVerifier;
 @ContextConfiguration(classes = { ArticleFeedMapperImpl.class, FeedArticlesService.class, DbTestConfig.class })
 @DataR2dbcTest
 class FeedArticlesServiceTest {
-	
-	@Autowired
-	FeedArticlesService feedArticlesService;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Hooks.onOperatorDebug();
-	}
+    @Autowired
+    FeedArticlesService feedArticlesService;
 
-	@Test
-	void testArticleFeed() {
-		feedArticlesService.articleFeed()
-		.as(StepVerifier::create)
+    @BeforeEach
+    void setUp() throws Exception {
+        Hooks.onOperatorDebug();
+    }
+
+    @Test
+    void testArticleFeed() {
+        feedArticlesService.articleFeed().as(StepVerifier::create)
 //		.expectNextCount(2)
-		.consumeNextWith(article -> {
-			assertThat(article.getArticleName(), equalTo("another-article"));
-			assertThat(article.getAuthorUsername(), equalTo("test"));
-			assertThat(article.getAuthorFullname(), equalTo("Test user"));
-			assertThat(article.getCommentCount(), equalTo(1));
-		  } )
-		.consumeNextWith(article -> {
-			assertThat(article.getArticleName(), equalTo("first-article"));
-			assertThat(article.getAuthorUsername(), equalTo("test"));
-			assertThat(article.getAuthorFullname(), equalTo("Test user"));
-			assertThat(article.getCommentCount(), equalTo(2));
-		} )
-		.verifyComplete();
-	}
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticleName(), equalTo("another-article"));
+                    assertThat(article.getAuthorUsername(), equalTo("test"));
+                    assertThat(article.getAuthorFullname(), equalTo("Test user"));
+                    assertThat(article.getCommentCount(), equalTo(1));
+                })
+                .consumeNextWith(article -> {
+                    assertThat(article.getArticleName(), equalTo("first-article"));
+                    assertThat(article.getAuthorUsername(), equalTo("test"));
+                    assertThat(article.getAuthorFullname(), equalTo("Test user"));
+                    assertThat(article.getCommentCount(), equalTo(2));
+                })
+                .verifyComplete();
+    }
 
 }

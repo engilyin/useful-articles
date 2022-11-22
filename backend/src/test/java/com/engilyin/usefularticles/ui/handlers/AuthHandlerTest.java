@@ -40,63 +40,63 @@ import reactor.core.publisher.Mono;
 @ExtendWith(MockitoExtension.class)
 class AuthHandlerTest {
 
-	private static final String TEST_USERNAME = "TEST_USERNAME";
+    private static final String TEST_USERNAME = "TEST_USERNAME";
 
-	@Mock
-	AuthService authService;
-	
-	@Mock
-	ObjectValidator validator;
+    @Mock
+    AuthService authService;
 
-	WebTestClient client;
+    @Mock
+    ObjectValidator validator;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		AuthHandler authHandler = new AuthHandler(authService, validator);
-		RouterFunction<?> routes = new RoutesConfig().authApis(authHandler);
-		client = WebTestClient.bindToRouterFunction(routes).build();
-	}
+    WebTestClient client;
 
-	@Test
-	void testLogin() {
-		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
-		AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
-		when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
+    @BeforeEach
+    void setUp() throws Exception {
+        AuthHandler authHandler = new AuthHandler(authService, validator);
+        RouterFunction<?> routes = new RoutesConfig().authApis(authHandler);
+        client = WebTestClient.bindToRouterFunction(routes).build();
+    }
 
-		client.post()
-				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
-				.bodyValue(loginRequest)
-				.exchange()
-				.expectStatus()
-				.isOk()
-				.expectBody()
-				.jsonPath("username")
-				.isEqualTo(TEST_USERNAME);
-	}
+    @Test
+    void testLogin() {
+        SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
+        AuthResult authResult = AuthResult.builder().username(TEST_USERNAME).build();
+        when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
 
-	@Test
-	void testLoginUserNotFound() {
-		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
-		when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
+        client.post()
+                .uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
+                .bodyValue(loginRequest)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("username")
+                .isEqualTo(TEST_USERNAME);
+    }
 
-		client.post()
-				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
-				.bodyValue(loginRequest)
-				.exchange()
-				.expectStatus()
-				.isNotFound();
-	}
+    @Test
+    void testLoginUserNotFound() {
+        SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
+        when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
 
-	@Test
-	void testLoginWrongPassword() {
-		SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
-		when(authService.authenticate(anyString(), anyString())).thenThrow(new WrongPasswordExeception());
+        client.post()
+                .uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
+                .bodyValue(loginRequest)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
 
-		client.post()
-				.uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
-				.bodyValue(loginRequest)
-				.exchange()
-				.expectStatus()
-				.isUnauthorized();
-	}
+    @Test
+    void testLoginWrongPassword() {
+        SigninRequest loginRequest = SigninRequest.builder().username(TEST_USERNAME).password("").build();
+        when(authService.authenticate(anyString(), anyString())).thenThrow(new WrongPasswordExeception());
+
+        client.post()
+                .uri(uriBuilder -> uriBuilder.path("/auth/signin").build())
+                .bodyValue(loginRequest)
+                .exchange()
+                .expectStatus()
+                .isUnauthorized();
+    }
 }

@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Wrong or no JWT")
 public class WrongJwtException extends Exception {
-	
-	private static final long serialVersionUID = 1L;
-	
-	public WrongJwtException() {
-		super("Authentication failure. You need to supply the right authentication token for the request.");
-	}
 
-	public WrongJwtException(RuntimeException e) {
-		super(e.toString(), e);
-	}
+    private static final long serialVersionUID = 1L;
+
+    public WrongJwtException() {
+        super("Authentication failure. You need to supply the right authentication token for the request.");
+    }
+
+    public WrongJwtException(RuntimeException e) {
+        super(e.toString(), e);
+    }
 }

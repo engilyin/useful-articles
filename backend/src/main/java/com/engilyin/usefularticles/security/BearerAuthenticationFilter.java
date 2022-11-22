@@ -35,31 +35,31 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class BearerAuthenticationFilter implements WebFilter {
 
-	public static final String HEADER_PREFIX = "Bearer ";
+    public static final String HEADER_PREFIX = "Bearer ";
 
-	private final TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
-	@Override
-	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-		String token = resolveToken(exchange.getRequest());
-		if (StringUtils.hasText(token)) {
-			try {
-				return chain.filter(exchange)
-						.contextWrite(ReactiveSecurityContextHolder
-								.withAuthentication(tokenProvider.getAuthentication(token)));
-			} catch (WrongJwtException e) {
-				log.error("Wrong token has been supplied: {} . Unable to authenticate: {}", e.getMessage(), token);
-				log.trace("Invalid JWT token", e);
-			}
-		}
-		return chain.filter(exchange);
-	}
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String token = resolveToken(exchange.getRequest());
+        if (StringUtils.hasText(token)) {
+            try {
+                return chain.filter(exchange)
+                        .contextWrite(ReactiveSecurityContextHolder
+                                .withAuthentication(tokenProvider.getAuthentication(token)));
+            } catch (WrongJwtException e) {
+                log.error("Wrong token has been supplied: {} . Unable to authenticate: {}", e.getMessage(), token);
+                log.trace("Invalid JWT token", e);
+            }
+        }
+        return chain.filter(exchange);
+    }
 
-	private String resolveToken(ServerHttpRequest request) {
-		String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-		return StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)
-				? bearerToken.substring(HEADER_PREFIX.length())
-				: null;
-	}
+    private String resolveToken(ServerHttpRequest request) {
+        String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        return StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)
+                ? bearerToken.substring(HEADER_PREFIX.length())
+                : null;
+    }
 
 }

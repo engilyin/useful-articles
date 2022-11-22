@@ -32,18 +32,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table("articles")
 public class Article {
-	
+
     @Id
     long articleId;
-    
+
     String articleName;
-    
+
     long authorId;
-    
+
     String articleDescription;
-    
+
     String articleAttachment;
-    
+
     @CreatedDate
     Instant articleCreated;
 

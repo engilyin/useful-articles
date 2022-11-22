@@ -37,43 +37,39 @@ import reactor.core.publisher.Flux;
 @Slf4j
 public class FullArticlesService {
 
-	private final DatabaseClient client;
+    private final DatabaseClient client;
 
-	private final ArticleMapper articleMapper;
+    private final ArticleMapper articleMapper;
 
-	private final UserMapper userMapper;
+    private final UserMapper userMapper;
 
-	public Flux<FullArticle> findByAuthorId(long authorId) {
-		String query = """
-				SELECT * FROM articles a
-				                  INNER JOIN users u ON a.author_id = u.user_id
-				                  WHERE u.user_id = :authorId
-				""";
+    public Flux<FullArticle> findByAuthorId(long authorId) {
+        String query = """
+                SELECT * FROM articles a
+                                  INNER JOIN users u ON a.author_id = u.user_id
+                                  WHERE u.user_id = :authorId
+                """;
 
-		return client.sql(query).bind("authorId", authorId).map(this::createObjects).all();
+        return client.sql(query).bind("authorId", authorId).map(this::createObjects).all();
 
-	}
+    }
 
-	private FullArticle createObjects(Row row) {
+    private FullArticle createObjects(Row row) {
 
-		try {
-			Map<String, String> source = row.getMetadata()
-					.getColumnMetadatas()
-					.stream()
-					.collect(Collectors.toMap(
-							col -> 
-							Util.snakeToCamel(col.getName()), 
-							col -> 
-							Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")
-					));
-			return FullArticle.builder()
-					.article(articleMapper.fromMap(source))
-					.user(userMapper.fromMap(source))
-					.build();
-		} catch (Throwable ex) {
-			log.error("Unable to get data", ex);
-		}
-		return null;
-	}
+        try {
+            Map<String, String> source = row.getMetadata()
+                    .getColumnMetadatas()
+                    .stream()
+                    .collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()),
+                            col -> Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")));
+            return FullArticle.builder()
+                    .article(articleMapper.fromMap(source))
+                    .user(userMapper.fromMap(source))
+                    .build();
+        } catch (Throwable ex) {
+            log.error("Unable to get data", ex);
+        }
+        return null;
+    }
 
 }
