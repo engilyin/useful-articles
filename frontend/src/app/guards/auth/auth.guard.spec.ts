@@ -15,15 +15,31 @@
  */
 
 import { TestBed } from '@angular/core/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { AppState } from '@store/app.state';
 
 import { AuthGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
+  let store: MockStore<AppState>;
+  let router: Router;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    const initialState = {};
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
+        AuthGuard,
+        provideMockStore({ initialState })
+      ]
+    });
     guard = TestBed.inject(AuthGuard);
+    store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
   });
 
   it('should be created', () => {

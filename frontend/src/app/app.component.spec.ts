@@ -16,10 +16,17 @@
 
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { AppComponent } from './app.component';
+import { AppState } from '@store/app.state';
 
 describe('AppComponent', () => {
+
+  let store: MockStore<AppState>;
+
   beforeEach(async () => {
+    const initialState = {};
+
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -27,7 +34,13 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers: [
+        provideMockStore({ initialState })
+      ]
     }).compileComponents();
+
+    store = TestBed.inject(MockStore);
+
   });
 
   it('should create the app', () => {

@@ -1,3 +1,4 @@
+import { authorize } from './../../../store/original-target/original-target.actions';
 /*
  Copyright 2022 engilyin
 
@@ -15,18 +16,57 @@
  */
 
 import { TestBed } from '@angular/core/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+
 
 import { SigninService } from './signin.service';
+import { environment } from '@root/environments/environment';
 
 describe('SigninService', () => {
   let service: SigninService;
+  let httpController: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    });
+    httpController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(SigninService);
+  });
+
+  afterEach(() => {
+    httpController.verify();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should call feed(0, 10) and return an array of ArticleFeedItem', () => {
+
+    const authResult = {
+      "username": "test@test.com",
+      "name": "Test user",
+      "role": "generic",
+      "token": "dummy.token"
+    };
+
+    // 1
+    service.signin({username: "test", password: "pass"}).subscribe((res) => {
+      //2
+      expect(res).toEqual(authResult);
+    });
+
+    //3
+    const req = httpController.expectOne({
+      method: 'POST',
+      url: `${environment.baseUrl}/auth/signin`,
+    });
+
+    //4
+    req.flush(authResult);
   });
 });

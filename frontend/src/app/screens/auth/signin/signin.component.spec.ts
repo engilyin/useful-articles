@@ -1,3 +1,4 @@
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 /*
  Copyright 2022 engilyin
 
@@ -15,18 +16,36 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NonNullableFormBuilder } from '@angular/forms';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { AppState } from '@store/app.state';
 
 import { SigninComponent } from './signin.component';
 
 describe('SigninComponent', () => {
+  let formBuilder: NonNullableFormBuilder;
+  let store: MockStore<AppState>;
+
   let component: SigninComponent;
   let fixture: ComponentFixture<SigninComponent>;
 
   beforeEach(async () => {
+
+    const initialState = {};
+
     await TestBed.configureTestingModule({
-      declarations: [ SigninComponent ]
+      declarations: [ SigninComponent ],
+      imports: [ReactiveFormsModule],
+      providers: [
+        NonNullableFormBuilder,
+        provideMockStore({ initialState })
+      ]
     })
     .compileComponents();
+
+    formBuilder = TestBed.inject(NonNullableFormBuilder); // get a handle on formBuilder
+
+    store = TestBed.inject(MockStore);
 
     fixture = TestBed.createComponent(SigninComponent);
     component = fixture.componentInstance;
