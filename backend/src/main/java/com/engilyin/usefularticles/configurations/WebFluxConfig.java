@@ -16,8 +16,10 @@
 
 package com.engilyin.usefularticles.configurations;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolverBuilder;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
@@ -26,8 +28,17 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableWebFlux
 public class WebFluxConfig implements WebFluxConfigurer {
 
+    @Value("${debug.logging.http-requests:false}")
+    private boolean logHttpRequests;
+
     @Override
     public void configureContentTypeResolver(RequestedContentTypeResolverBuilder builder) {
         builder.fixedResolver(MediaType.APPLICATION_JSON);
     }
+
+    @Override
+    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+        configurer.defaultCodecs().enableLoggingRequestDetails(logHttpRequests);
+    }
+
 }

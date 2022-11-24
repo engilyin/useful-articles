@@ -42,8 +42,11 @@ logging:
     org:
       apache: INFO
       springframework:
-        web: DEBUG
-
+        web: 
+          ROOT: DEBUG
+          server:
+            adapter:
+              HttpWebHandlerAdapter: TRACE
 #          filter:
 #            CommonsRequestLoggingFilter: TRACE 
 #        http:

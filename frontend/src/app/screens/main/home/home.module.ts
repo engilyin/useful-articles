@@ -21,6 +21,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
 import { NewArticleComponent } from './new-article/new-article.component';
 import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
+import { ArticleItemComponent } from './article-item/article-item.component';
 
 
 
@@ -28,7 +29,8 @@ import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
   declarations: [
     HomeComponent,
     NewArticleComponent,
-    ArticlesFeedComponent
+    ArticlesFeedComponent,
+    ArticleItemComponent
   ],
   imports: [
     CommonModule,
