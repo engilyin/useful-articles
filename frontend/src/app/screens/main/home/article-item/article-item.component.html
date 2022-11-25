@@ -1,9 +1,23 @@
-<div class="card w-100">
-  <div class="card-body">
-    <h5 class="card-title">{{item!.articleName}}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">{{item!.authorFullname}}</h6>
-    <p class="card-text">{{item!.articleDescription}}</p>
-    <a href="#" *ngIf="item!.commentCount > 0" class="card-link">Comments({{item!.commentCount}})</a>
-    <a href="/stream/{{item!.articleAttachment}}" class="card-link" *ngIf="item!.articleAttachment.length > 0">Attachment</a>
+<div class="card w-100 m-1">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="..." class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+
+    <!--
+
+      <img  *ngIf="item!.articleAttachment.length > 0" src="/images/attach.jpg" class="card-img-top" alt="...">
+    -->
+      <div class="card-body">
+        <h5 class="card-title">{{item!.articleName}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{item!.authorFullname}}</h6>
+        <p class="card-text">{{item!.articleDescription}}</p>
+        <div class="card-footer text-muted">
+          <a href="#" *ngIf="item!.commentCount > 0" class="card-link">Comments({{item!.commentCount}})</a>
+          <a href="/stream/{{item!.articleAttachment}}" class="card-link" *ngIf="item!.articleAttachment.length > 0">Attachment</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

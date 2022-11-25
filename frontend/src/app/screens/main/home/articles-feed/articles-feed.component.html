@@ -1,4 +1,4 @@
-<virtual-scroller #scroll [items]="items" (vsEnd)="fetchMore($event)" style="height: 100%;">
+<virtual-scroller #scroll [items]="items" (vsEnd)="fetchMore($event)" class="full-height">
   <ua-article-item *ngFor="let item of scroll.viewPortItems" [item]="item"> </ua-article-item>
   <!--
   <p *ngFor="let item of scroll.viewPortItems">{{item.articleDescription}}</p>
