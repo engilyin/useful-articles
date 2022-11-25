@@ -15,18 +15,28 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { AppState } from '@store/app.state';
 
 import { TestComponent } from './test.component';
 
 describe('TestComponent', () => {
+  let store: MockStore<AppState>;
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
 
   beforeEach(async () => {
+    const initialState = {};
+
     await TestBed.configureTestingModule({
-      declarations: [ TestComponent ]
+      declarations: [ TestComponent ],
+      providers: [
+        provideMockStore({ initialState })
+      ]
     })
     .compileComponents();
+
+    store = TestBed.inject(MockStore);
 
     fixture = TestBed.createComponent(TestComponent);
     component = fixture.componentInstance;

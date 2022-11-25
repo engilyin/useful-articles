@@ -16,6 +16,8 @@ Copyright 2022 engilyin
 
 package com.engilyin.usefularticles.configurations;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.reactive.config.CorsRegistry;
 
 import com.engilyin.usefularticles.security.BearerAuthenticationFilter;
 
@@ -50,6 +55,9 @@ public class SecurityConfig {
                 .and()
                 .csrf()
                 .disable()
+                .cors()
+                .configurationSource(devUrlBasedCorsConfigurationSource())
+                .and()
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .httpBasic()
                 .disable()
@@ -101,6 +109,31 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private UrlBasedCorsConfigurationSource devUrlBasedCorsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.applyPermitDefaultValues();
+        // corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource ccs = new UrlBasedCorsConfigurationSource();
+        ccs.registerCorsConfiguration("/**", corsConfiguration);
+        return ccs;
+    }
+
+    private UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*")); //TODO externalize the config param
+        UrlBasedCorsConfigurationSource ccs = new UrlBasedCorsConfigurationSource();
+        ccs.registerCorsConfiguration("/**", corsConfiguration);
+        return ccs;
     }
 
 }

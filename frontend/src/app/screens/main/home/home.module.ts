@@ -18,16 +18,24 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home/home.component';
 import { HomeRoutingModule } from './home-routing.module';
+import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
+import { NewArticleComponent } from './new-article/new-article.component';
+import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
+import { ArticleItemComponent } from './article-item/article-item.component';
 
 
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    NewArticleComponent,
+    ArticlesFeedComponent,
+    ArticleItemComponent
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    VirtualScrollerModule
   ]
 })
 export class HomeModule { }
