@@ -15,3 +15,6 @@
  */
 
 /* You can add global styles to this file, and also import other style files */
+
+.full-height { display: flex; flex-direction: column; height: 100%; }
+.fill-height { flex-grow: 1; width: 100%; }
