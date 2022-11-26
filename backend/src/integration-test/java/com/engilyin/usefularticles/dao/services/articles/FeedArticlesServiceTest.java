@@ -18,6 +18,8 @@ package com.engilyin.usefularticles.dao.services.articles;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -49,7 +51,7 @@ class FeedArticlesServiceTest {
 
     @Test
     void testArticleFeed() {
-        feedArticlesService.articleFeed(0, 2).as(StepVerifier::create)
+        feedArticlesService.articleFeed(0, 2, Optional.empty()).as(StepVerifier::create)
 //		.expectNextCount(2)
                 .consumeNextWith(article -> {
                     assertThat(article.getArticleName(), equalTo("another-article"));

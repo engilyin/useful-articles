@@ -46,10 +46,15 @@ export class ArticlesFeedComponent {
 
   protected fetchMore(event: IPageInfo) {
     if (!this.loaded && !this.loading) {
-      console.log(`Calling for the new chunk ${JSON.stringify(event)}`);
-      if (event.endIndex !== this.items.length - 1) return;
+      //console.log(`Calling for the new chunk ${JSON.stringify(event)}`);
+      if (event.endIndex !== this.items.length - 1) {
+        return;
+      }
+
+
       this.loading = true;
-      this.fetchNextChunk(this.items.length, 10)
+      const firstItemId: number | undefined = this.items.length > 0? this.items[0].articleId: undefined;
+      this.fetchNextChunk(this.items.length, 10, firstItemId)
         .pipe(
           switchMap((chunk) => {
             if(chunk.length == 0) {
@@ -70,8 +75,8 @@ export class ArticlesFeedComponent {
     }
   }
 
-  fetchNextChunk(offset: number, limit: number): Observable<ArticleFeedItem[]> {
-    return this.articleFeedService.feed(offset, limit);
+  fetchNextChunk(offset: number, limit: number, firstItemId?: number): Observable<ArticleFeedItem[]> {
+    return this.articleFeedService.feed(offset, limit, firstItemId);
   }
 
   public newArticleAdded(newArticle: ArticleFeedItem) {

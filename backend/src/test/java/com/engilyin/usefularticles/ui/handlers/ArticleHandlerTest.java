@@ -19,6 +19,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +70,7 @@ class ArticleHandlerTest {
 
     @Test
     void testList() {
-        when(listArticleService.list(0, 2)).thenReturn(Flux.empty());
+        when(listArticleService.list(0, 2, Optional.empty())).thenReturn(Flux.empty());
 
         client.get()
                 .uri(uriBuilder -> uriBuilder.path("/api/articles")

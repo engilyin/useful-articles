@@ -15,6 +15,8 @@
  */
 package com.engilyin.usefularticles.dao.services.articles;
 
+import java.util.Optional;
+
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +49,10 @@ public class FeedArticlesService {
             ORDER BY a.article_id DESC
             OFFSET %d LIMIT %d
             """;
+    
+    private final static String ARTICLE_FEED_FIRST_ITEM_ID_SQL = """
+            WHERE a.article_id <= 
+            """;
 
     private final static String ARTICLE_FEED_BY_ID_SQL = """
             WHERE a.article_id = :articleId
@@ -65,9 +71,12 @@ public class FeedArticlesService {
 
     }
 
-    public Flux<ArticleFeedItem> articleFeed(long offset, long limit) {
+    public Flux<ArticleFeedItem> articleFeed(long offset, long limit, Optional<String> firstItemId) {
 
-        return client.sql(String.format(ARTICLE_FEED_SQL + " " + ARTICLE_FEED_PAGE_SQL, offset, limit))
+        return client.sql(String.format(ARTICLE_FEED_SQL 
+                + firstItemId.filter(i -> offset > 0).map(s -> Long.parseLong(s)).map(itemId -> " " + ARTICLE_FEED_FIRST_ITEM_ID_SQL + itemId).orElse("")
+                + " " 
+                + ARTICLE_FEED_PAGE_SQL, offset, limit))
                 // .bind("authorId", authorId)
                 .map(this::createItem)
                 .all();
