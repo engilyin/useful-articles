@@ -25,6 +25,7 @@ import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import io.r2dbc.spi.Row;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -40,17 +41,33 @@ public class FeedArticlesService {
                      ) as comment_count
             FROM articles a
             INNER JOIN users u ON a.author_id = u.user_id
+                  """;
+
+    private final static String ARTICLE_FEED_PAGE_SQL = """
             ORDER BY a.article_id DESC
             OFFSET %d LIMIT %d
-                  """;
+            """;
+
+    private final static String ARTICLE_FEED_BY_ID_SQL = """
+            WHERE a.article_id = :articleId
+            """;
 
     private final DatabaseClient client;
 
     private final ArticleFeedMapper articleFeedMapper;
 
+    public Mono<ArticleFeedItem> articleById(long articleId) {
+
+        return client.sql(ARTICLE_FEED_SQL + " " + ARTICLE_FEED_BY_ID_SQL)
+                .bind("articleId", articleId)
+                .map(this::createItem)
+                .one();
+
+    }
+
     public Flux<ArticleFeedItem> articleFeed(long offset, long limit) {
 
-        return client.sql(String.format(ARTICLE_FEED_SQL, offset, limit))
+        return client.sql(String.format(ARTICLE_FEED_SQL + " " + ARTICLE_FEED_PAGE_SQL, offset, limit))
                 // .bind("authorId", authorId)
                 .map(this::createItem)
                 .all();

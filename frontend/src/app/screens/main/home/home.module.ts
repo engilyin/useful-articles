@@ -22,6 +22,7 @@ import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
 import { NewArticleComponent } from './new-article/new-article.component';
 import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
 import { ArticleItemComponent } from './article-item/article-item.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -35,6 +36,7 @@ import { ArticleItemComponent } from './article-item/article-item.component';
   imports: [
     CommonModule,
     HomeRoutingModule,
+    ReactiveFormsModule,
     VirtualScrollerModule
   ]
 })

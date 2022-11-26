@@ -14,9 +14,9 @@
  limitations under the License.
  -->
 
-<div class="container full-height">
+<div class="container full-height p-2">
 
-  <ua-new-article></ua-new-article>
+  <ua-new-article (onActicleCreated)="updateFeedWithNewArticle($event)"></ua-new-article>
   <ua-articles-feed class="full-height"></ua-articles-feed>
 
 </div>

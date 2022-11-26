@@ -1,3 +1,19 @@
+/*
+ Copyright 2022 engilyin
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { ArticlesFeedService } from './../../../../services/articles/articles-feed.service';
 import { ArticleFeedItem } from '@models/articles/article-feed-item.model';
@@ -5,10 +21,9 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnChanges,
-  OnInit,
+  ViewChild
 } from '@angular/core';
-import { IPageInfo } from '@iharbeck/ngx-virtual-scroller';
+import { IPageInfo, VirtualScrollerComponent } from '@iharbeck/ngx-virtual-scroller';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -19,11 +34,14 @@ import { Observable, of } from 'rxjs';
 export class ArticlesFeedComponent {
   @Input() items: ArticleFeedItem[] = [];
 
+  @ViewChild(VirtualScrollerComponent) scroller?: VirtualScrollerComponent;
+
   loading: boolean = false;
   loaded: boolean = false;
 
   constructor(
-    private readonly articleFeedService: ArticlesFeedService
+    private readonly articleFeedService: ArticlesFeedService,
+    private readonly cd: ChangeDetectorRef
   ) {}
 
   protected fetchMore(event: IPageInfo) {
@@ -54,5 +72,11 @@ export class ArticlesFeedComponent {
 
   fetchNextChunk(offset: number, limit: number): Observable<ArticleFeedItem[]> {
     return this.articleFeedService.feed(offset, limit);
+  }
+
+  public newArticleAdded(newArticle: ArticleFeedItem) {
+    console.log(`Home feed see the new message and trying to update the feed with ${JSON.stringify(newArticle)}`);
+    this.items = [];
+    this.scroller!.refresh();
   }
 }

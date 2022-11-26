@@ -31,6 +31,7 @@ import { HeaderComponent } from './components/main/header/header/header.componen
 import { FooterComponent } from './components/main/footer/footer/footer.component';
 import { SidebarComponent } from './components/main/sidebar/sidebar/sidebar.component';
 import { SidebarTitleComponent } from './components/main/sidebar/sidebar-title/sidebar-title.component';
+import { GlobalHttpErrorHandlerInterceptor } from './interceptors/global-http-error-handler.interceptor';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,12 @@ import { SidebarTitleComponent } from './components/main/sidebar/sidebar-title/s
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: JwtInterceptor,
-    multi: true }
+    multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: GlobalHttpErrorHandlerInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
