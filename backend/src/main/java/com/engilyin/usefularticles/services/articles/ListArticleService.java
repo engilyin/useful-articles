@@ -15,6 +15,8 @@
  */
 package com.engilyin.usefularticles.services.articles;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.services.articles.FeedArticlesService;
@@ -29,8 +31,8 @@ public class ListArticleService {
 
     private final FeedArticlesService feedArticlesService;
 
-    public Flux<ArticleFeedItem> list(long offset, long limit) {
-        return feedArticlesService.articleFeed(offset, limit);
+    public Flux<ArticleFeedItem> list(long offset, long limit, Optional<String> firstItemId) {
+        return feedArticlesService.articleFeed(offset, limit, firstItemId);
     }
 
 }

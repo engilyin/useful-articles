@@ -29,5 +29,7 @@ public class Consts {
 
     public static final String OFFSET_PARAM = "offset";
 
+    public static final String FIRST_PARAM = "first";
+
 
 }

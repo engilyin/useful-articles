@@ -16,6 +16,7 @@
 package com.engilyin.usefularticles.ui.handlers;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -51,7 +52,8 @@ public class ArticleHandler {
     public Mono<ServerResponse> list(ServerRequest request) {
         return ServerResponse.ok()
                 .body(listArticleService.list(Long.parseLong(request.queryParam(Consts.OFFSET_PARAM).orElse("0")),
-                        Long.parseLong(request.queryParam(Consts.LIMIT_PARAM).orElse(Consts.DEFAULT_PAGE_SIZE))),
+                        Long.parseLong(request.queryParam(Consts.LIMIT_PARAM).orElse(Consts.DEFAULT_PAGE_SIZE)), 
+                        request.queryParam(Consts.FIRST_PARAM)),
                         ArticleFeedItem.class);
     }
 

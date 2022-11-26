@@ -27,9 +27,10 @@ export class ArticlesFeedService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public feed(offset: number, limit: number): Observable<ArticleFeedItem[]> {
+  public feed(offset: number, limit: number, first?: number): Observable<ArticleFeedItem[]> {
 
-    const requestParams = { offset: `${offset}`, limit: `${limit}` };
+    const requestParams = { offset: `${offset}`, limit: `${limit}`, first: `${first}`};
+
 
     return this.httpClient.get<[]>(`${environment.baseUrl}/api/articles`, { params: requestParams });
   }
