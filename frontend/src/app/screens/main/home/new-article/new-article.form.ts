@@ -13,19 +13,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+ import { NonNullableFormBuilder, Validators } from "@angular/forms";
 
-import { Injectable, OnDestroy } from "@angular/core";
-import { Subject } from "rxjs";
+ export const newArticleFormModel = (formBuilder: NonNullableFormBuilder) => formBuilder.group({
 
-@Injectable()
-export abstract class ResourceHolder implements OnDestroy {
-
-  protected destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor() {}
-
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-}
+  articleName: ['', Validators.required],
+  articleDescription: ['', Validators.required],
+  articleAttachment: ['']
+ });

@@ -14,19 +14,19 @@
  limitations under the License.
  */
 
-import { environment } from '@root/environments/environment';
+import { mockArticleFeedItem1 } from './../../../mocks/article-feed-mocks';
+import { NewArticleRequest } from './../../models/articles/new-article-request.model';
+import { TestBed } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
 
-import { TestBed } from '@angular/core/testing';
+import { AddArticleService } from './add-article.service';
+import { environment } from '@root/environments/environment';
 
-import { ArticlesFeedService } from './articles-feed.service';
-import { mockArticleFeedItemArray } from '@root/mocks/article-feed-mocks';
-
-describe('ArticlesFeedService', () => {
-  let service: ArticlesFeedService;
+describe('AddArticleService', () => {
+  let service: AddArticleService;
   let httpController: HttpTestingController;
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('ArticlesFeedService', () => {
       imports: [HttpClientTestingModule]
     });
     httpController = TestBed.inject(HttpTestingController);
-    service = TestBed.inject(ArticlesFeedService);
+    service = TestBed.inject(AddArticleService);
   });
 
   afterEach(() => {
@@ -45,17 +45,23 @@ describe('ArticlesFeedService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call feed(0, 10) and return an array of ArticleFeedItem', () => {
+  it('should call add(newArticle) and return the new ArticleFeedItem', () => {
 
-    service.feed(0, 2).subscribe((res) => {
-      expect(res).toEqual(mockArticleFeedItemArray);
+    const newArticleRequest: NewArticleRequest = {
+      articleName: mockArticleFeedItem1.articleName,
+      articleDescription: mockArticleFeedItem1.articleDescription,
+      articleAttachment: mockArticleFeedItem1.articleAttachment
+    };
+
+    service.add(newArticleRequest).subscribe((res) => {
+      expect(res).toEqual(mockArticleFeedItem1);
     });
 
     const req = httpController.expectOne({
-      method: 'GET',
-      url: `${environment.baseUrl}/api/articles?offset=0&limit=2`,
+      method: 'POST',
+      url: `${environment.baseUrl}/api/articles`,
     });
 
-    req.flush(mockArticleFeedItemArray);
+    req.flush(mockArticleFeedItem1);
   });
 });

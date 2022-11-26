@@ -21,8 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.engilyin.usefularticles.dao.entities.articles.Article;
 import com.engilyin.usefularticles.dao.repositories.articles.ArticlesRepository;
 import com.engilyin.usefularticles.dao.repositories.users.UserIdRepository;
+import com.engilyin.usefularticles.dao.services.articles.FeedArticlesService;
+import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
-import com.engilyin.usefularticles.ui.data.articles.ArticleAddResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,15 +39,17 @@ public class AddArticleService {
 
     private final UserIdRepository userIdRepository;
 
-    public Mono<ArticleAddResponse> add(String authorUsername, Article addArticle) {
+    private final FeedArticlesService feedArticlesService;
 
-        log.debug("User: {} adding the articke: {}", authorUsername, addArticle.getArticleName());
+    public Mono<ArticleFeedItem> add(String authorUsername, Article addArticle) {
+
+        log.debug("User: {} adding the article: {}", authorUsername, addArticle.getArticleName());
 
         return userIdRepository.findByUsername(authorUsername)
                 .switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(authorUsername)))
                 .doOnNext(u -> addArticle.setAuthorId(u.getUserId()))
                 .flatMap(u -> articlesRepository.save(addArticle)
-                        .flatMap(r -> Mono.just(ArticleAddResponse.builder().articleName(r.getArticleName()).build())));
+                        .flatMap(r -> feedArticlesService.articleById(r.getArticleId())));
 
     }
 

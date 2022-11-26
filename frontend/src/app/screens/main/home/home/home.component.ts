@@ -14,7 +14,9 @@
  limitations under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ArticleFeedItem } from '@root/app/models/articles/article-feed-item.model';
+import { ArticlesFeedComponent } from '../articles-feed/articles-feed.component';
 
 @Component({
   selector: 'ua-home',
@@ -23,9 +25,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
+  @ViewChild(ArticlesFeedComponent) articlesFeed?: ArticlesFeedComponent;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  updateFeedWithNewArticle(newArticle: ArticleFeedItem) {
+
+    console.log(`New post was added: ${JSON.stringify(newArticle)}`)
+    this.articlesFeed!.newArticleAdded(newArticle);
+  }
 }

@@ -28,10 +28,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
 import com.engilyin.usefularticles.dao.entities.articles.Article;
+import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
 import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
-import com.engilyin.usefularticles.ui.data.articles.ArticleAddResponse;
 import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
 import com.engilyin.usefularticles.ui.validation.ObjectValidator;
@@ -70,7 +70,14 @@ class ArticleHandlerTest {
     void testList() {
         when(listArticleService.list(0, 2)).thenReturn(Flux.empty());
 
-        client.get().uri(uriBuilder -> uriBuilder.path("/api/articles").build()).exchange().expectStatus().isOk();
+        client.get()
+                .uri(uriBuilder -> uriBuilder.path("/api/articles")
+                        .queryParam("offset", 0)
+                        .queryParam("limit", 2)
+                        .build())
+                .exchange()
+                .expectStatus()
+                .isOk();
 //				.expectBody()
 //				.jsonPath("username")
 //				.isEqualTo(TEST_USERNAME);
@@ -79,7 +86,7 @@ class ArticleHandlerTest {
     @Test
     void testAddArticle() {
 
-        var response = ArticleAddResponse.builder().articleName(TEST_ARTICLE_NAME).build();
+        var response = ArticleFeedItem.builder().articleName(TEST_ARTICLE_NAME).build();
         when(addArticleService.add(nullable(String.class), nullable(Article.class))).thenReturn(Mono.just(response));
 
         when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
