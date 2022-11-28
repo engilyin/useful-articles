@@ -13,17 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.ui.data.articles;
+package com.engilyin.usefularticles.services.sys;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+public interface MultipartDataAccumulator<T> {
+    
+    void pushField(String name, String value);
+    
+    String generateFilename(String originalName);
 
-@Value
-@Builder
-@Jacksonized
-public class ArticleAddResponse {
-
-    String articleName;
-
+    T build();
 }

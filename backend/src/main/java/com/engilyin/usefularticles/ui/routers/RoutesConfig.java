@@ -17,6 +17,7 @@
 package com.engilyin.usefularticles.ui.routers;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -53,7 +54,7 @@ public class RoutesConfig {
         return route()
                 .path("/api",
                         builder -> builder.GET("/articles", articleHandler::list)
-                                .POST("/articles", articleHandler::add))
+                                .POST("/articles", contentType(MediaType.MULTIPART_FORM_DATA), articleHandler::add))
                 .build();
     }
 

@@ -15,24 +15,23 @@
  */
 package com.engilyin.usefularticles.ui.data.articles;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
-@Value
+@Data
 @Builder
 @Jacksonized
 public class ArticleAddRequest {
 
     @NotBlank(message = "The article name is mandatory")
     @Pattern(regexp = "[a-z0-9\\-]+", message = "The article name must be kebab-case value")
-    String articleName;
+    private String articleName;
 
-    String articleDescription;
+    private String articleDescription;
 
-    String articleAttachment;
+    private String articleAttachment;
 
 }

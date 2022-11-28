@@ -15,7 +15,6 @@
  */
 package com.engilyin.usefularticles.ui.handlers;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
@@ -33,10 +32,10 @@ import com.engilyin.usefularticles.dao.entities.articles.Article;
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
+import com.engilyin.usefularticles.services.sys.MultipartUploadService;
 import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
-import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
+import com.engilyin.usefularticles.ui.requestloaders.ArticleRequestLoader;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
-import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -53,17 +52,18 @@ class ArticleHandlerTest {
     AddArticleService addArticleService;
 
     @Mock
-    WebArticleMapper articleMapper;
+    ArticleRequestLoader articleRequestLoader;
 
     @Mock
-    ObjectValidator validator;
+    MultipartUploadService multipartUploadService;
+    
 
     WebTestClient client;
 
     @BeforeEach
     void setUp() throws Exception {
-        ArticleHandler articleHandler = new ArticleHandler(listArticleService, addArticleService, articleMapper,
-                validator);
+        ArticleHandler articleHandler = new ArticleHandler(listArticleService, addArticleService, articleRequestLoader,
+                multipartUploadService);
         RouterFunction<?> routes = new RoutesConfig().articlesApis(articleHandler);
         client = WebTestClient.bindToRouterFunction(routes).build();
     }
@@ -91,8 +91,8 @@ class ArticleHandlerTest {
         var response = ArticleFeedItem.builder().articleName(TEST_ARTICLE_NAME).build();
         when(addArticleService.add(nullable(String.class), nullable(Article.class))).thenReturn(Mono.just(response));
 
-        when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
-        when(articleMapper.fromAddRequest(any())).thenReturn(Article.builder().build());
+//        when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
+//        when(articleMapper.fromAddRequest(any())).thenReturn(Article.builder().build());
 
         client.post()
                 .uri(uriBuilder -> uriBuilder.path("/api/articles").build())

@@ -50,7 +50,7 @@ public class FullArticlesService {
                                   WHERE u.user_id = :authorId
                 """;
 
-        return client.sql(query).bind("authorId", authorId).map(this::createObjects).all();
+        return client.sql(query).bind("authorId", authorId).map((r, m) -> this.createObjects(r)).all();
 
     }
 

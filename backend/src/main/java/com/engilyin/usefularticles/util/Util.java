@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 public class Util {
 
     private static final DateTimeFormatter sqlTimestampFormatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnx");
+            .ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnx");
 
     public static String snakeToCamel(String str) {
         if (str == null || str.isBlank()) {
