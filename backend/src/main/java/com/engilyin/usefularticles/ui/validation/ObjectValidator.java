@@ -17,13 +17,12 @@ package com.engilyin.usefularticles.ui.validation;
 
 import java.util.stream.Collectors;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import org.springframework.stereotype.Component;
 
 import com.engilyin.usefularticles.ui.errorhandling.ObjectValidationException;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 
 @Component

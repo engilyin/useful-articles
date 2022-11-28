@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ArticleFeedItem } from '@root/app/models/articles/article-feed-item.model';
 import { NewArticleRequest } from '@models/articles/new-article-request.model';
@@ -28,8 +28,25 @@ export class AddArticleService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public add(newArticle: NewArticleRequest): Observable<ArticleFeedItem> {
+  public add(newArticle: NewArticleRequest, attach: File | null | undefined): Observable<any> {
 
-    return this.httpClient.post<ArticleFeedItem>(`${environment.baseUrl}/api/articles`, newArticle);
+    const formData: FormData = new FormData();
+    formData.append('json', JSON.stringify(newArticle));
+
+    if(attach) {
+      formData.append('file', attach);
+    }
+
+    // return this.httpClient.post<ArticleFeedItem>(`${environment.baseUrl}/api/articles`, formData, {
+    //   reportProgress: true,
+    //   responseType: 'json'
+    // });
+
+    const req = new HttpRequest('POST', `${environment.baseUrl}/api/articles`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.httpClient.request(req);
   }
 }

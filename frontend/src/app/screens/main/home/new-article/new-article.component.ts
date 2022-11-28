@@ -1,6 +1,6 @@
-import { catchError } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { ArticleFeedItem } from '@models/articles/article-feed-item.model';
-import { EventEmitter } from '@angular/core';
+import { ElementRef, EventEmitter, ViewChild } from '@angular/core';
 /*
  Copyright 2022 engilyin
 
@@ -21,8 +21,9 @@ import { ChangeDetectorRef, Component, OnInit, Output } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { ResourceHolder } from '@root/app/components/sys/resource-holder';
 import { AddArticleService } from '@root/app/services/articles/add-article.service';
-import { takeUntil } from 'rxjs';
+import { pipe, takeUntil } from 'rxjs';
 import { newArticleFormModel } from './new-article.form';
+import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 
 declare var window: any;
 
@@ -32,7 +33,10 @@ declare var window: any;
   styleUrls: ['./new-article.component.scss'],
 })
 export class NewArticleComponent extends ResourceHolder implements OnInit {
+
   @Output() onActicleCreated = new EventEmitter<ArticleFeedItem>();
+
+  @ViewChild('articleAttachment') attachControl!: ElementRef;
 
   newArticleForm = newArticleFormModel(this.formBuilder);
 
@@ -41,6 +45,8 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
   //newArticleErrorMessage$?: Observable<string>;
 
   posting = false;
+
+  percentDone = 0;
 
   errorMessage = '';
 
@@ -64,16 +70,54 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
       this.formModal.hide();
       this.posting = true;
       this.addArticleService
-        .add(this.newArticleForm.value)
+        .add(this.newArticleForm.value, this.attachControl.nativeElement.files?.item(0))
         .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (newArticleResult) => this.postedNewArticle(newArticleResult),
-          error: (msg) => this.handlePostError(msg),
-        });
+        .subscribe((event: HttpEvent<any>) => {
+          switch (event.type) {
+            case HttpEventType.Sent:
+              console.log('Request has been made!');
+              break;
+            case HttpEventType.ResponseHeader:
+              console.log('Response header has been received!');
+              break;
+            case HttpEventType.UploadProgress:
+              this.percentDone = Math.round(event.loaded / event.total! * 100);
+              console.log(`Uploaded! ${this.percentDone}%`);
+              break;
+            case HttpEventType.Response:
+              console.log('User successfully created!', event.body);
+              const newArticleResult = event.body;
+              this.postedNewArticle(newArticleResult)
+              this.percentDone = 0;
+          }
+        })
+        // .pipe(
+        //   this.uploadProgress((progress) => (this.percentDone = progress)),
+        //   this.toResponseBody()
+        // )
+        // .subscribe({
+        //   next: (newArticleResult) => this.postedNewArticle(newArticleResult as ArticleFeedItem),
+        //   error: (msg) => this.handlePostError(msg),
+        // });
     } else {
       this.errorMessage = 'Please enter valid data!';
     }
     this.cd.detectChanges();
+  }
+
+  uploadProgress<T>(cb: (progress: number) => void) {
+    return tap((event: HttpEvent<T>) => {
+      if (event.type === HttpEventType.UploadProgress) {
+        cb(Math.round((100 * event.loaded) / event.total!));
+      }
+    });
+  }
+
+  toResponseBody<T>() {
+    return pipe(
+      filter(( event: HttpEvent<T> ) => event.type === HttpEventType.Response),
+      map((event: HttpEvent<T> ) => (event as HttpResponse<T>).body)
+    );
   }
 
   postedNewArticle(newArticleResult: ArticleFeedItem): void {
@@ -87,4 +131,3 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
     this.formModal.show();
   }
 }
-

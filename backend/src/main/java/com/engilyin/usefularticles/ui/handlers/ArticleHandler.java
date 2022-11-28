@@ -16,20 +16,20 @@
 package com.engilyin.usefularticles.ui.handlers;
 
 import java.security.Principal;
-import java.util.Optional;
 
+import org.springframework.http.codec.multipart.PartEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
+import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
 import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
-import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
-import com.engilyin.usefularticles.ui.data.articles.ArticleAddResponse;
-import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
-import com.engilyin.usefularticles.ui.validation.ObjectValidator;
+import com.engilyin.usefularticles.services.sys.MultipartUploadService;
+import com.engilyin.usefularticles.ui.requestloaders.ArticleAddResponseCreator;
+import com.engilyin.usefularticles.ui.requestloaders.ArticleRequestLoader;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -45,26 +45,29 @@ public class ArticleHandler {
 
     private final AddArticleService addArticleService;
 
-    private final WebArticleMapper articleMapper;
+    private final ArticleRequestLoader articleRequestLoader;
 
-    private final ObjectValidator validator;
+    private final MultipartUploadService multipartUploadService;
 
     public Mono<ServerResponse> list(ServerRequest request) {
         return ServerResponse.ok()
                 .body(listArticleService.list(Long.parseLong(request.queryParam(Consts.OFFSET_PARAM).orElse("0")),
-                        Long.parseLong(request.queryParam(Consts.LIMIT_PARAM).orElse(Consts.DEFAULT_PAGE_SIZE)), 
-                        request.queryParam(Consts.FIRST_PARAM)),
-                        ArticleFeedItem.class);
+                        Long.parseLong(request.queryParam(Consts.LIMIT_PARAM).orElse(Consts.DEFAULT_PAGE_SIZE)),
+                        request.queryParam(Consts.FIRST_PARAM)), ArticleFeedItem.class);
     }
 
     public Mono<ServerResponse> add(ServerRequest request) {
-        return Mono
-                .zip(request.principal().map(Principal::getName).defaultIfEmpty(""),
-                        request.bodyToMono(ArticleAddRequest.class)
-                                .doOnNext(body -> validator.validate(body))
-                                .map(articleMapper::fromAddRequest))
-                .flatMap(tuple -> ServerResponse.ok()
-                        .body(addArticleService.add(tuple.getT1(), tuple.getT2()), ArticleAddResponse.class));
+        return request.principal()
+                .map(Principal::getName)
+                .switchIfEmpty(Mono.error(new UserNotFoundExeception("You need to authenticate")))
+                .map(username -> new ArticleAddResponseCreator(articleRequestLoader, username))
+                .flatMap(resultCreator -> multipartUploadService.loadData(request.bodyToFlux(PartEvent.class),
+                        resultCreator))
+                .flatMap(resultCreator -> ServerResponse.ok()
+                        .body(createAddResponseBody(resultCreator), ArticleFeedItem.class));
     }
 
+    private Mono<ArticleFeedItem> createAddResponseBody(ArticleAddResponseCreator creator) {
+        return addArticleService.add(creator.username(), articleRequestLoader.mapToValidArticle(creator.build()));
+    }
 }

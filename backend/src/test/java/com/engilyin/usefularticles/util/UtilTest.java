@@ -38,4 +38,11 @@ class UtilTest {
         assertThat(Util.snakeToCamel("_hello__folks"), equalTo("HelloFolks"));
     }
 
+    @Test
+    void testInstantParse() {
+        assertThat(Util.instantFromString("2022-11-18 12:53:39.108318-08").getNano(), equalTo(108318));
+        assertThat(Util.instantFromString("2022-11-28 14:05:49.85091-08").getNano(), equalTo(85091));
+    }
+    
+   
 }
