@@ -23,6 +23,7 @@ import { NewArticleComponent } from './new-article/new-article.component';
 import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
 import { ArticleItemComponent } from './article-item/article-item.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PlayerComponent } from './player/player.component';
 
 
 
@@ -31,7 +32,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     NewArticleComponent,
     ArticlesFeedComponent,
-    ArticleItemComponent
+    ArticleItemComponent,
+    PlayerComponent
   ],
   imports: [
     CommonModule,
