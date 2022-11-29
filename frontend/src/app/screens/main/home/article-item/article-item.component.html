@@ -38,7 +38,7 @@
         <p class="card-text">{{item!.articleDescription}}</p>
         <div class="card-footer text-muted">
           <a href="#" *ngIf="item!.commentCount > 0" class="card-link">Comments({{item!.commentCount}})</a>
-          <a href="/stream{{item!.articleAttachment}}" class="card-link" *ngIf="item!.articleAttachment.length > 0">Attachment</a>
+          <a href="{{streamUrl}}/stream{{item!.articleAttachment}}" class="card-link" *ngIf="item!.articleAttachment.length > 0">Attachment</a>
         </div>
       </div>
     </div>

@@ -15,6 +15,9 @@
  */
 package com.engilyin.usefularticles.util;
 
+import java.io.File;
+import java.net.URI;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,5 +55,12 @@ public class Util {
         } else {
             return Instant.from(sqlTimestampFormatter.parse(value, ZonedDateTime::from));
         }
+    }
+
+    public static String correctFileSeparator(String path) {
+        if (File.pathSeparatorChar != '/') {
+            return path.replace('/', '\\');
+        }
+        return path;
     }
 }

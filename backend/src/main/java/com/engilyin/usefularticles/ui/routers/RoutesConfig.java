@@ -21,18 +21,23 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+import java.util.logging.StreamHandler;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.server.RequestPredicate;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.engilyin.usefularticles.ui.handlers.ArticleHandler;
 import com.engilyin.usefularticles.ui.handlers.AuthHandler;
+import com.engilyin.usefularticles.ui.handlers.ContentStreamHandler;
 
 import lombok.RequiredArgsConstructor;;
 
@@ -59,6 +64,17 @@ public class RoutesConfig {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> streamApis(ContentStreamHandler streamHandler) {
+        return route()
+                .path("/stream/**", 
+                        contentBuilder -> contentBuilder
+                        .GET("", param("partial").and(contentType(MediaType.APPLICATION_OCTET_STREAM)),
+                                streamHandler::getPartialContent)
+                        .GET("", contentType(MediaType.APPLICATION_OCTET_STREAM), streamHandler::getFullContent))
+                .build();
+    }
+
+    @Bean
     RouterFunction<ServerResponse> staticResourceRouter() {
         return RouterFunctions.resources("/**", new ClassPathResource("static/"));
     }
@@ -66,5 +82,9 @@ public class RoutesConfig {
     @Bean
     public RouterFunction<ServerResponse> indexRouter(@Value("classpath:/static/index.html") final Resource indexHtml) {
         return route(GET("/"), request -> ok().contentType(MediaType.TEXT_HTML).bodyValue(indexHtml));
+    }
+
+    private static RequestPredicate param(String parameter) {
+        return RequestPredicates.all().and(request -> request.queryParam(parameter).isPresent());
     }
 }

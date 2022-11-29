@@ -1,3 +1,4 @@
+import { environment } from './../../../../../environments/environment';
 /*
  Copyright 2022 engilyin
 
@@ -25,6 +26,8 @@ import { Component, Input, OnInit } from '@angular/core';
 export class ArticleItemComponent implements OnInit {
 
   @Input() item?: ArticleFeedItem;
+
+  streamUrl = environment.baseStreamUrl;
 
   constructor() { }
 
