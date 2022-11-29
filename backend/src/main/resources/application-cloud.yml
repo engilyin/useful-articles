@@ -1,0 +1,63 @@
+spring:
+  r2dbc:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      name: MAIN-POOL
+      initial-size: ${DB_POOL_INITIAL:1}
+      max-size: ${DB_POOL_MAX:10}
+      max-idle-time: ${DB_POOL_IDLE:4m}
+      max-life-time: ${DB_POOL_LIFETIME:9m}
+#    properties:
+#       sslMode: REQUIRE
+  cloud:
+    config:
+      enabled: false
+  devtools:
+    restart:
+      enabled: false
+
+jwt:
+  secret: ${JWT_SECRET}
+  session-time: ${JWT_SESSION_TIME:86400}
+  
+articles:
+  attachment:
+    base-folder: ${ATTACHMENT_BASE_DIR:/tmp}
+
+debug:
+  logging.http-requests: ${LOG_HTTP_REQUESTS:false}
+  
+logging:
+  level:
+    ROOT: INFO
+    com:
+      engilyin: ${LOG_APP:INFO}
+    io:
+      ROOT: INFO
+      spring: ${LOG_SPRING:INFO}
+      r2dbc:
+        postgresql:
+          QUERY: ${LOG_DB:INFO} # for queries
+          PARAM: ${LOG_DB:INFO} # for parameters
+    org:
+      apache: INFO
+      springframework:
+        web: 
+          ROOT: ${LOG_SPRING:INFO}
+          server:
+            adapter:
+              HttpWebHandlerAdapter: ${LOG_HTTP:INFO}
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: FULL

@@ -1,0 +1,25 @@
+version: '3.8' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  my_useful_articles:
+    container_name: my-userful-articles
+    image: useful-articles
+    environment:
+      - "SPRING_PROFILES_ACTIVE=cloud,dev"
+      - "DB_URL=r2dbc:postgresql://${EXTERNAL_IP}:5432/UsefulArticlesDb"
+      - "DB_USERNAME=UaUser"
+      - "DB_PASSWORD=uaupass10"
+      - "JWT_SECRET=koYiuqmB5IMgbrkdRAyhd6g/ypfAdYr3Ocm4biq+ESUaLPNdmwRnZyZlvQgNh7cewa+hw9/2ZQGE2c/cR+ZYgg=="
+      - "ATTACHMENT_BASE_DIR=/home/node/app"
+      - "LOG_APP=DEBUG"
+    ports:
+      - "8080:8080"
+    networks:
+      - host
+    volumes:
+      - myapp:/home/node/app
+volumes:
+  myapp:
+networks:
+  host:

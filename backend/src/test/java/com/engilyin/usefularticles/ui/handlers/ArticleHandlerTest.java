@@ -25,7 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
 import com.engilyin.usefularticles.dao.entities.articles.Article;
@@ -33,7 +36,6 @@ import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.services.articles.AddArticleService;
 import com.engilyin.usefularticles.services.articles.ListArticleService;
 import com.engilyin.usefularticles.services.sys.MultipartUploadService;
-import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
 import com.engilyin.usefularticles.ui.requestloaders.ArticleRequestLoader;
 import com.engilyin.usefularticles.ui.routers.RoutesConfig;
 
@@ -56,7 +58,6 @@ class ArticleHandlerTest {
 
     @Mock
     MultipartUploadService multipartUploadService;
-    
 
     WebTestClient client;
 
@@ -83,26 +84,6 @@ class ArticleHandlerTest {
 //				.expectBody()
 //				.jsonPath("username")
 //				.isEqualTo(TEST_USERNAME);
-    }
-
-    @Test
-    void testAddArticle() {
-
-        var response = ArticleFeedItem.builder().articleName(TEST_ARTICLE_NAME).build();
-        when(addArticleService.add(nullable(String.class), nullable(Article.class))).thenReturn(Mono.just(response));
-
-//        when(validator.validate(any())).thenAnswer(i -> i.getArgument(0));
-//        when(articleMapper.fromAddRequest(any())).thenReturn(Article.builder().build());
-
-        client.post()
-                .uri(uriBuilder -> uriBuilder.path("/api/articles").build())
-                .bodyValue(ArticleAddRequest.builder().build())
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody()
-                .jsonPath("articleName")
-                .isEqualTo(TEST_ARTICLE_NAME);
     }
 
 }

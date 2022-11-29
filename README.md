@@ -23,3 +23,27 @@ The Database is [PostgreSQL](https://www.postgresql.org/) but could be easily re
 and (Spring Data R2DBC)[https://spring.io/projects/spring-data-r2dbc]
 
 For authentication we are using OAuth2 and you could use some of the well known services like `GMail` or `Facebook` to authenticate.
+
+# Build and run
+
+
+to build project enter the root project directory and run:
+```
+./gradlew clean build
+```
+
+to build docker image run:
+```
+docker build -t useful-articles .
+```
+
+to run the app make sure you have up and running the `PostgreSQL` database and supply the credentials for it as environment variables.
+
+```
+ docker run -d -p 8080:8080 --name myarticles useful-articles ....supply other params
+ ```
+ 
+ or just start it with the script and docker-compose:
+ ```
+export EXTERNAL_IP=<your machine IP address>; docker-compose up
+ ```

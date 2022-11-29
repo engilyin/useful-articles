@@ -30,6 +30,10 @@ repositories {
 	maven { url 'https://repo.spring.io/milestone' }
 }
 
+jar {
+    enabled = false
+}
+
 dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
