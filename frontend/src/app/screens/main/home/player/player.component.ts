@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {VgApiService} from '@videogular/ngx-videogular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'ua-player',
@@ -9,7 +11,9 @@ export class PlayerComponent implements AfterViewInit {
 
   @ViewChild('player') player!: ElementRef;
 
-  streamUrl?: string;
+  api!: VgApiService;
+
+  streamUrl$: Subject<string> = new Subject<string>();
 
   constructor() { }
 
@@ -19,10 +23,21 @@ export class PlayerComponent implements AfterViewInit {
 
       const item: HTMLElement = event.relatedTarget;
 
-      this.streamUrl = item.getAttribute('data-bs-stream') as string;
+      this.streamUrl$.next(item.getAttribute('data-bs-stream') as string);
 
-    })
+    });
 
+
+    this.player.nativeElement.addEventListener('hide.bs.modal', (event: any) => {
+
+      this.api.pause();
+
+    });
+
+  }
+
+  onPlayerReady(api: VgApiService) {
+    this.api = api;
   }
 
 }

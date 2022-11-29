@@ -5,9 +5,11 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body">
-          <div class="mb-3">
-            <span class="text-danger">Here will be player: {{streamUrl ?? 'Unknown'}}</span>
-          </div>
+          <vg-player (onPlayerReady)="onPlayerReady($event)">
+
+            <video #media [vgMedia]="$any(media)" [src]="streamUrl$ | async" id="singleVideo" preload="auto" controls crossorigin>
+            </video>
+        </vg-player>
         </div>
       </div>
     </div>
