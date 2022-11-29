@@ -19,25 +19,34 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home/home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { VirtualScrollerModule } from '@iharbeck/ngx-virtual-scroller';
+import {VgCoreModule} from '@videogular/ngx-videogular/core';
+import {VgControlsModule} from '@videogular/ngx-videogular/controls';
+import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
+import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
+
 import { NewArticleComponent } from './new-article/new-article.component';
 import { ArticlesFeedComponent } from './articles-feed/articles-feed.component';
 import { ArticleItemComponent } from './article-item/article-item.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
-
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
     NewArticleComponent,
     ArticlesFeedComponent,
-    ArticleItemComponent
+    ArticleItemComponent,
+    PlayerComponent,
   ],
   imports: [
     CommonModule,
     HomeRoutingModule,
     ReactiveFormsModule,
-    VirtualScrollerModule
-  ]
+    VirtualScrollerModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
+  ],
 })
-export class HomeModule { }
+export class HomeModule {}

@@ -1,0 +1,18 @@
+<form
+    autocomplete="off"
+    novalidate>
+  <div #player class="modal fade" id="player" tabindex="-1" aria-labelledby="playerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+          <vg-player (onPlayerReady)="onPlayerReady($event)">
+
+            <video #media [vgMedia]="$any(media)" [src]="streamUrl$ | async" id="singleVideo" preload="auto" controls crossorigin>
+            </video>
+        </vg-player>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
