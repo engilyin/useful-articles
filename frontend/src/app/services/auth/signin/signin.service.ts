@@ -14,8 +14,8 @@
  limitations under the License.
  */
 
-import { AuthResult } from './../../../models/session/auth-result.model';
-import { SigninRequest } from './../../../models/session/signin-request.model';
+import { AuthResult } from '@models/session/auth-result.model';
+import { SigninRequest } from '@models/session/signin-request.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

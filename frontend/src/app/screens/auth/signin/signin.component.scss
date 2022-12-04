@@ -13,3 +13,48 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+ .login-bg {
+  background-image: url("/assets/pexels-tima-miroshnichenko-9572619-opt.jpg");
+  height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.card {
+  background-color: #e9b36dcc !important;
+  border: none;
+}
+
+.social_icon span {
+  font-size: 60px;
+  margin-left: 10px;
+  color: rgb(161, 92, 2);
+}
+
+.social_icon span:hover {
+  color: white;
+  cursor: pointer;
+}
+
+.card-header h3 {
+  color: white;
+}
+
+.social_icon {
+  position: absolute;
+  right: 20px;
+  top: -30px;
+}
+
+.links {
+  color: white;
+}
+
+.links a {
+  margin-left: 4px;
+}
+
+input:focus {
+  outline: 0 0 0 0 !important;
+  box-shadow: 0 0 0 0 !important;
+}
