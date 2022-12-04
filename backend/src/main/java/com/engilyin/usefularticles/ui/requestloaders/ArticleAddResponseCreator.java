@@ -17,6 +17,7 @@ package com.engilyin.usefularticles.ui.requestloaders;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.engilyin.usefularticles.services.sys.MultipartDataAccumulator;
 import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
@@ -52,7 +53,7 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
     @Override
     public ArticleAddRequest build() {
         var result = articleRequestLoader.fromJson(requestJson);
-        result.setArticleAttachment(attachmentName);
+        result.setArticleAttachment(Optional.ofNullable(attachmentName).orElse(""));
         return result;
     }
 

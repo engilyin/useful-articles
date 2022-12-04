@@ -44,8 +44,8 @@ export class SessionEffects {
       switchMap((action) => this.signService.signin({"username": action.username ?? '', "password": action.password ?? ''})
         .pipe(
           map(data => SessionActions.signinSuccess(data)),
-          catchError(error => of(
-            SessionActions.signinFail({errorMessage: error.error.message})))
+          catchError(errorMessage => of(
+            SessionActions.signinFail({errorMessage: errorMessage})))
         )))
   );
 

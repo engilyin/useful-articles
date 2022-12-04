@@ -44,16 +44,13 @@ export class GlobalHttpErrorHandlerInterceptor implements HttpInterceptor {
         let errorMessage = '';
         console.error(error);
 
-        if (error.error instanceof ErrorEvent) {
-          // client-side error
-          errorMessage = `Error: ${error.error.message}`;
+        if (this.handleServerSide(error)) {
+          errorMessage = 'You should sign-in and repeat again.';
         } else {
-          if (this.handleServerSide(error)) {
-            errorMessage = 'You should sign-in and repeat again.';
-          } else {
-            errorMessage = `Error Status: ${error.status} - ${error.statusText}\nMessage: ${error.message}`;
-          }
+          errorMessage = `Error Status: ${error.status} - ${error.statusText}\nMessage: ${error.message}`;
         }
+
+        errorMessage = error?.error?.message ?? errorMessage;
 
         console.log('throw error back to to the subscriber');
         return throwError(() => errorMessage);
