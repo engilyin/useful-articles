@@ -24,8 +24,13 @@ jwt:
   
 articles:
   attachment:
-    base-folder: ${ATTACHMENT_BASE_DIR:/tmp}
-
+    storage: ${ATTACHMENT_STORAGE:s3}
+    base-folder: ${ATTACHMENT_BASE_DIR:}
+    bucket-name: ${ATTACHMENT_BUCKET_NAME:useful-articles-content}
+    bucket-region: ${ATTACHMENT_BUCKET_REGION:US_WEST_1}
+    access-key-id: ${ATTACHMENT_ACCESS_KEY_ID}
+    secret-access-key: ${ATTACHMENT_SECRET_ACCESS_KEY}
+    
 debug:
   logging.http-requests: ${LOG_HTTP_REQUESTS:false}
   
