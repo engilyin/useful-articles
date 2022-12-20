@@ -2,6 +2,9 @@
 .angular/
 
 
+#using it for the secrets which should not go on github.com and remains local
+application.properties
+
 HELP.md
 .gradle
 build/
