@@ -46,7 +46,7 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
         var now = LocalDateTime.now();
         this.attachmentName = separator + now.getYear() + separator + now.getMonth() + separator + now.getDayOfMonth()
                 + separator + originalName;
-        return articleRequestLoader.baseFileFolder() + attachmentName;
+        return this.attachmentName;
 
     }
 
