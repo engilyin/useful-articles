@@ -24,7 +24,6 @@ import { AppComponent } from './app.component';
 import { SigninComponent } from './screens/auth/signin/signin.component';
 import { ProgressCurtainComponent } from './components/sys/progress-curtain/progress-curtain/progress-curtain.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { TestComponent } from './screens/test/test/test.component';
 import { RootStoreModule } from './store/root-store.module';
 import { MainComponent } from './screens/main/_node/main.component';
 import { HeaderComponent } from './components/main/header/header/header.component';
@@ -38,7 +37,6 @@ import { GlobalHttpErrorHandlerInterceptor } from './interceptors/global-http-er
     AppComponent,
     SigninComponent,
     ProgressCurtainComponent,
-    TestComponent,
     MainComponent,
     HeaderComponent,
     FooterComponent,

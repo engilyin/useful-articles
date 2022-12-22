@@ -19,6 +19,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { SigninComponent } from './screens/auth/signin/signin.component';
 import { MainComponent } from './screens/main/_node/main.component';
+import { TestComponent } from './screens/test/test/test.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,10 @@ const routes: Routes = [
   {
     path: 'signin',
     component: SigninComponent
+  },
+  {
+    path: 'test',
+    loadChildren: () => import('@screens/test/test.module').then((m) => m.TestModule)
   },
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

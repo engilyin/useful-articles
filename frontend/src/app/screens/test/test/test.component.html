@@ -14,6 +14,19 @@
  limitations under the License.
  -->
 
-<button type="button" (click)="lightTheme()" class="btn btn-light">Light</button>
-<button type="button" (click)="darkTheme()" class="btn btn-dark">Dark</button>
-<button type="button" (click)="doSignoff()" class="btn btn-primary">Logoff</button>
+<div class="container">
+  <button type="button" (click)="lightTheme()" class="btn btn-light">Light</button>
+  <button type="button" (click)="darkTheme()" class="btn btn-dark">Dark</button>
+  <button type="button" (click)="doSignoff()" class="btn btn-primary">Logoff</button>
+
+  <div class="card m-2">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="test()" autocomplete="off" novalidate>
+
+        <ua-edit-text id="test1" label="Testing edit" formControlName="testText" [errors]="errorMessages"></ua-edit-text>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>

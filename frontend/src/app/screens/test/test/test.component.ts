@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ThemeService } from '@root/app/services/sys/theme/theme.service';
 import { AppState } from '@root/app/store/app.state';
@@ -23,15 +24,26 @@ import * as SessionActions from '@store/session/session.actions';
 @Component({
   selector: 'ua-test',
   templateUrl: './test.component.html',
-  styleUrls: ['./test.component.scss']
+  styleUrls: ['./test.component.scss'],
 })
 export class TestComponent implements OnInit {
 
-  constructor(private readonly store: Store<AppState>, private themeService: ThemeService) { }
-
-  ngOnInit(): void {
+  errorMessages = {
+    required: "Required field!",
+    email: "Valid email required."
   }
 
+  form = this.formBuilder.group({
+    testText: ['', [Validators.required, Validators.email]],
+  });
+
+  constructor(
+    private readonly store: Store<AppState>,
+    private themeService: ThemeService,
+    private readonly formBuilder: NonNullableFormBuilder
+  ) {}
+
+  ngOnInit(): void {}
 
   lightTheme() {
     this.themeService.switchTheme('light');
@@ -41,8 +53,15 @@ export class TestComponent implements OnInit {
     this.themeService.switchTheme('dark');
   }
 
-
   doSignoff() {
     this.store.dispatch(SessionActions.signoff());
+  }
+
+  test() {
+    if (this.form.valid) {
+      console.log(`Valid ${JSON.stringify(this.form.value)}`);
+    } else {
+      console.log('Invalid');
+    }
   }
 }
