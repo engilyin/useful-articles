@@ -11,6 +11,7 @@
        "@shared/*": ["src/app/shared/*"],
        "@store/*": ["src/app/store/*"],
        "@models/*": ["src/app/models/*"],
+       "@services/*": ["src/app/services/*"],
        "@screens/*": ["src/app/screens/*"]
     },
     "outDir": "./dist/out-tsc",

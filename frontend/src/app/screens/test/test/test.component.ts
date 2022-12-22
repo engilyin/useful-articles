@@ -17,8 +17,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { ThemeService } from '@root/app/services/sys/theme/theme.service';
-import { AppState } from '@root/app/store/app.state';
+import { validateAllFormFields } from '@components/widgets/form-validation.util';
+import { ThemeService } from '@services/sys/theme/theme.service';
+import { AppState } from '@store/app.state';
 import * as SessionActions from '@store/session/session.actions';
 
 @Component({
@@ -34,9 +35,28 @@ export class TestComponent implements OnInit {
   }
 
   form = this.formBuilder.group({
+    dropdownTest: ['', [Validators.required]],
     testText: ['', [Validators.required]],
     passTest: ['', [Validators.required]],
   });
+
+  dropdownTestValues = {
+    MP: "Music Producers",
+    SW: "Songwriters",
+    DJ: "DJ",
+    CC: "Content Creator",
+    IN: "Influencer",
+    ME: "Music Engineer",
+    FE: "Film/Content Editor",
+    PH: "Photographer",
+    AC: "Actors/Actress",
+    RA: "Recording Artist",
+    DR: "Director",
+    CI: "Cinematographer",
+    RL: "Record Label",
+    MS: "Motion Picture Studio",
+    RE: "Institutional Repositories Of Cultural Content"
+  }
 
   constructor(
     private readonly store: Store<AppState>,
@@ -63,6 +83,7 @@ export class TestComponent implements OnInit {
       console.log(`Valid ${JSON.stringify(this.form.value)}`);
     } else {
       console.log('Invalid');
+      validateAllFormFields(this.form);
     }
   }
 }

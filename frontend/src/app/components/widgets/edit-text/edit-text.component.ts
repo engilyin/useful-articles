@@ -39,7 +39,7 @@ import {
         [prefix]="prefix"
         [suffix]="suffix"
         [placeholder]="placeholder"
-        required=""
+        [disabled]="disabled"
         (change)="onInputChange($event)"
         [class.is-invalid]="hasErrors"
       />
