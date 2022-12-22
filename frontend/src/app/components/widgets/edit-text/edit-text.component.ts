@@ -30,11 +30,14 @@ import {
     <div class="my-2">
       <label [for]="id" class="form-label">{{ label }}</label>
       <input
-        type="text"
+        [type]="type"
         class="form-control"
         [id]="id"
         [name]="id"
         [value]="value"
+        [mask]="mask"
+        [prefix]="prefix"
+        [suffix]="suffix"
         [placeholder]="placeholder"
         required=""
         (change)="onInputChange($event)"
@@ -62,9 +65,13 @@ export class EditTextComponent implements ControlValueAccessor, Validator {
 
   @Input() id!: string;
   @Input() label = '';
+  @Input() type = 'text';
   @Input() placeholder = '';
   @Input() disabled = false;
   @Input() value = '';
+  @Input() mask = '';
+  @Input() prefix = '';
+  @Input() suffix = '';
   @Input() errors: {[key:string]: string} = {};
 
   constructor() {}

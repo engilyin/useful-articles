@@ -20,8 +20,9 @@ import { EditTextComponent } from './edit-text/edit-text.component';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { IConfig, NgxMaskModule } from 'ngx-mask';
 
-
+export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskModule.forRoot()
   ]
 })
 export class WidgetsModule { }

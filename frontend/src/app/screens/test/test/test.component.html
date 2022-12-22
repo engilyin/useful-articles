@@ -23,7 +23,8 @@
     <div class="card-body">
       <form [formGroup]="form" (ngSubmit)="test()" autocomplete="off" novalidate>
 
-        <ua-edit-text id="test1" label="Testing edit" formControlName="testText" [errors]="errorMessages"></ua-edit-text>
+        <ua-edit-text id="testText" prefix="+1 " mask="(000) 000-0000" label="Testing edit" formControlName="testText" [errors]="errorMessages"></ua-edit-text>
+        <ua-edit-text id="passTest" type="password" label="Testing edit" formControlName="passTest" [errors]="errorMessages"></ua-edit-text>
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>

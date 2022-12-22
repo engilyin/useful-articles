@@ -29,6 +29,7 @@
     "bootstrap": "^5.2.2",
     "font-awesome": "^4.7.0",
     "ngrx-store-localstorage": "^14.0.0",
+    "ngx-mask": "^14.2.4",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

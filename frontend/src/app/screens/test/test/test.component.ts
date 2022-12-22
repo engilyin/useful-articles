@@ -34,7 +34,8 @@ export class TestComponent implements OnInit {
   }
 
   form = this.formBuilder.group({
-    testText: ['', [Validators.required, Validators.email]],
+    testText: ['', [Validators.required]],
+    passTest: ['', [Validators.required]],
   });
 
   constructor(
