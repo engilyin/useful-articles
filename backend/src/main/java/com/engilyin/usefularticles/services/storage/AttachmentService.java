@@ -18,9 +18,10 @@ package com.engilyin.usefularticles.services.storage;
 import org.springframework.core.io.buffer.DataBuffer;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface AttachmentService {
 
-    Flux<DataBuffer> save(String filename, Flux<DataBuffer> contentBuffers);
+    Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers);
 
 }
