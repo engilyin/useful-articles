@@ -2,12 +2,11 @@ import { Directive, Input } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, ValidationErrors, Validator } from "@angular/forms";
 
 @Directive()
-export abstract class BaseInput implements ControlValueAccessor, Validator {
+export abstract class BaseInput<T> implements ControlValueAccessor, Validator {
   @Input() id!: string;
   @Input() label = '';
-  @Input() placeholder = '';
   @Input() disabled = false;
-  @Input() value = '';
+  @Input() value: T;
   @Input() errors: { [key: string]: string } = {};
 
   hasErrors = false;
@@ -17,6 +16,12 @@ export abstract class BaseInput implements ControlValueAccessor, Validator {
   onTouched: any = () => {};
 
   errorMessage = '';
+
+  constructor() {
+    this.value = this.defaultValue();
+  }
+
+  abstract defaultValue(): T;
 
   onInputChange(event: any) {
     this.updateValue(event.target.value);

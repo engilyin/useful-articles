@@ -58,11 +58,16 @@ import { BaseInput } from '../base-input/base-input.abstract';
     },
   ],
 })
-export class EditTextComponent extends BaseInput {
+export class EditTextComponent extends BaseInput<string> {
 
   @Input() type = 'text';
+  @Input() placeholder = '';
   @Input() mask = '';
   @Input() prefix = '';
   @Input() suffix = '';
+
+  defaultValue(): string {
+    return '';
+  }
 
 }

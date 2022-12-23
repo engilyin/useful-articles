@@ -56,9 +56,13 @@ import { BaseInput } from '../base-input/base-input.abstract';
     },
   ],
 })
-export class DropdownComponent extends BaseInput {
+export class DropdownComponent extends BaseInput<string> {
 
   @Input() values!: { [key: string]: string };
+
+  defaultValue(): string {
+    return '';
+  }
 
   get valueKeys() {
     return Object.keys(this.values);

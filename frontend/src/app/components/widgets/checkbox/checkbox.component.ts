@@ -15,23 +15,52 @@
  */
 
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { NG_VALIDATORS, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { BaseInput } from '../base-input/base-input.abstract';
 
 @Component({
   selector: 'ua-checkbox',
   template: `
-    <p>
-      checkbox works!
-    </p>
+    <div class="col-12">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [value]="value"
+          [id]="id"
+          [name]="id"
+          [disabled]="disabled"
+          [class.is-invalid]="hasErrors"
+          (change)="onInputChange($event)"
+        />
+        <label class="form-check-label" [for]="id">
+          {{ label }}
+        </label>
+        <div class="invalid-feedback" *ngIf="hasErrors">{{ errorMessage }}</div>
+      </div>
+    </div>
   `,
-  styles: [
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: CheckboxComponent,
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: CheckboxComponent,
+      multi: true,
+    },
   ],
-  encapsulation: ViewEncapsulation.None
 })
-export class CheckboxComponent implements OnInit {
+export class CheckboxComponent extends BaseInput<boolean> {
 
-  constructor() { }
-
-  ngOnInit(): void {
+  defaultValue(): boolean {
+    return false;
   }
 
+  override onInputChange(event: any) {
+    this.updateValue(event.target.checked);
+  }
 }

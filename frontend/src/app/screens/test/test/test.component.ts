@@ -38,6 +38,7 @@ export class TestComponent implements OnInit {
     dropdownTest: ['', [Validators.required]],
     testText: ['', [Validators.required]],
     passTest: ['', [Validators.required]],
+    testCheck: ['', [Validators.required]],
   });
 
   dropdownTestValues = {
@@ -82,7 +83,7 @@ export class TestComponent implements OnInit {
     if (this.form.valid) {
       console.log(`Valid ${JSON.stringify(this.form.value)}`);
     } else {
-      console.log('Invalid');
+      console.log(`!!!Invalid ${JSON.stringify(this.form.value)}`);
       validateAllFormFields(this.form);
     }
   }
