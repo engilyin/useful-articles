@@ -31,33 +31,35 @@ import com.engilyin.usefularticles.configurations.FileAttachmentConfigProperties
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "file")
 @Slf4j
 public class LocalFileAttachmentService implements AttachmentService {
-    
+
     private final FileAttachmentConfigProperties attachmentConfigProperties;
-    
+
     public LocalFileAttachmentService(FileAttachmentConfigProperties attachmentConfigProperties) {
         this.attachmentConfigProperties = attachmentConfigProperties;
         log.info("Using local file storage. Base path: {}", attachmentConfigProperties.getBaseFolder());
     }
 
     @Override
-    public Flux<DataBuffer> save(String filename, Flux<DataBuffer> contentBuffers) {
+    public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
         // handle file upload
         Path filePath = Paths.get(attachmentConfigProperties.getBaseFolder() + filename);
         log.debug("Uploading file at: {}", filePath);
-        
+
         AsynchronousFileChannel asynchronousFileChannel = createChannel(filePath);
 
         return DataBufferUtils.write(contentBuffers, asynchronousFileChannel)
                 .doOnNext(DataBufferUtils.releaseConsumer())
-                .doAfterTerminate(() -> closeUploadedFile(asynchronousFileChannel, filePath));
-       
+                .doAfterTerminate(() -> closeUploadedFile(asynchronousFileChannel, filePath))
+                .reduce(true, (n, r) -> true);
+
     }
-    
+
     private AsynchronousFileChannel createChannel(Path filePath) {
         try {
             Files.createDirectories(filePath.getParent());
@@ -67,7 +69,7 @@ public class LocalFileAttachmentService implements AttachmentService {
             throw new RuntimeException();
         }
     }
-    
+
     private void closeUploadedFile(AsynchronousFileChannel asynchronousFileChannel, Path filePath) {
         try {
             asynchronousFileChannel.close();
@@ -75,6 +77,5 @@ public class LocalFileAttachmentService implements AttachmentService {
             throw new RuntimeException("Unable to close uploaded file: " + filePath);
         }
     }
-
 
 }

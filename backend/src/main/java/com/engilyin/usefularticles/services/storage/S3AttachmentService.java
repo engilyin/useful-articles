@@ -15,6 +15,8 @@
  */
 package com.engilyin.usefularticles.services.storage;
 
+import java.nio.ByteBuffer;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -24,6 +26,7 @@ import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperti
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "s3")
@@ -31,7 +34,7 @@ import reactor.core.publisher.Flux;
 public class S3AttachmentService implements AttachmentService {
 
     private final BucketAttachmentConfigProperties attachmentConfigProperties;
-    
+
     private final S3Service s3Service;
 
     public S3AttachmentService(BucketAttachmentConfigProperties attachmentConfigProperties, S3Service s3Service) {
@@ -43,10 +46,15 @@ public class S3AttachmentService implements AttachmentService {
     }
 
     @Override
-    public Flux<DataBuffer> save(String filename, Flux<DataBuffer> contentBuffers) {
-        
-        return DataBufferUtils.write(contentBuffers, )
-                .doOnNext(DataBufferUtils.releaseConsumer())
-                .doAfterTerminate(() -> closeUploadedFile(asynchronousFileChannel, filePath));    }
+    public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
+
+        Flux<ByteBuffer> buffers = contentBuffers.map(db -> {
+            var buf = db.toByteBuffer();
+            DataBufferUtils.release(db);
+            return buf;
+        });
+
+        return s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, buffers);
+    }
 
 }
