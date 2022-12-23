@@ -14,6 +14,23 @@
  limitations under the License.
  -->
 
-<button type="button" (click)="lightTheme()" class="btn btn-light">Light</button>
-<button type="button" (click)="darkTheme()" class="btn btn-dark">Dark</button>
-<button type="button" (click)="doSignoff()" class="btn btn-primary">Logoff</button>
+<div class="container">
+  <button type="button" (click)="lightTheme()" class="btn btn-light">Light</button>
+  <button type="button" (click)="darkTheme()" class="btn btn-dark">Dark</button>
+  <button type="button" (click)="doSignoff()" class="btn btn-primary">Logoff</button>
+
+  <div class="card m-2">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="test()" autocomplete="off" novalidate>
+
+        <ua-dropdown id="dropdownTest" [values]="dropdownTestValues" formControlName="dropdownTest" [errors]="errorMessages"></ua-dropdown>
+        <ua-edit-text id="testText" prefix="+1 " mask="(000) 000-0000" label="Testing edit" formControlName="testText" [errors]="errorMessages"></ua-edit-text>
+        <ua-edit-text id="passTest" type="password" label="Testing edit" formControlName="passTest" [errors]="errorMessages"></ua-edit-text>
+
+        <ua-checkbox id="testCheck" formControlName="testCheck" [errors]="errorMessages" label="Using the best options"></ua-checkbox>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
