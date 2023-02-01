@@ -19,7 +19,6 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperties;
@@ -86,9 +85,9 @@ public class S3Service {
             Flux<ByteBuffer> buffers) {
         CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(PutObjectRequest.builder()
                 .bucket(bucketName)
-                .contentLength(106268L)//contentLength)
-                .key("test")//objectKey)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM.toString())
+                .contentLength(contentLength)
+                .key(objectKey)
+                //.contentType(MediaType.APPLICATION_OCTET_STREAM.toString())
                 .build(), AsyncRequestBody.fromPublisher(buffers));
 
         return Mono.fromFuture(future).doOnError(this::handleError).map(this::checkResult);

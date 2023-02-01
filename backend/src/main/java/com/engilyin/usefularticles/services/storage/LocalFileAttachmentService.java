@@ -53,7 +53,11 @@ public class LocalFileAttachmentService implements AttachmentService {
 
         AsynchronousFileChannel asynchronousFileChannel = createChannel(filePath);
 
-        return DataBufferUtils.write(contentBuffers, asynchronousFileChannel)
+        return DataBufferUtils.write(contentBuffers.map(p -> {
+            log.debug("Next part: {}", p);
+            return p;
+            
+        }), asynchronousFileChannel)
                 .doOnNext(DataBufferUtils.releaseConsumer())
                 .doAfterTerminate(() -> closeUploadedFile(asynchronousFileChannel, filePath))
                 .reduce(true, (n, r) -> true);

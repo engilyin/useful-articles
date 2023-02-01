@@ -48,11 +48,13 @@ public class S3AttachmentService implements AttachmentService {
     @Override
     public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
 
-        Flux<ByteBuffer> buffers = contentBuffers.map(db -> {
+        Flux<ByteBuffer> buffers = Flux.from(contentBuffers.map(db -> {
+            log.debug("Next part: {}", db);
             var buf = db.toByteBuffer();
             DataBufferUtils.release(db);
+           // DataBufferUtils.releaseConsumer();
             return buf;
-        });
+        }));
 
         return s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, buffers);
     }

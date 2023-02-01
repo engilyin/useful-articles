@@ -20,6 +20,8 @@ public interface MultipartDataAccumulator<T> {
     void pushField(String name, String value);
     
     String generateFilename(String originalName);
+    
+    long attachmentSize();
 
     T build();
 }

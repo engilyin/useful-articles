@@ -24,12 +24,14 @@ import org.springframework.stereotype.Service;
 import com.engilyin.usefularticles.services.storage.AttachmentService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Signal;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MultipartUploadService {
 
     private final AttachmentService attachmentService;
@@ -49,10 +51,15 @@ public class MultipartUploadService {
                 accumulator.pushField(formEvent.name(), formEvent.value());
                 return Mono.empty();
             } else if (event instanceof FilePartEvent fileEvent) {
+                log.debug("!!! FilePartEvent!");
                 String filename = accumulator.generateFilename(fileEvent.filename());
-                long fileSize = fileEvent.headers().getContentLength();
-                return attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content))
-                        .then(Mono.empty());
+                long fileSize = accumulator.attachmentSize();
+//                return attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content))
+//                        .then(Mono.empty());
+                attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content)).subscribe(v -> {
+                    log.info("Loading done!!!!!!");
+                });
+                return Mono.empty();
             } else {
                 return Mono.error(new RuntimeException("Unexpected event: " + event));
             }
