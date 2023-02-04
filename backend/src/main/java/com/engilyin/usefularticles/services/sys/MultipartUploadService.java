@@ -54,12 +54,8 @@ public class MultipartUploadService {
                 log.debug("!!! FilePartEvent!");
                 String filename = accumulator.generateFilename(fileEvent.filename());
                 long fileSize = accumulator.attachmentSize();
-//                return attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content))
-//                        .then(Mono.empty());
-                attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content)).subscribe(v -> {
-                    log.info("Loading done!!!!!!");
-                });
-                return Mono.empty();
+                return attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content))
+                        .then(Mono.empty());
             } else {
                 return Mono.error(new RuntimeException("Unexpected event: " + event));
             }
