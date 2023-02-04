@@ -22,9 +22,10 @@ jwt:
   secret: koYiuqmB5IMgbrkdRAyhd6g/ypfAdYr3Ocm4biq+ESUaLPNdmwRnZyZlvQgNh7cewa+hw9/2ZQGE2c/cR+ZYgg==
   session-time: 86400
   
-articles:
-  attachment:
-    base-folder: 'D:\\tmp\articles'
+#articles:
+#  attachment:
+#    storage: file
+#    base-folder: 'D:\tmp\articles'
 
 debug:
   logging.http-requests: true

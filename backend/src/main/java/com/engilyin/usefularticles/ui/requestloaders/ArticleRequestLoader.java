@@ -15,7 +15,6 @@
  */
 package com.engilyin.usefularticles.ui.requestloaders;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.entities.articles.Article;
@@ -37,16 +36,9 @@ public class ArticleRequestLoader {
     
     private final ObjectMapper mapper;
 
-    @Value("${articles.attachment.base-folder}")
-    private String baseFileFolder;
-
     public Article mapToValidArticle(ArticleAddRequest articleAddRequest) {
         validator.validate(articleAddRequest);
         return articleMapper.fromAddRequest(articleAddRequest);
-    }
-    
-    public String baseFileFolder() {
-        return baseFileFolder;
     }
     
     public ArticleAddRequest fromJson(String json) {
