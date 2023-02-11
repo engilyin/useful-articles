@@ -27,6 +27,7 @@ import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperti
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 @Service
 @ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "s3")
@@ -48,15 +49,18 @@ public class S3AttachmentService implements AttachmentService {
     @Override
     public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
 
-        Flux<ByteBuffer> buffers = Flux.from(contentBuffers.map(db -> {
-            log.debug("Next part: {}", db);
-            var buf = db.toByteBuffer();
-            DataBufferUtils.release(db);
-           // DataBufferUtils.releaseConsumer();
-            return buf;
-        }));
+        Sinks.Many<ByteBuffer> sink = Sinks.many().multicast().onBackpressureBuffer();
+        s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, sink.asFlux().log())
+                .subscribe(r -> log.debug("The data transmitted onto the S3 bucket as: {}", filename));
 
-        return s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, buffers);
+        return contentBuffers.doOnNext(b -> {
+            log.debug("Sending buffer: {}", b);
+            sink.tryEmitNext(b.toByteBuffer());
+        })
+                .doOnNext(DataBufferUtils.releaseConsumer())
+                .doAfterTerminate(() -> sink.tryEmitComplete())
+                .reduce(true, (n, r) -> true);
+
     }
 
 }

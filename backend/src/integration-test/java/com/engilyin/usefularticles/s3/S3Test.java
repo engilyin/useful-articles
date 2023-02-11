@@ -30,6 +30,7 @@ import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import com.engilyin.usefularticles.utils.AppPropertiesLoader;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -71,13 +72,13 @@ public class S3Test {
 
         var fileChannel = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
 
-        var fileFlux = DataBufferUtils
+        var fileFlux = Flux.from(DataBufferUtils
                 .readAsynchronousFileChannel(() -> fileChannel, new DefaultDataBufferFactory(), 4096)
                 .map(b -> {
                     var r = b.toByteBuffer();
                     DataBufferUtils.release(b);
                     return r;
-                });
+                }));
 
         CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(objectRequest,
                 // AsyncRequestBody.fromFile(Paths.get("D:\\tmp\\Jenny.mp3"))
