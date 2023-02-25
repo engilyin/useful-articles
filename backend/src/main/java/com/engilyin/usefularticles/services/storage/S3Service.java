@@ -15,10 +15,13 @@
  */
 package com.engilyin.usefularticles.services.storage;
 
+import java.net.URI;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperties;
@@ -34,8 +37,11 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.ResponsePublisher;
+import software.amazon.awssdk.http.async.SdkAsyncHttpClient;
+import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -53,8 +59,27 @@ public class S3Service {
                 AwsBasicCredentials.create(attachmentConfig.getAccessKeyId(), attachmentConfig.getBucketName()));
 
         Region region = Region.of(attachmentConfig.getBucketRegion());
-        this.s3AsyncClient = S3AsyncClient.builder().credentialsProvider(creds).region(region).build();
+        this.s3AsyncClient = s3AsyncClient(region, creds);
         this.objectMapper = objectMapper;
+    }
+
+    public S3AsyncClient s3AsyncClient(Region region, AwsCredentialsProvider awsCredentialsProvider) {
+
+        return S3AsyncClient.builder()
+                .httpClient(sdkAsyncHttpClient())
+                .region(region)
+                .credentialsProvider(awsCredentialsProvider)
+                .forcePathStyle(true)
+                .serviceConfiguration(s3Configuration())
+                .build();
+    }
+
+    private SdkAsyncHttpClient sdkAsyncHttpClient() {
+        return NettyNioAsyncHttpClient.builder().writeTimeout(Duration.ZERO).maxConcurrency(64).build();
+    }
+
+    private S3Configuration s3Configuration() {
+        return S3Configuration.builder().checksumValidationEnabled(false).chunkedEncodingEnabled(true).build();
     }
 
     public CompletableFuture<ResponsePublisher<GetObjectResponse>> receiveObject(String backetName, String objectKey) {
@@ -79,18 +104,23 @@ public class S3Service {
         return Mono.fromFuture(result);
     }
 
-    public Mono<Boolean> uploadBuffers(String bucketName,
-            String objectKey,
-            long contentLength,
-            Flux<ByteBuffer> buffers) {
+    public void uploadBuffers(String bucketName, String objectKey, long contentLength, Flux<ByteBuffer> buffers) {
         CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(PutObjectRequest.builder()
                 .bucket(bucketName)
                 .contentLength(contentLength)
                 .key(objectKey)
-                //.contentType(MediaType.APPLICATION_OCTET_STREAM.toString())
+                // .contentType(MediaType.APPLICATION_OCTET_STREAM.toString())
                 .build(), AsyncRequestBody.fromPublisher(buffers));
 
-        return Mono.fromFuture(future).doOnError(this::handleError).map(this::checkResult);
+        // return
+        // Mono.fromFuture(future).doOnError(this::handleError).map(this::checkResult);
+
+        future.thenApply(this::checkResult).whenComplete((stringContent, exception) -> {
+            if (stringContent != null)
+                System.out.println(stringContent);
+            else
+                handleError(exception);
+        });
     }
 
     private boolean checkResult(PutObjectResponse putObjectResponse) {

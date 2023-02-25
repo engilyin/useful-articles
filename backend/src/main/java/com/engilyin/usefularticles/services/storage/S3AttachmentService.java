@@ -16,6 +16,7 @@
 package com.engilyin.usefularticles.services.storage;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -49,18 +50,29 @@ public class S3AttachmentService implements AttachmentService {
     @Override
     public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
 
-        Sinks.Many<ByteBuffer> sink = Sinks.many().multicast().onBackpressureBuffer();
-        s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, sink.asFlux().log())
-                .subscribe(r -> log.debug("The data transmitted onto the S3 bucket as: {}", filename));
+        Optional<Sinks.Many<ByteBuffer>> emptySink = Optional.empty();
 
-        return contentBuffers.doOnNext(b -> {
+        return contentBuffers.zipWith(initS3Sink(filename, contentLength)).doOnNext(b -> {
             log.debug("Sending buffer: {}", b);
-            sink.tryEmitNext(b.toByteBuffer());
+            b.getT2().tryEmitNext(b.getT1().toByteBuffer());
         })
-                .doOnNext(DataBufferUtils.releaseConsumer())
-                .doAfterTerminate(() -> sink.tryEmitComplete())
-                .reduce(true, (n, r) -> true);
+                .doOnNext(b -> DataBufferUtils.releaseConsumer())
+                .reduce(emptySink, (n, r) -> Optional.of(r.getT2()))
+                .map(sink -> {
+                    if (sink.isPresent()) {
+                        sink.get().tryEmitComplete();
+                    }
+                    return true;
+                });
 
+    }
+
+    private Mono<Sinks.Many<ByteBuffer>> initS3Sink(String filename, long contentLength) {
+        Sinks.Many<ByteBuffer> sink = Sinks.many().unicast().onBackpressureBuffer();
+        s3Service
+                .uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, sink.asFlux().log());
+                //.subscribe(r -> log.debug("The data transmitted onto the S3 bucket as: {}", filename));
+        return Mono.just(sink);
     }
 
 }
