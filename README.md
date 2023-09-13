@@ -17,7 +17,7 @@ Please check the project [Inception Desk presentation](docs/Useful-Articles_Ince
 
 The project consists from server-side backed written with Java and [Spring Boot](https://spring.io/projects/spring-boot) and [Spring Cloud](https://spring.io/projects/spring-cloud). It uses asynchronous approach based on [WebFlux](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html).
 
-The client side is based on [Angular](https://angular.io/) and [PrimeNg](https://www.primefaces.org/primeng/)
+The client side is based on [Angular](https://angular.io/)
 
 The Database is [PostgreSQL](https://www.postgresql.org/) but could be easily replaced with any other one supported by [Spring Data](https://spring.io/projects/spring-data) 
 and (Spring Data R2DBC)[https://spring.io/projects/spring-data-r2dbc]
