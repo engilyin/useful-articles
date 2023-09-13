@@ -19,19 +19,27 @@ import java.io.IOException;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 
 import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperties;
 import com.engilyin.usefularticles.utils.AppPropertiesLoader;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.retry.Retry;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -42,11 +50,18 @@ import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.http.nio.netty.SdkEventLoopGroup;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadResponse;
+import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
+import software.amazon.awssdk.services.s3.model.CompletedPart;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.UploadPartRequest;
+import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
 @Slf4j
-public class S3Test {
+public class S3MultipartTest {
 
     Properties appProperties;
 
@@ -58,55 +73,47 @@ public class S3Test {
     @Test
     public void simpleS3Test() throws IOException, InterruptedException {
 
-//        Region region = Region.US_EAST_1;
-//
-//        AwsCredentialsProvider creds = StaticCredentialsProvider
-//                .create(AwsBasicCredentials.create(appProperties.getProperty("articles.attachment.access-key-id"),
-//                        appProperties.getProperty("articles.attachment.secret-access-key")));
-
         BucketAttachmentConfigProperties props = createBucketAttachmentConfigProperties(appProperties);
-        var s3AsyncClient =  createS3AsyncClient(props, credentialsProvider(props ));
-                //S3AsyncClient.builder().credentialsProvider(creds).region(region).build();
+        var s3AsyncClient = createS3AsyncClient(props, credentialsProvider(props));
 
         var path = Paths.get("D:\\tmp\\Jenny.mp3");
 
-        PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(props.getBucketName()) //appProperties.getProperty("articles.attachment.bucket-name"))
-                .contentLength(path.toFile().length())
-                .key("Jenny.mp3")
-                .build();
-
         var fileChannel = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
 
-        var fileFlux = DataBufferUtils
-                .readAsynchronousFileChannel(() -> fileChannel, new DefaultDataBufferFactory(), 4096)
-                .map(b -> {
-                    var r = b.toByteBuffer();
-                    DataBufferUtils.release(b);
-                    return r;
-                });
+        var dataBuffer = DataBufferUtils.readAsynchronousFileChannel(() -> fileChannel, new DefaultDataBufferFactory(),
+                4096);
 
-        CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(objectRequest,
-                // AsyncRequestBody.fromFile(Paths.get("D:\\tmp\\Jenny.mp3"))
-                AsyncRequestBody.fromPublisher(fileFlux));
-//        future.whenComplete((resp, err) -> {
-//            try {
-//                if (resp != null) {
-//                    System.out.println("Object uploaded. Details: " + resp);
-//                } else {
-//                    // Handle error.
-//                    err.printStackTrace();
-//                }
-//            } finally {
-//                // Only close the client when you are completely done with it.
-//                s3AsyncClient.close();
-//            }
-//        });
-//
-//        future.join();
+        CompletableFuture<CreateMultipartUploadResponse> uploadRequest = s3AsyncClient
+                .createMultipartUpload(CreateMultipartUploadRequest.builder()
+                        .key("Jenny.mp3")
+                        // .contentType(mediaType.toString())
+                        .bucket(props.getBucketName())
+                        .build());
+        UploadState uploadState = new UploadState("Jenny.mp3");
+        Mono<Boolean> r = Mono.fromFuture(uploadRequest).publishOn(Schedulers.parallel()).flatMapMany(response -> {
+            uploadState.uploadId = response.uploadId();
+            return dataBuffer;
+        }).bufferUntil(buffer -> {
+            uploadState.buffered.getAndAdd(buffer.readableByteCount());
+            if (uploadState.buffered.get() >= 5242880) {
+                uploadState.buffered.set(0);
+                return true;
+            } else {
+                return false;
+            }
+        })
+                .map(this::concatBuffers)
+                .flatMap(buffer -> uploadPart(s3AsyncClient, props, uploadState, buffer))
+                .onBackpressureBuffer()
+                .reduce(uploadState, (state, completedPart) -> {
+                    state.completedParts.put(completedPart.partNumber(), completedPart);
+                    return state;
+                })
+                .flatMap(v -> completeUpload(s3AsyncClient, props, v))
+                .doOnError(e -> log.error("Failed to proceed with multipart upload.", e))
+                .then(Mono.just(true));
 
-        Mono.fromFuture(future).doOnError(this::handleError).map(this::checkResult).then(Mono.empty()).subscribe();
-
+        r.subscribe(v -> log.info("S3 Uploaded by parts: {}", v));
         Thread.sleep(20000);
     }
 
@@ -130,12 +137,11 @@ public class S3Test {
 
         return putObjectResponse.sdkHttpResponse().isSuccessful();
     }
-    
-    
+
     S3AsyncClient createS3AsyncClient(BucketAttachmentConfigProperties attachmentConfig,
             AwsCredentialsProvider credsProvider) {
-        log.info("Creating the async client for S3 bucket storage. The backet name: {}, region: {}", attachmentConfig.getBucketName(),
-                attachmentConfig.getBucketRegion());
+        log.info("Creating the async client for S3 bucket storage. The backet name: {}, region: {}",
+                attachmentConfig.getBucketName(), attachmentConfig.getBucketRegion());
         NettyNioAsyncHttpClient.Builder httpClientBuilder = NettyNioAsyncHttpClient.builder()
 //              .connectionMaxIdleTime(props.getIdleConnectionTimeout())
 //              .connectionTimeout(props.getConnectTimeout())
@@ -168,5 +174,50 @@ public class S3Test {
         return StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(attachmentConfig.getAccessKeyId(), attachmentConfig.getSecretAccessKey()));
 //        AwsBasicCredentials.create(attachmentConfig.getAccessKeyId(), attachmentConfig.getBucketName()));
+    }
+
+    private DataBuffer concatBuffers(List<DataBuffer> buffers) {
+        return buffers.get(0).factory().join(buffers);
+    }
+
+    private Mono<CompletedPart> uploadPart(S3AsyncClient s3AsyncClient, BucketAttachmentConfigProperties props, UploadState uploadState, DataBuffer buffer) {
+        final int partNumber = uploadState.partCounter.getAndIncrement();
+        CompletableFuture<UploadPartResponse> request = s3AsyncClient.uploadPart(UploadPartRequest.builder()
+                .bucket(props.getBucketName())
+                .key(uploadState.fileKey)
+                .partNumber(partNumber)
+                .uploadId(uploadState.uploadId)
+                .contentLength((long) buffer.capacity())
+                .build(), AsyncRequestBody.fromByteBuffer(buffer.asByteBuffer()));
+        return Mono.fromFuture(request)
+                .publishOn(Schedulers.parallel())
+                .map(uploadPartResult -> CompletedPart.builder()
+                        .eTag(uploadPartResult.eTag())
+                        .partNumber(partNumber)
+                        .build())
+                .retryWhen(Retry.max(3))
+                .doOnNext(r -> DataBufferUtils.release(buffer));
+    }
+
+    private Mono<CompleteMultipartUploadResponse> completeUpload(S3AsyncClient s3AsyncClient, BucketAttachmentConfigProperties props, UploadState state) {
+        CompletedMultipartUpload multipartUpload = CompletedMultipartUpload.builder()
+                .parts(state.completedParts.values())
+                .build();
+        return Mono.fromFuture(s3AsyncClient.completeMultipartUpload(CompleteMultipartUploadRequest.builder()
+                .bucket(props.getBucketName())
+                .uploadId(state.uploadId)
+                .multipartUpload(multipartUpload)
+                .key(state.fileKey)
+                .build())).publishOn(Schedulers.parallel());
+
+    }
+
+    @RequiredArgsConstructor
+    static class UploadState {
+        final String fileKey;
+        String uploadId;
+        AtomicInteger partCounter = new AtomicInteger(1);
+        AtomicInteger buffered = new AtomicInteger(0);
+        Map<Integer, CompletedPart> completedParts = new ConcurrentHashMap<>();
     }
 }

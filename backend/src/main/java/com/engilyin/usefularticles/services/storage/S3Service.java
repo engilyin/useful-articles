@@ -21,20 +21,17 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import reactor.core.scheduler.Schedulers;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.ResponsePublisher;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -42,20 +39,13 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Service
 @ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "s3")
+@RequiredArgsConstructor
 @Slf4j
 public class S3Service {
+
     private final S3AsyncClient s3AsyncClient;
 
     private final ObjectMapper objectMapper;
-
-    public S3Service(BucketAttachmentConfigProperties attachmentConfig, ObjectMapper objectMapper) {
-        AwsCredentialsProvider creds = StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(attachmentConfig.getAccessKeyId(), attachmentConfig.getBucketName()));
-
-        Region region = Region.of(attachmentConfig.getBucketRegion());
-        this.s3AsyncClient = S3AsyncClient.builder().credentialsProvider(creds).region(region).build();
-        this.objectMapper = objectMapper;
-    }
 
     public CompletableFuture<ResponsePublisher<GetObjectResponse>> receiveObject(String backetName, String objectKey) {
         return s3AsyncClient.getObject(builder -> builder.bucket(backetName).key(objectKey),
@@ -83,14 +73,19 @@ public class S3Service {
             String objectKey,
             long contentLength,
             Flux<ByteBuffer> buffers) {
-        CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(PutObjectRequest.builder()
-                .bucket(bucketName)
+        
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName) 
                 .contentLength(contentLength)
                 .key(objectKey)
-                //.contentType(MediaType.APPLICATION_OCTET_STREAM.toString())
-                .build(), AsyncRequestBody.fromPublisher(buffers));
+                .build();
+        CompletableFuture<PutObjectResponse> future = s3AsyncClient.putObject(objectRequest,
+                AsyncRequestBody.fromPublisher(buffers));
 
-        return Mono.fromFuture(future).doOnError(this::handleError).map(this::checkResult);
+        return Mono.fromFuture(future)
+                .publishOn(Schedulers.parallel())
+                .doOnError(this::handleError)
+                .map(this::checkResult);
     }
 
     private boolean checkResult(PutObjectResponse putObjectResponse) {

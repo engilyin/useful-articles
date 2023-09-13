@@ -35,6 +35,9 @@ logging:
     ROOT: INFO
     com:
       engilyin: DEBUG
+    software:
+      amazon:
+        awssdk: DEBUG
     io:
       ROOT: INFO
       spring: DEBUG
@@ -66,6 +69,12 @@ management:
   endpoint:
     health:
       show-details: always
+    env:
+      show-values: always
+    configprops:
+      show-values: always
+    
   info:
     git:
       mode: FULL
+      

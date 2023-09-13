@@ -15,48 +15,29 @@
  */
 package com.engilyin.usefularticles.services.storage;
 
-import java.nio.ByteBuffer;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import com.engilyin.usefularticles.configurations.BucketAttachmentConfigProperties;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "s3")
+@RequiredArgsConstructor
 @Slf4j
 public class S3AttachmentService implements AttachmentService {
 
-    private final BucketAttachmentConfigProperties attachmentConfigProperties;
-
-    private final S3Service s3Service;
-
-    public S3AttachmentService(BucketAttachmentConfigProperties attachmentConfigProperties, S3Service s3Service) {
-        this.attachmentConfigProperties = attachmentConfigProperties;
-        this.s3Service = s3Service;
-        log.info("Using S3 bucket storage. The backet name: {}, region: {}", attachmentConfigProperties.getBucketName(),
-                attachmentConfigProperties.getBucketRegion());
-
-    }
+    private final S3Uploader s3Uploader;
 
     @Override
     public Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers) {
-
-        Flux<ByteBuffer> buffers = Flux.from(contentBuffers.map(db -> {
-            log.debug("Next part: {}", db);
-            var buf = db.toByteBuffer();
-            DataBufferUtils.release(db);
-           // DataBufferUtils.releaseConsumer();
-            return buf;
-        }));
-
-        return s3Service.uploadBuffers(attachmentConfigProperties.getBucketName(), filename, contentLength, buffers);
+        s3Uploader.putObjectMultipart(filename, MediaType.APPLICATION_OCTET_STREAM, contentBuffers).subscribe(v -> log.info("S3 Uploaded by parts: {}", v));
+        
+        return contentBuffers.reduce(0, (r,v) -> r + 1).map(v -> true);
     }
 
 }
