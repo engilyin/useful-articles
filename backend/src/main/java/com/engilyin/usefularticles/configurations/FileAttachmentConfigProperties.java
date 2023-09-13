@@ -13,15 +13,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.services.sys;
+package com.engilyin.usefularticles.configurations;
 
-public interface MultipartDataAccumulator<T> {
-    
-    void pushField(String name, String value);
-    
-    String generateFilename(String originalName);
-    
-    long attachmentSize();
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-    T build();
+import lombok.Data;
+
+@Configuration
+@ConfigurationProperties(prefix = "articles.attachment")
+@ConditionalOnProperty(prefix = "articles.attachment", name = "storage", havingValue = "file")
+@Data
+public class FileAttachmentConfigProperties {
+    String baseFolder;
 }
