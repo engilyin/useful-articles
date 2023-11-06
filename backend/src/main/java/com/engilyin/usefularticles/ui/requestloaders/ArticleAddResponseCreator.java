@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2023 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,9 +35,15 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
 
     private String attachmentName;
 
+    private long attachmentSize;
+
     @Override
     public void pushField(String name, String value) {
-        this.requestJson = value;
+        if ("attachSize".equals(name)) {
+            attachmentSize = Long.parseLong(value);
+        } else {
+            this.requestJson = value;
+        }
     }
 
     @Override
@@ -46,7 +52,7 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
         var now = LocalDateTime.now();
         this.attachmentName = separator + now.getYear() + separator + now.getMonth() + separator + now.getDayOfMonth()
                 + separator + originalName;
-        return articleRequestLoader.baseFileFolder() + attachmentName;
+        return this.attachmentName;
 
     }
 
@@ -61,4 +67,8 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
         return this.username;
     }
 
+    @Override
+    public long attachmentSize() {
+        return attachmentSize;
+    }
 }

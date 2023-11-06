@@ -15,35 +15,31 @@
  */
 package com.engilyin.usefularticles.services.sys;
 
-import java.io.IOException;
-import java.nio.channels.AsynchronousFileChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-
 import org.reactivestreams.Publisher;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePartEvent;
 import org.springframework.http.codec.multipart.FormPartEvent;
 import org.springframework.http.codec.multipart.PartEvent;
 import org.springframework.stereotype.Service;
 
+import com.engilyin.usefularticles.services.storage.AttachmentService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Signal;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class MultipartUploadService {
+
+    private final AttachmentService attachmentService;
 
     public <T extends MultipartDataAccumulator<?>> Mono<T> loadData(Flux<PartEvent> rawPartEvents, T accumulator) {
         return rawPartEvents.windowUntil(PartEvent::isLast)
                 .concatMap(p -> p.switchOnFirst((signal, partEvents) -> handlePart(signal, partEvents, accumulator)))
                 .then(Mono.just(accumulator));
-
     }
 
     private Publisher<PartEvent> handlePart(Signal<? extends PartEvent> signal,
@@ -55,25 +51,11 @@ public class MultipartUploadService {
                 accumulator.pushField(formEvent.name(), formEvent.value());
                 return Mono.empty();
             } else if (event instanceof FilePartEvent fileEvent) {
-                String filename = fileEvent.filename();
-                Flux<DataBuffer> contents = partEvents.map(PartEvent::content);
-
-                // handle file upload
-                Path filePath = Paths.get(accumulator.generateFilename(filename));
-                log.debug("Uploading file at: {}", filePath);
-                AsynchronousFileChannel asynchronousFileChannel;
-                try {
-                    Files.createDirectories(filePath.getParent());
-                    asynchronousFileChannel = AsynchronousFileChannel.open(filePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-                } catch (IOException e) {
-                    log.error("Unable to create the attached file", e);
-                    throw new RuntimeException();
-                }
-                return DataBufferUtils.write(contents, asynchronousFileChannel)
-                        .doOnNext(DataBufferUtils.releaseConsumer())
-                        .doAfterTerminate(() -> closeUploadedFile(asynchronousFileChannel, filePath))
+                log.debug("!!! FilePartEvent!");
+                String filename = accumulator.generateFilename(fileEvent.filename());
+                long fileSize = accumulator.attachmentSize();
+                return attachmentService.save(filename, fileSize, partEvents.map(PartEvent::content))
                         .then(Mono.empty());
-
             } else {
                 return Mono.error(new RuntimeException("Unexpected event: " + event));
             }
@@ -81,13 +63,4 @@ public class MultipartUploadService {
             return partEvents; // either complete or error signal
         }
     }
-
-    private void closeUploadedFile(AsynchronousFileChannel asynchronousFileChannel, Path filePath) {
-        try {
-            asynchronousFileChannel.close();
-        } catch (IOException ignored) {
-            throw new RuntimeException("Unable to close uploaded file: " + filePath);
-        }
-    }
-
 }

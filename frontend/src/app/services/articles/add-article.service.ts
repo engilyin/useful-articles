@@ -33,6 +33,10 @@ export class AddArticleService {
     const formData: FormData = new FormData();
     formData.append('json', JSON.stringify(newArticle));
 
+    console.log(`Attach size: ${attach?.size ?? 0}`);
+
+    formData.append('attachSize', `${attach?.size ?? 0}`);
+
     if(attach) {
       formData.append('file', attach);
     }

@@ -13,15 +13,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.engilyin.usefularticles.services.sys;
+package com.engilyin.usefularticles.services.storage;
 
-public interface MultipartDataAccumulator<T> {
-    
-    void pushField(String name, String value);
-    
-    String generateFilename(String originalName);
-    
-    long attachmentSize();
+import org.springframework.core.io.buffer.DataBuffer;
 
-    T build();
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface AttachmentService {
+
+    Mono<Boolean> save(String filename, long contentLength, Flux<DataBuffer> contentBuffers);
+
 }
