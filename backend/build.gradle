@@ -11,26 +11,19 @@ targetCompatibility = "${targetCompatibility}"
 dependencyManagement {
 
    imports {
+      mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
       mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
    }
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+jar {
+  enabled = false
+}
 
-	integrationTestImplementation {
-		extendsFrom testImplementation
-	}
-	
-	integrationTestCompileOnly {
-       extendsFrom testAnnotationProcessor
-    }
-    
-    integrationTestAnnotationProcessor {
-       extendsFrom testAnnotationProcessor
-    }
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
 }
 
 repositories {
@@ -62,45 +55,57 @@ dependencies {
 	//runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'org.postgresql:r2dbc-postgresql'
 
-
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-
-	    
-	integrationTestCompileOnly 'org.projectlombok:lombok'    
-    integrationTestAnnotationProcessor 'org.projectlombok:lombok'
-        
-    integrationTestImplementation 'org.springframework.security:spring-security-test'
-    integrationTestImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    integrationTestImplementation "io.rest-assured:rest-assured-all:${restAssuredVersion}"
-    integrationTestImplementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-sourceSets {
-
-    integrationTest {
-       compileClasspath += main.output + test.output
-       runtimeClasspath += main.output + test.output
-       java.srcDir file('src/integration-test/java')
-       resources.srcDir file('src/integration-test/resources')
+testing {
+  suites {
+  
+    test {
+        useJUnitJupiter()
+        dependencies {
+          compileOnly 'org.projectlombok:lombok'
+          annotationProcessor 'org.projectlombok:lombok'
+          
+          implementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+          implementation 'org.assertj:assertj-core:3.24.2'
+          implementation 'org.hamcrest:hamcrest:2.2'    
+          implementation 'io.projectreactor:reactor-test'
+                
+        }
     }
-}
+    
+    
+    integrationTest(JvmTestSuite) {
+      
+      targets {
+        all {
+          testTask.configure {
+            systemProperty('spring.profiles.active', 'test')
+          } 
+        } 
+      }
+        
+      dependencies {
+        implementation project()
 
-task integrationTest(type: Test) {
-   group = LifecycleBasePlugin.VERIFICATION_GROUP
-   description = 'Integration tests'
-   maxHeapSize = '1024m'
-   testClassesDirs = sourceSets.integrationTest.output.classesDirs
-   classpath = sourceSets.integrationTest.runtimeClasspath
-   outputs.upToDateWhen { false }
+        implementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+        implementation 'org.springframework.security:spring-security-test'
+        implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+        implementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
+        implementation "io.rest-assured:json-path:${restAssuredVersion}"
+        implementation 'io.projectreactor:reactor-test'
+      }
+      sources {
+          java {
+            srcDirs = ['src/integration-test/java', 'src/main/java', "$buildDir/generated/openapi/src/main/java"]  
+          }
+          resources {
+            srcDirs = ['src/integration-test/resources', 'src/main/resources']
+          }
+      }
+    }
+  }
 }
 
 
