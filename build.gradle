@@ -1,9 +1,43 @@
 plugins {
-	id 'java'
+	id 'base'
 }
 
 
-allprojects {
+subprojects {
   group = 'com.engilyin'
   version = project.getProperty("version")=='unspecified'? "${baseVersion}-SNAPSHOT" : project.getProperty("version")
+  
+  repositories {
+	mavenCentral()
+  }
+  
+  afterEvaluate { subproject ->
+  
+        // Apply configurations to only Java (Spring Boot and non-Spring Boot) subprojects
+        if (subproject.plugins.hasPlugin('java')) {
+            apply plugin: 'java'
+
+            dependencies {
+                
+            }
+        }
+
+        // Apply configurations to only Spring Boot subprojects
+        if (subproject.plugins.hasPlugin('org.springframework.boot')) {
+            apply plugin: 'org.springframework.boot'
+            apply plugin: 'io.spring.dependency-management'
+
+            dependencies {
+                implementation 'org.springframework.boot:spring-boot-starter'
+            }
+
+            bootJar {
+                enabled = true
+            }
+
+            jar {
+                enabled = false
+            }
+        }
+    }
 }
