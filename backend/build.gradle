@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 	id 'java'
     id 'project-report'
+    id 'org.openapi.generator' version '7.11.0'
 }
 
 sourceCompatibility = "${targetCompatibility}"
@@ -34,6 +35,26 @@ jar {
     enabled = false
 }
 
+sourceSets {
+  main {
+    java {
+      srcDir "$buildDir/generated/openapi/src/main/java"
+    }
+    resources {
+      srcDirs = ['src/main/openapi', 'src/main/resources']
+    }
+  }
+  test {
+    java {  
+      srcDir "$buildDir/generated/openapi/src/main/java"
+    }
+  }
+}
+
+compileJava {
+  dependsOn tasks.openApiGenerate
+}
+
 dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
@@ -47,6 +68,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'	
 	
 	implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
@@ -107,6 +129,49 @@ testing {
     }
   }
 }
+
+openApiValidate {
+    inputSpec = "$projectDir/src/main/openapi/useful-articles-api.yaml".replace("\\","/")
+    recommend = true
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    //WORKAROUND for bug of OpenAPI 3.1.0 for Windows https://github.com/OpenAPITools/openapi-generator/issues/15202
+    //Also you can fall back to 3.0.1
+    inputSpec = "$projectDir/src/main/openapi/useful-articles-api.yaml".replace("\\","/")
+    outputDir = "$buildDir/generated/openapi"
+    groupId = "$project.group"
+    id = "$project.name-openapi"
+    version = "$project.version"
+    apiPackage = "com.engilyin.usefularticles.ui.openapi.api"
+    invokerPackage = "com.engilyin.usefularticles.ui.openapi.invoker"
+    modelPackage = "com.engilyin.usefularticles.ui.openapi.model"
+    configOptions = [
+        java8                          : "true",
+        dateLibrary                    : "java8",
+        reactive                       : "true",
+        library                        : "spring-boot",
+        skipDefaultInterface           : "true",
+        interfaceOnly                  : "true",
+        useBeanValidation              : "true",
+        hideGenerationTimestamp        : "true",
+        openApiNullable                : "false",
+        useSpringBoot3                 : "true",
+        useOptional                    : "false",
+        useSwaggerUI                   : "true",
+        useTags                        : "true",
+        useResponseEntity              : "false",
+        additionalModelTypeAnnotations : "@jakarta.validation.Valid"   
+    ]
+}
+
+openApiMeta {
+  generatorName = "OpenApiConfig"
+  packageName = "com.engilyin.usefularticles.ui.openapi.config"
+  outputFolder = "$buildDir/generated/openapi"
+}
+
 
 
 bootJar.dependsOn ':useful-articles-frontend:npm_install'

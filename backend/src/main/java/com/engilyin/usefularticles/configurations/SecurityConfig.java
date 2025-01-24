@@ -27,7 +27,6 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
@@ -46,35 +45,25 @@ public class SecurityConfig {
             BearerAuthenticationFilter authenticationFilter,
             PasswordEncoder passwordEncoder) {
 
-        return http.cors().disable().exceptionHandling().authenticationEntryPoint((swe, e) -> Mono.fromRunnable(() -> {
-            swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        })).accessDeniedHandler((swe, e) -> Mono.fromRunnable(() -> {
-            swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-        }))
-                .and()
-                .csrf()
-                .disable()
-                .cors()
-                .configurationSource(devUrlBasedCorsConfigurationSource())
-                .and()
-                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                .httpBasic()
-                .disable()
-                .formLogin()
-                .disable()
-                .logout()
-                .disable()
-                .authorizeExchange()
-                .pathMatchers(protectedPatterns)
-                .authenticated()
-                // .hasRole(Consts.GENERIC_ROLE)
-                // .pathMatchers("/api/profile/{user}/**").access(this::currentUserMatchesPath)
-                .anyExchange()
-                .permitAll()
-                .and()
+        return http
+                .cors(cors -> cors.configurationSource(devUrlBasedCorsConfigurationSource()))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .logout(ServerHttpSecurity.LogoutSpec::disable)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((swe, e) -> 
+                            Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
+                        .accessDeniedHandler((swe, e) -> 
+                            Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
+                )
+                .authorizeExchange(auth -> auth
+                        .pathMatchers(protectedPatterns).authenticated()
+                        .anyExchange().permitAll()
+                )
                 .addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-
                 .build();
+    	
     }
 
 //	private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication,

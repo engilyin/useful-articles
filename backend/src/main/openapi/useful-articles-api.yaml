@@ -1,0 +1,230 @@
+openapi: 3.1.0
+x-stoplight:
+  id: lasd1bc0stujc
+info:
+  title: useful-articles-api
+  version: '1.0'
+  summary: Useful Articles API
+  description: The Useful Articles API is the backend for knowledge base backend system
+  contact:
+    name: Alex ILIN
+    url: 'https://engilyin.com'
+    email: engilyin@gmail.com
+paths:
+  /auth/signin:
+    post:
+      summary: Create New User
+      operationId: post-user
+      description: User Sign-In operation
+      requestBody:
+        $ref: '#/components/requestBodies/SigninRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/AuthResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      tags:
+        - auth
+    parameters: []
+  /api/articles:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - articles
+      responses:
+        '200':
+          $ref: '#/components/responses/ArticleFeedItemsResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+      operationId: get-api-articles
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: offset
+        - schema:
+            type: integer
+          in: query
+          name: limit
+        - schema:
+            type: integer
+          in: query
+          name: first
+    post:
+      summary: ''
+      operationId: post-api-articles
+      responses:
+        '200':
+          $ref: '#/components/responses/ArticleAddResponse'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+      requestBody:
+        $ref: '#/components/requestBodies/ArticleAddRequest'
+      tags:
+        - articles
+components:
+  schemas:
+    ArticleFeedItem:
+      title: ArticleFeedItem
+      x-stoplight:
+        id: 3ffjafe25n9ac
+      type: object
+      properties:
+        articleId:
+          type: integer
+          x-stoplight:
+            id: 4bsqc5bjbjcw3
+          format: int64
+        articleName:
+          type: string
+          x-stoplight:
+            id: u31kpfhicki1w
+        articleDescription:
+          type: string
+          x-stoplight:
+            id: 6ky4mmto50bn6
+        articleAttachment:
+          type: string
+          x-stoplight:
+            id: hbumqoau5mvxl
+        articleCreated:
+          type: string
+          x-stoplight:
+            id: 0r3j8jujbu5w1
+          format: date-time
+        authorUsername:
+          type: string
+          x-stoplight:
+            id: 97nsydyecirqi
+        authorFullname:
+          type: string
+          x-stoplight:
+            id: 00e4urp7rrjbn
+        commentCount:
+          type: integer
+          x-stoplight:
+            id: v9yqnei8vluhz
+          format: int32
+    AuthResult:
+      title: AuthResult
+      x-stoplight:
+        id: bqmx1q54emp9m
+      type: object
+      properties:
+        articleId:
+          type: integer
+          x-stoplight:
+            id: lqf7zh6ac1dj4
+          format: int64
+        articleName:
+          type: string
+          x-stoplight:
+            id: iaxg3wgtg1wm4
+        articleDescription:
+          type: string
+          x-stoplight:
+            id: om3bpy7cz10sd
+        articleAttachment:
+          type: string
+          x-stoplight:
+            id: rtv0dthph9ywd
+        articleCreated:
+          type: string
+          x-stoplight:
+            id: ay9lc82uqt5cz
+          format: date-time
+        authorUsername:
+          type: string
+          x-stoplight:
+            id: teqrs2hhkgmxd
+        authorFullname:
+          type: string
+          x-stoplight:
+            id: wlwuzgdoptaih
+        commentCount:
+          type: integer
+          x-stoplight:
+            id: l19fl6dh28345
+          format: int32
+      required:
+        - articleId
+        - articleName
+        - articleCreated
+        - authorUsername
+        - authorFullname
+        - commentCount
+      description: ''
+  securitySchemes: {}
+  requestBodies:
+    SigninRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                x-stoplight:
+                  id: 1kd21xf6ihwyo
+                format: email
+              password:
+                type: string
+                x-stoplight:
+                  id: xxfl7uuix2h6e
+            required:
+              - username
+              - password
+      description: ''
+    ArticleAddRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              articleName:
+                type: string
+                x-stoplight:
+                  id: aiwzw91esof1y
+                pattern: '[a-z0-9\\-]+'
+                description: The article name must be kebab-case value
+              articleDescription:
+                type: string
+                x-stoplight:
+                  id: mh06ds010qlb0
+              articleAttachment:
+                type: string
+                x-stoplight:
+                  id: uojtwteqtl944
+            required:
+              - articleName
+  responses:
+    AuthResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthResult'
+    ArticleFeedItemsResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ArticleFeedItem'
+              x-stoplight:
+                id: 8ngj7z5nj7n9t
+    ArticleAddResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ArticleFeedItem'
