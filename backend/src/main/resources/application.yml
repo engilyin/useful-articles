@@ -1,3 +1,9 @@
 spring:
   application:
     name: useful-articles-api
+
+        
+springdoc:
+  swagger-ui:
+    enabled: true
+    url: /useful-articles-api.yaml

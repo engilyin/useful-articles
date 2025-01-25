@@ -3,7 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 	id 'java'
     id 'project-report'
-    id 'org.openapi.generator' version '7.11.0'
+    id 'org.openapi.generator' version "${openApiGeneratorVersion}"
 }
 
 sourceCompatibility = "${targetCompatibility}"
@@ -62,13 +62,14 @@ dependencies {
 	
 	compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'	
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"	
 	
 	implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
@@ -111,7 +112,6 @@ testing {
         implementation project()
 
         implementation 'org.springframework.boot:spring-boot-starter-test'
-        implementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
         implementation 'org.springframework.security:spring-security-test'
         implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
         implementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
@@ -131,7 +131,7 @@ testing {
 }
 
 openApiValidate {
-    inputSpec = "$projectDir/src/main/openapi/useful-articles-api.yaml".replace("\\","/")
+    inputSpec = "$projectDir/src/main/openapi/static/useful-articles-api.yaml".replace("\\","/")
     recommend = true
 }
 
@@ -139,7 +139,7 @@ openApiGenerate {
     generatorName = "spring"
     //WORKAROUND for bug of OpenAPI 3.1.0 for Windows https://github.com/OpenAPITools/openapi-generator/issues/15202
     //Also you can fall back to 3.0.1
-    inputSpec = "$projectDir/src/main/openapi/useful-articles-api.yaml".replace("\\","/")
+    inputSpec = "$projectDir/src/main/openapi/static/useful-articles-api.yaml".replace("\\","/")
     outputDir = "$buildDir/generated/openapi"
     groupId = "$project.group"
     id = "$project.name-openapi"

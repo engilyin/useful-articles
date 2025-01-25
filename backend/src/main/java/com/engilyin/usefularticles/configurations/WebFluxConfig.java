@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolverBuilder;
 import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
@@ -41,4 +42,8 @@ public class WebFluxConfig implements WebFluxConfigurer {
         configurer.defaultCodecs().enableLoggingRequestDetails(logHttpRequests);
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/useful-articles-api.yaml").addResourceLocations("classpath:/static");
+    }
 }
