@@ -1,0 +1,12 @@
+#!/bin/sh
+
+staged=$(git diff --name-only --staged)
+
+echo "Applying code formatting with spotless..."
+./gradlew spotlessApply
+
+for current in $staged; do
+  if test -f "$current"; then
+    git add "$current"
+  fi
+done
