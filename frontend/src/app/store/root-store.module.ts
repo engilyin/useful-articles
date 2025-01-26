@@ -13,6 +13,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+import { OriginalTargetStateModule } from "./original-target/original-target.module";
+import { GlobalProgressStateModule } from "./global-progress/global-progress.module";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MetaReducer, StoreModule } from "@ngrx/store";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { SessionStateModule } from "./session/session-state.module";
+import { environment } from "@root/environments/environment";
+import { localStorageSyncReducer } from "@store/local-storage.meta-reducer";
+import { DefaultDataServiceConfig } from "@ngrx/data";
+
 const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
 const defaultDataServiceConfig: DefaultDataServiceConfig = {

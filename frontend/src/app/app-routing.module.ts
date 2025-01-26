@@ -13,6 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "./guards/auth/auth.guard";
+import { SigninComponent } from "./screens/auth/signin/signin.component";
+import { MainComponent } from "./screens/main/_node/main.component";
+import { TestComponent } from "./screens/test/test/test.component";
+
 const routes: Routes = [
   {
     path: "",
