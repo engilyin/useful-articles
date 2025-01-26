@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,15 +12,19 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 import { Directive, Input } from "@angular/core";
-import { AbstractControl, ControlValueAccessor, ValidationErrors, Validator } from "@angular/forms";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  ValidationErrors,
+  Validator,
+} from "@angular/forms";
 
 @Directive()
 export abstract class BaseInput<T> implements ControlValueAccessor, Validator {
   @Input() id!: string;
-  @Input() label = '';
+  @Input() label = "";
   @Input() disabled = false;
   @Input() value: T;
   @Input() errors: { [key: string]: string } = {};
@@ -31,7 +35,7 @@ export abstract class BaseInput<T> implements ControlValueAccessor, Validator {
   onChange: any = () => {};
   onTouched: any = () => {};
 
-  errorMessage = '';
+  errorMessage = "";
 
   constructor() {
     this.value = this.defaultValue();
@@ -75,11 +79,11 @@ export abstract class BaseInput<T> implements ControlValueAccessor, Validator {
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
     this.hasErrors = control.touched && !!control.errors;
-    this.errorMessage = '';
+    this.errorMessage = "";
     if (this.hasErrors) {
       Object.keys(control.errors!).forEach((key) => {
         this.errorMessage += this.errors[key];
-        +' ';
+        +" ";
       });
     }
     return null;

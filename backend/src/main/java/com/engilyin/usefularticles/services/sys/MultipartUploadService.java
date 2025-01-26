@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.services.sys;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -29,8 +29,6 @@ import org.springframework.http.codec.multipart.FilePartEvent;
 import org.springframework.http.codec.multipart.FormPartEvent;
 import org.springframework.http.codec.multipart.PartEvent;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Signal;
@@ -40,15 +38,14 @@ import reactor.core.publisher.Signal;
 public class MultipartUploadService {
 
     public <T extends MultipartDataAccumulator<?>> Mono<T> loadData(Flux<PartEvent> rawPartEvents, T accumulator) {
-        return rawPartEvents.windowUntil(PartEvent::isLast)
+        return rawPartEvents
+                .windowUntil(PartEvent::isLast)
                 .concatMap(p -> p.switchOnFirst((signal, partEvents) -> handlePart(signal, partEvents, accumulator)))
                 .then(Mono.just(accumulator));
-
     }
 
-    private Publisher<PartEvent> handlePart(Signal<? extends PartEvent> signal,
-            Flux<PartEvent> partEvents,
-            MultipartDataAccumulator<?> accumulator) {
+    private Publisher<PartEvent> handlePart(
+            Signal<? extends PartEvent> signal, Flux<PartEvent> partEvents, MultipartDataAccumulator<?> accumulator) {
         if (signal.hasValue()) {
             PartEvent event = signal.get();
             if (event instanceof FormPartEvent formEvent) {
@@ -64,7 +61,8 @@ public class MultipartUploadService {
                 AsynchronousFileChannel asynchronousFileChannel;
                 try {
                     Files.createDirectories(filePath.getParent());
-                    asynchronousFileChannel = AsynchronousFileChannel.open(filePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                    asynchronousFileChannel =
+                            AsynchronousFileChannel.open(filePath, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
                 } catch (IOException e) {
                     log.error("Unable to create the attached file", e);
                     throw new RuntimeException();
@@ -89,5 +87,4 @@ public class MultipartUploadService {
             throw new RuntimeException("Unable to close uploaded file: " + filePath);
         }
     }
-
 }

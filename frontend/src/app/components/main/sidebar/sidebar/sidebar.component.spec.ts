@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,28 +12,26 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SidebarComponent } from "./sidebar.component";
 
-import { SidebarComponent } from './sidebar.component';
-
-describe('SidebarComponent', () => {
+describe("SidebarComponent", () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SidebarComponent ]
-    })
-    .compileComponents();
+      declarations: [SidebarComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.ui.routers;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -21,8 +20,10 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-import java.util.logging.StreamHandler;
-
+import com.engilyin.usefularticles.ui.handlers.ArticleHandler;
+import com.engilyin.usefularticles.ui.handlers.AuthHandler;
+import com.engilyin.usefularticles.ui.handlers.ContentStreamHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,40 +36,34 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.engilyin.usefularticles.ui.handlers.ArticleHandler;
-import com.engilyin.usefularticles.ui.handlers.AuthHandler;
-import com.engilyin.usefularticles.ui.handlers.ContentStreamHandler;
-
-import lombok.RequiredArgsConstructor;;
-
 @Configuration
 @RequiredArgsConstructor
 public class RoutesConfig {
 
     @Bean
     public RouterFunction<ServerResponse> authApis(AuthHandler authHandler) {
-        return route().path("/auth", builder -> builder.POST("/signin", authHandler::signin)
-//	                                .GET("/{id}", userHandler::getUser)
-//	                                .GET("", userHandler::getUsers)
-//	                                .GET("/{id}/posts", userHandler::getPostsByUser)
-        ).build();
+        return route().path(
+                        "/auth", builder -> builder.POST("/signin", authHandler::signin)
+                        //	                                .GET("/{id}", userHandler::getUser)
+                        //	                                .GET("", userHandler::getUsers)
+                        //	                                .GET("/{id}/posts", userHandler::getPostsByUser)
+                        )
+                .build();
     }
 
     @Bean
     public RouterFunction<ServerResponse> articlesApis(ArticleHandler articleHandler) {
-        return route()
-                .path("/api",
-                        builder -> builder.GET("/articles", articleHandler::list)
-                                .POST("/articles", contentType(MediaType.MULTIPART_FORM_DATA), articleHandler::add))
+        return route().path("/api", builder -> builder.GET("/articles", articleHandler::list)
+                        .POST("/articles", contentType(MediaType.MULTIPART_FORM_DATA), articleHandler::add))
                 .build();
     }
 
     @Bean
     public RouterFunction<ServerResponse> streamApis(ContentStreamHandler streamHandler) {
-        return route()
-                .path("/stream/**", 
-                        contentBuilder -> contentBuilder
-                        .GET("", param("partial").and(contentType(MediaType.APPLICATION_OCTET_STREAM)),
+        return route().path("/stream/**", contentBuilder -> contentBuilder
+                        .GET(
+                                "",
+                                param("partial").and(contentType(MediaType.APPLICATION_OCTET_STREAM)),
                                 streamHandler::getPartialContent)
                         .GET("", contentType(MediaType.APPLICATION_OCTET_STREAM), streamHandler::getFullContent))
                 .build();
@@ -85,6 +80,7 @@ public class RoutesConfig {
     }
 
     private static RequestPredicate param(String parameter) {
-        return RequestPredicates.all().and(request -> request.queryParam(parameter).isPresent());
+        return RequestPredicates.all()
+                .and(request -> request.queryParam(parameter).isPresent());
     }
 }

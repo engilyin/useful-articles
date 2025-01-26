@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.util;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -25,8 +25,7 @@ import org.junit.jupiter.api.Test;
 class UtilTest {
 
     @BeforeEach
-    void setUp() throws Exception {
-    }
+    void setUp() throws Exception {}
 
     @Test
     void test() {
@@ -43,6 +42,4 @@ class UtilTest {
         assertThat(Util.instantFromString("2022-11-18 12:53:39.108318-08").getNano(), equalTo(108318));
         assertThat(Util.instantFromString("2022-11-28 14:05:49.85091-08").getNano(), equalTo(85091));
     }
-    
-   
 }

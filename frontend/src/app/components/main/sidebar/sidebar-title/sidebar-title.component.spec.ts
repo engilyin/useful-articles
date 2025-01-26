@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,15 +12,14 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { AppState } from "@store/app.state";
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { AppState } from '@store/app.state';
+import { SidebarTitleComponent } from "./sidebar-title.component";
 
-import { SidebarTitleComponent } from './sidebar-title.component';
-
-describe('SidebarTitleComponent', () => {
+describe("SidebarTitleComponent", () => {
   let store: MockStore<AppState>;
 
   let component: SidebarTitleComponent;
@@ -30,12 +29,9 @@ describe('SidebarTitleComponent', () => {
     const initialState = {};
 
     await TestBed.configureTestingModule({
-      declarations: [ SidebarTitleComponent ],
-      providers: [
-        provideMockStore({ initialState })
-      ]
-    })
-    .compileComponents();
+      declarations: [SidebarTitleComponent],
+      providers: [provideMockStore({ initialState })],
+    }).compileComponents();
 
     store = TestBed.inject(MockStore);
 
@@ -44,7 +40,7 @@ describe('SidebarTitleComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

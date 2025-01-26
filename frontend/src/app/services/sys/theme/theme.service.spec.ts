@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
+import { TestBed } from "@angular/core/testing";
 
-import { TestBed } from '@angular/core/testing';
+import { ThemeService } from "./theme.service";
 
-import { ThemeService } from './theme.service';
-
-describe('ThemeService', () => {
+describe("ThemeService", () => {
   let service: ThemeService;
 
   beforeEach(() => {
@@ -26,7 +25,7 @@ describe('ThemeService', () => {
     service = TestBed.inject(ThemeService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

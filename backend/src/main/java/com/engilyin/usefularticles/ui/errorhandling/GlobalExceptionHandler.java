@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,12 +12,10 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.ui.errorhandling;
 
 import java.util.Map;
-
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -34,7 +32,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
 import reactor.core.publisher.Mono;
 
 /*
@@ -44,7 +41,8 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
 
-    public GlobalExceptionHandler(ErrorAttributes errorAttributes,
+    public GlobalExceptionHandler(
+            ErrorAttributes errorAttributes,
             ApplicationContext applicationContext,
             ServerCodecConfigurer codecConfigurer) {
         super(errorAttributes, new Resources(), applicationContext);
@@ -66,7 +64,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
 
     /**
      * Get the HTTP error status information from the error map.
-     * 
+     *
      * @param errorAttributes the current error information
      * @return the error HTTP status
      */

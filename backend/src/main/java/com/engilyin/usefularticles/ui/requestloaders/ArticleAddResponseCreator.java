@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,16 +12,14 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.ui.requestloaders;
-
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import com.engilyin.usefularticles.services.sys.MultipartDataAccumulator;
 import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
-
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -44,10 +42,15 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
     public String generateFilename(String originalName) {
         String separator = File.separator;
         var now = LocalDateTime.now();
-        this.attachmentName = separator + now.getYear() + separator + now.getMonth() + separator + now.getDayOfMonth()
-                + separator + originalName;
+        this.attachmentName = separator
+                + now.getYear()
+                + separator
+                + now.getMonth()
+                + separator
+                + now.getDayOfMonth()
+                + separator
+                + originalName;
         return articleRequestLoader.baseFileFolder() + attachmentName;
-
     }
 
     @Override
@@ -60,5 +63,4 @@ public class ArticleAddResponseCreator implements MultipartDataAccumulator<Artic
     public String username() {
         return this.username;
     }
-
 }

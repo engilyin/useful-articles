@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,12 +12,8 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.services.auth;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.entities.users.User;
 import com.engilyin.usefularticles.dao.repositories.users.UserRepository;
@@ -25,8 +21,9 @@ import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
 import com.engilyin.usefularticles.exceptions.WrongPasswordExeception;
 import com.engilyin.usefularticles.security.TokenProvider;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -40,7 +37,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public Mono<AuthResult> authenticate(String username, String password) {
-        return userRepository.findByUsername(username)
+        return userRepository
+                .findByUsername(username)
                 .switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(username)))
                 .flatMap(user -> doAuthentication(user, password));
     }

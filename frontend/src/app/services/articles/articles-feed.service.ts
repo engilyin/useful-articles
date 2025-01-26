@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,27 +12,32 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ArticleFeedItem } from '@models/articles/article-feed-item.model';
-import { environment } from '@root/environments/environment';
-import { Observable } from 'rxjs';
+*/
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ArticleFeedItem } from "@models/articles/article-feed-item.model";
+import { environment } from "@root/environments/environment";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ArticlesFeedService {
-
   constructor(private httpClient: HttpClient) {}
 
-  public feed(offset: number, limit: number, first?: number): Observable<ArticleFeedItem[]> {
+  public feed(
+    offset: number,
+    limit: number,
+    first?: number
+  ): Observable<ArticleFeedItem[]> {
+    const requestParams = {
+      offset: `${offset}`,
+      limit: `${limit}`,
+      first: `${first}`,
+    };
 
-    const requestParams = { offset: `${offset}`, limit: `${limit}`, first: `${first}`};
-
-
-    return this.httpClient.get<[]>(`${environment.baseUrl}/api/articles`, { params: requestParams });
+    return this.httpClient.get<[]>(`${environment.baseUrl}/api/articles`, {
+      params: requestParams,
+    });
   }
-
 }

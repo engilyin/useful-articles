@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { NG_VALIDATORS, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseInput } from '../base-input/base-input.abstract';
+*/
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { NG_VALIDATORS, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { BaseInput } from "../base-input/base-input.abstract";
 
 @Component({
-  selector: 'ua-checkbox',
+  selector: "ua-checkbox",
   template: `
     <div class="col-12">
       <div class="form-check">
@@ -55,7 +54,6 @@ import { BaseInput } from '../base-input/base-input.abstract';
   ],
 })
 export class CheckboxComponent extends BaseInput<boolean> {
-
   defaultValue(): boolean {
     return false;
   }

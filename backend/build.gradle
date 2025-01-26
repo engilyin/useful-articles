@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version "${springBootVersion}"
-	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
-	id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'java'
     id 'project-report'
     id 'org.openapi.generator' version "${openApiGeneratorVersion}"
 }
@@ -11,24 +11,24 @@ targetCompatibility = "${targetCompatibility}"
 
 dependencyManagement {
 
-   imports {
-      mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-   }
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 jar {
-  enabled = false
+    enabled = false
 }
 
 configurations {
-  compileOnly {
-    extendsFrom annotationProcessor
-  }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 jar {
@@ -36,98 +36,106 @@ jar {
 }
 
 sourceSets {
-  main {
-    java {
-      srcDir "$buildDir/generated/openapi/src/main/java"
+    main {
+        java {
+            srcDir "$buildDir/generated/openapi/src/main/java"
+        }
+        resources {
+            srcDirs = [
+                'src/main/openapi',
+                'src/main/resources'
+            ]
+        }
     }
-    resources {
-      srcDirs = ['src/main/openapi', 'src/main/resources']
+    test {
+        java {
+            srcDir "$buildDir/generated/openapi/src/main/java"
+        }
     }
-  }
-  test {
-    java {  
-      srcDir "$buildDir/generated/openapi/src/main/java"
-    }
-  }
 }
 
 compileJava {
-  dependsOn tasks.openApiGenerate
+    dependsOn tasks.openApiGenerate
 }
 
 dependencies {
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	
-	compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     annotationProcessor "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"	
-	
-	implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
+
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
-	//runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'org.postgresql:r2dbc-postgresql'
-
+    //runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'org.postgresql:r2dbc-postgresql'
 }
 
 testing {
-  suites {
-  
-    test {
-        useJUnitJupiter()
-        dependencies {
-          compileOnly 'org.projectlombok:lombok'
-          annotationProcessor 'org.projectlombok:lombok'
-          
-          implementation 'org.mockito:mockito-junit-jupiter:5.12.0'
-          implementation 'org.assertj:assertj-core:3.24.2'
-          implementation 'org.hamcrest:hamcrest:2.2'    
-          implementation 'io.projectreactor:reactor-test'
-                
+    suites {
+
+        test {
+            useJUnitJupiter()
+            dependencies {
+                compileOnly 'org.projectlombok:lombok'
+                annotationProcessor 'org.projectlombok:lombok'
+
+                implementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+                implementation 'org.assertj:assertj-core:3.24.2'
+                implementation 'org.hamcrest:hamcrest:2.2'
+                implementation 'io.projectreactor:reactor-test'
+            }
+        }
+
+
+        integrationTest(JvmTestSuite) {
+
+            targets {
+                all {
+                    testTask.configure {
+                        systemProperty('spring.profiles.active', 'test')
+                    }
+                }
+            }
+
+            dependencies {
+                implementation project()
+
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+                implementation 'org.springframework.security:spring-security-test'
+                implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+                implementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
+                implementation "io.rest-assured:json-path:${restAssuredVersion}"
+                implementation 'io.projectreactor:reactor-test'
+            }
+            sources {
+                java {
+                    srcDirs = [
+                        'src/integration-test/java',
+                        'src/main/java',
+                        "$buildDir/generated/openapi/src/main/java"
+                    ]
+                }
+                resources {
+                    srcDirs = [
+                        'src/integration-test/resources',
+                        'src/main/resources'
+                    ]
+                }
+            }
         }
     }
-    
-    
-    integrationTest(JvmTestSuite) {
-      
-      targets {
-        all {
-          testTask.configure {
-            systemProperty('spring.profiles.active', 'test')
-          } 
-        } 
-      }
-        
-      dependencies {
-        implementation project()
-
-        implementation 'org.springframework.boot:spring-boot-starter-test'
-        implementation 'org.springframework.security:spring-security-test'
-        implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
-        implementation "io.rest-assured:spring-mock-mvc:${restAssuredVersion}"
-        implementation "io.rest-assured:json-path:${restAssuredVersion}"
-        implementation 'io.projectreactor:reactor-test'
-      }
-      sources {
-          java {
-            srcDirs = ['src/integration-test/java', 'src/main/java', "$buildDir/generated/openapi/src/main/java"]  
-          }
-          resources {
-            srcDirs = ['src/integration-test/resources', 'src/main/resources']
-          }
-      }
-    }
-  }
 }
 
 openApiValidate {
@@ -162,14 +170,14 @@ openApiGenerate {
         useSwaggerUI                   : "true",
         useTags                        : "true",
         useResponseEntity              : "false",
-        additionalModelTypeAnnotations : "@jakarta.validation.Valid"   
+        additionalModelTypeAnnotations : "@jakarta.validation.Valid"
     ]
 }
 
 openApiMeta {
-  generatorName = "OpenApiConfig"
-  packageName = "com.engilyin.usefularticles.ui.openapi.config"
-  outputFolder = "$buildDir/generated/openapi"
+    generatorName = "OpenApiConfig"
+    packageName = "com.engilyin.usefularticles.ui.openapi.config"
+    outputFolder = "$buildDir/generated/openapi"
 }
 
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,36 +12,29 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { UserListComponent } from './user-list/user-list.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-
-
+*/
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     children: [
       {
-        path: '',
-        component: UserListComponent
+        path: "",
+        component: UserListComponent,
       },
       {
-        path: 'profile',
-        component: UserProfileComponent
-      }
-    ]
+        path: "profile",
+        component: UserProfileComponent,
+      },
+    ],
   },
   {
-    path: '**',
-    redirectTo: ''
-  }
+    path: "**",
+    redirectTo: "",
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class UsersRoutingModule { }
+export class UsersRoutingModule {}

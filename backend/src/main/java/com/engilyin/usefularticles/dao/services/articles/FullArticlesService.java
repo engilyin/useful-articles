@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,24 +12,21 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.dao.services.articles;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.stereotype.Component;
 
 import com.engilyin.usefularticles.dao.dto.FullArticle;
 import com.engilyin.usefularticles.dao.mappers.ArticleMapper;
 import com.engilyin.usefularticles.dao.mappers.UserMapper;
 import com.engilyin.usefularticles.util.Util;
-
 import io.r2dbc.spi.Row;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
@@ -44,24 +41,26 @@ public class FullArticlesService {
     private final UserMapper userMapper;
 
     public Flux<FullArticle> findByAuthorId(long authorId) {
-        String query = """
+        String query =
+                """
                 SELECT * FROM articles a
                                   INNER JOIN users u ON a.author_id = u.user_id
                                   WHERE u.user_id = :authorId
                 """;
 
-        return client.sql(query).bind("authorId", authorId).map((r, m) -> this.createObjects(r)).all();
-
+        return client.sql(query)
+                .bind("authorId", authorId)
+                .map((r, m) -> this.createObjects(r))
+                .all();
     }
 
     private FullArticle createObjects(Row row) {
 
         try {
-            Map<String, String> source = row.getMetadata()
-                    .getColumnMetadatas()
-                    .stream()
-                    .collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()),
-                            col -> Optional.ofNullable(row.get(col.getName(), String.class)).orElse("")));
+            Map<String, String> source = row.getMetadata().getColumnMetadatas().stream()
+                    .collect(Collectors.toMap(col -> Util.snakeToCamel(col.getName()), col -> Optional.ofNullable(
+                                    row.get(col.getName(), String.class))
+                            .orElse("")));
             return FullArticle.builder()
                     .article(articleMapper.fromMap(source))
                     .user(userMapper.fromMap(source))
@@ -71,5 +70,4 @@ public class FullArticlesService {
         }
         return null;
     }
-
 }

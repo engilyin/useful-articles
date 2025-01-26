@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,24 +12,23 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 import {
   HttpEvent,
   HttpHandler,
   HttpRequest,
   HttpErrorResponse,
   HttpInterceptor,
-} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
-import { AppState } from '../store/app.state';
-import { signoff } from '../store/session/session.actions';
+} from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { Observable, throwError } from "rxjs";
+import { catchError, retry } from "rxjs/operators";
+import { AppState } from "../store/app.state";
+import { signoff } from "../store/session/session.actions";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class GlobalHttpErrorHandlerInterceptor implements HttpInterceptor {
   constructor(private readonly store: Store<AppState>) {}
@@ -41,18 +40,18 @@ export class GlobalHttpErrorHandlerInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       retry(1),
       catchError((error: HttpErrorResponse) => {
-        let errorMessage = '';
+        let errorMessage = "";
         console.error(error);
 
         if (this.handleServerSide(error)) {
-          errorMessage = 'You should sign-in and repeat again.';
+          errorMessage = "You should sign-in and repeat again.";
         } else {
           errorMessage = `Error Status: ${error.status} - ${error.statusText}\nMessage: ${error.message}`;
         }
 
         errorMessage = error?.error?.message ?? errorMessage;
 
-        console.log('throw error back to to the subscriber');
+        console.log("throw error back to to the subscriber");
         return throwError(() => errorMessage);
       })
     );

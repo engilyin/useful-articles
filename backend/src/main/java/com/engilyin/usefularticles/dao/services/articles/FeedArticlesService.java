@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.dao.services.articles;
-
-import java.util.Optional;
-
-import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.mappers.ArticleFeedMapper;
 import com.engilyin.usefularticles.dao.services.sys.Db;
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
-
 import io.r2dbc.spi.Row;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +30,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class FeedArticlesService {
 
-    private final static String ARTICLE_FEED_SQL = """
+    private static final String ARTICLE_FEED_SQL =
+            """
             SELECT a.*,
                    u.username as author_username,
                    u.fullname as author_fullname, (
@@ -45,16 +43,18 @@ public class FeedArticlesService {
             INNER JOIN users u ON a.author_id = u.user_id
                   """;
 
-    private final static String ARTICLE_FEED_PAGE_SQL = """
+    private static final String ARTICLE_FEED_PAGE_SQL =
+            """
             ORDER BY a.article_id DESC
             OFFSET %d LIMIT %d
             """;
 
-    private final static String ARTICLE_FEED_FIRST_ITEM_ID_SQL = """
+    private static final String ARTICLE_FEED_FIRST_ITEM_ID_SQL = """
             WHERE a.article_id <=
             """;
 
-    private final static String ARTICLE_FEED_BY_ID_SQL = """
+    private static final String ARTICLE_FEED_BY_ID_SQL =
+            """
             WHERE a.article_id = :articleId
             """;
 
@@ -68,16 +68,20 @@ public class FeedArticlesService {
                 .bind("articleId", articleId)
                 .map((r, m) -> this.createItem(r))
                 .one();
-
     }
 
     public Flux<ArticleFeedItem> articleFeed(long offset, long limit, Optional<String> firstItemId) {
 
-        return client
-                .sql(String.format(ARTICLE_FEED_SQL + firstItemId.filter(i -> offset > 0)
-                        .map(s -> Long.parseLong(s))
-                        .map(itemId -> " " + ARTICLE_FEED_FIRST_ITEM_ID_SQL + itemId)
-                        .orElse("") + " " + ARTICLE_FEED_PAGE_SQL, offset, limit))
+        return client.sql(String.format(
+                        ARTICLE_FEED_SQL
+                                + firstItemId
+                                        .filter(i -> offset > 0)
+                                        .map(s -> Long.parseLong(s))
+                                        .map(itemId -> " " + ARTICLE_FEED_FIRST_ITEM_ID_SQL + itemId)
+                                        .orElse("")
+                                + " " + ARTICLE_FEED_PAGE_SQL,
+                        offset,
+                        limit))
                 // .bind("authorId", authorId)
                 .map((r, m) -> this.createItem(r))
                 .all();
@@ -86,5 +90,4 @@ public class FeedArticlesService {
     private ArticleFeedItem createItem(Row row) {
         return articleFeedMapper.fromMap(Db.rowToMap(row));
     }
-
 }

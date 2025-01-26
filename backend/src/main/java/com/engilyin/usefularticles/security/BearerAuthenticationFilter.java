@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,9 +12,12 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.security;
 
+import com.engilyin.usefularticles.exceptions.WrongJwtException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -23,11 +26,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-
-import com.engilyin.usefularticles.exceptions.WrongJwtException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -45,8 +43,8 @@ public class BearerAuthenticationFilter implements WebFilter {
         if (StringUtils.hasText(token)) {
             try {
                 return chain.filter(exchange)
-                        .contextWrite(ReactiveSecurityContextHolder
-                                .withAuthentication(tokenProvider.getAuthentication(token)));
+                        .contextWrite(ReactiveSecurityContextHolder.withAuthentication(
+                                tokenProvider.getAuthentication(token)));
             } catch (WrongJwtException e) {
                 log.error("Wrong token has been supplied: {} . Unable to authenticate: {}", e.getMessage(), token);
                 log.trace("Invalid JWT token", e);
@@ -61,5 +59,4 @@ public class BearerAuthenticationFilter implements WebFilter {
                 ? bearerToken.substring(HEADER_PREFIX.length())
                 : null;
     }
-
 }

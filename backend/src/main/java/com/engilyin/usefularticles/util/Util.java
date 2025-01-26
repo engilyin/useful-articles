@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,20 +12,18 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.util;
 
 import java.io.File;
-import java.net.URI;
-import java.nio.file.Files;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Util {
 
-    private static final DateTimeFormatter sqlTimestampFormatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnx");
+    private static final DateTimeFormatter sqlTimestampFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnx");
 
     public static String snakeToCamel(String str) {
         if (str == null || str.isBlank()) {

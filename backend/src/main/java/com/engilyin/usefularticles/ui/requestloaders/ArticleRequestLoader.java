@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,11 +12,8 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.ui.requestloaders;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import com.engilyin.usefularticles.dao.entities.articles.Article;
 import com.engilyin.usefularticles.ui.data.articles.ArticleAddRequest;
@@ -24,8 +21,9 @@ import com.engilyin.usefularticles.ui.mappers.WebArticleMapper;
 import com.engilyin.usefularticles.ui.validation.ObjectValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ public class ArticleRequestLoader {
     private final WebArticleMapper articleMapper;
 
     private final ObjectValidator validator;
-    
+
     private final ObjectMapper mapper;
 
     @Value("${articles.attachment.base-folder}")
@@ -44,11 +42,11 @@ public class ArticleRequestLoader {
         validator.validate(articleAddRequest);
         return articleMapper.fromAddRequest(articleAddRequest);
     }
-    
+
     public String baseFileFolder() {
         return baseFileFolder;
     }
-    
+
     public ArticleAddRequest fromJson(String json) {
         try {
             return mapper.readValue(json, ArticleAddRequest.class);
@@ -56,5 +54,4 @@ public class ArticleRequestLoader {
             throw new RuntimeException(e);
         }
     }
-
 }

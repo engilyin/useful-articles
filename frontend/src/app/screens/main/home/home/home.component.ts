@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,29 +12,25 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ArticleFeedItem } from '@root/app/models/articles/article-feed-item.model';
-import { ArticlesFeedComponent } from '../articles-feed/articles-feed.component';
+*/
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ArticleFeedItem } from "@root/app/models/articles/article-feed-item.model";
+import { ArticlesFeedComponent } from "../articles-feed/articles-feed.component";
 
 @Component({
-  selector: 'ua-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: "ua-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
-
   @ViewChild(ArticlesFeedComponent) articlesFeed?: ArticlesFeedComponent;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   updateFeedWithNewArticle(newArticle: ArticleFeedItem) {
-
-    console.log(`New post was added: ${JSON.stringify(newArticle)}`)
+    console.log(`New post was added: ${JSON.stringify(newArticle)}`);
     this.articlesFeed!.newArticleAdded(newArticle);
   }
 }

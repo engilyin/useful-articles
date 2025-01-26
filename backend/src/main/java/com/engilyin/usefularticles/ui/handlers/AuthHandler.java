@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,22 +12,19 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.ui.handlers;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.services.auth.AuthService;
 import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
 import com.engilyin.usefularticles.ui.validation.ObjectValidator;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -41,11 +38,9 @@ public class AuthHandler {
     public Mono<ServerResponse> signin(ServerRequest request) {
 
         return ok().body(
-                request.bodyToMono(SigninRequest.class)
-                        .doOnNext(validator::validate)
-                        .flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
-                AuthResult.class);
-
+                        request.bodyToMono(SigninRequest.class)
+                                .doOnNext(validator::validate)
+                                .flatMap(login -> authService.authenticate(login.getUsername(), login.getPassword())),
+                        AuthResult.class);
     }
-
 }

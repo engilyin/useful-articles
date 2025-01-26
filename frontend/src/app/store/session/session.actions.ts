@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 import { createAction } from "@ngrx/store";
 import { props } from "@ngrx/store";
 
@@ -22,22 +21,16 @@ export interface SigninParams {
   readonly password?: string;
 }
 
-
-export const signin = createAction(
-  'Signin',
-  props<SigninParams>()
-);
+export const signin = createAction("Signin", props<SigninParams>());
 
 export const signinSuccess = createAction(
-    'Signin Success',
-    props<{username: string, name: string, role: string, token: string}>()
+  "Signin Success",
+  props<{ username: string; name: string; role: string; token: string }>()
 );
 
 export const signinFail = createAction(
-    'Signin Fail',
-    props<{errorMessage: string}>()
+  "Signin Fail",
+  props<{ errorMessage: string }>()
 );
 
-export const signoff = createAction(
-  'Signoff'
-);
+export const signoff = createAction("Signoff");

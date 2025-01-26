@@ -7,11 +7,16 @@ plugins {
 allprojects {
   group = 'com.engilyin'
   version = project.getProperty("version")=='unspecified'? "${baseVersion}-SNAPSHOT" : project.getProperty("version")
+  
+  repositories {
+    mavenCentral()
+  }
+  
 }
 
-
+def currentYear = java.time.LocalDate.now().getYear()
 def copyrightHeader = """
- Copyright 2022-$YEAR engilyin
+ Copyright 2022-$currentYear engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,7 +38,7 @@ subprojects {
         spotless {
           ratchetFrom 'origin/main'
           format 'misc', {
-            target '*.md'
+            target '*.gradle', '*.md'
             trimTrailingWhitespace()
             leadingTabsToSpaces()
             endWithNewline()
@@ -46,31 +51,17 @@ subprojects {
             removeUnusedImports()
             trimTrailingWhitespace()
             endWithNewline()
-            licenseHeader "/*\n$copyrightHeader\n*/"
+            licenseHeader("/*${copyrightHeader}*/")
           }
           typescript {
-            target 'src/**/*.ts' // you have to set the target manually
-        
-            tsfmt()    
+            target 'src/**/*.ts'
+ 
+//            tsfmt()    
             prettier()
-            eslint() 
-            biome()
+//            eslint() 
+//            biome()
         
-            licenseHeader "/*\n$copyrightHeader\n*/"
-          }
-          groovyGradle {
-            target '*.gradle' // default target of groovyGradle
-            greclipse()
-          }
-          json {
-            target 'src/**/*.json'  
-            simple()                             
-            prettier().config(['parser': 'json']) 
-            eclipseWtp('json')                    
-            gson()                                
-            jackson()                             
-            biome()                               
-            jsonPatch([])                        
+              licenseHeader("/*${copyrightHeader}*/", '(import|const|declare|export|var) ')
           }
         }
     }

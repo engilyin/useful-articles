@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,38 +12,29 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
+import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
+import { AppComponent } from "./app.component";
+import { AppState } from "@store/app.state";
 
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { AppComponent } from './app.component';
-import { AppState } from '@store/app.state';
-
-describe('AppComponent', () => {
-
+describe("AppComponent", () => {
   let store: MockStore<AppState>;
 
   beforeEach(async () => {
     const initialState = {};
 
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-      providers: [
-        provideMockStore({ initialState })
-      ]
+      imports: [RouterTestingModule],
+      declarations: [AppComponent],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
-
   });
 
-  it('should create the app', () => {
+  it("should create the app", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
@@ -52,13 +43,15 @@ describe('AppComponent', () => {
   it(`should have as title 'useful-articles-frontend'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('useful-articles-frontend');
+    expect(app.title).toEqual("useful-articles-frontend");
   });
 
-  it('should render title', () => {
+  it("should render title", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('useful-articles-frontend app is running!');
+    expect(compiled.querySelector(".content span")?.textContent).toContain(
+      "useful-articles-frontend app is running!"
+    );
   });
 });

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.services.auth;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -24,13 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.engilyin.usefularticles.consts.Consts;
 import com.engilyin.usefularticles.dao.entities.users.User;
 import com.engilyin.usefularticles.dao.repositories.users.UserRepository;
@@ -38,7 +30,12 @@ import com.engilyin.usefularticles.data.auth.AuthResult;
 import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
 import com.engilyin.usefularticles.exceptions.WrongPasswordExeception;
 import com.engilyin.usefularticles.security.TokenProvider;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -81,13 +78,14 @@ class AuthServiceTest {
 
         Mono<AuthResult> authResult = authService.authenticate(TEST_USERNAME, TEST_ENCODED_PASSWORD);
 
-        StepVerifier.create(authResult).assertNext(auth -> {
-
-            assertNotNull(auth);
-            assertThat(user.getUsername(), is(notNullValue()));
-            assertThat(user.getUsername(), equalTo(TEST_USERNAME));
-            assertThat(user.getFullname(), is(notNullValue()));
-        }).verifyComplete();
+        StepVerifier.create(authResult)
+                .assertNext(auth -> {
+                    assertNotNull(auth);
+                    assertThat(user.getUsername(), is(notNullValue()));
+                    assertThat(user.getUsername(), equalTo(TEST_USERNAME));
+                    assertThat(user.getFullname(), is(notNullValue()));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -103,7 +101,11 @@ class AuthServiceTest {
     @Test
     void wrongPassword() {
 
-        User user = User.builder().username(TEST_USERNAME).fullname("ABC").password("").build();
+        User user = User.builder()
+                .username(TEST_USERNAME)
+                .fullname("ABC")
+                .password("")
+                .build();
 
         when(userRepository.findByUsername(TEST_USERNAME)).thenReturn(Mono.just(user));
 
@@ -111,5 +113,4 @@ class AuthServiceTest {
 
         StepVerifier.create(authResult).expectError(WrongPasswordExeception.class);
     }
-
 }

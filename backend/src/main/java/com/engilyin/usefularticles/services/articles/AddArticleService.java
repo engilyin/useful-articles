@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,11 +12,8 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 package com.engilyin.usefularticles.services.articles;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.engilyin.usefularticles.dao.entities.articles.Article;
 import com.engilyin.usefularticles.dao.repositories.articles.ArticlesRepository;
@@ -24,9 +21,10 @@ import com.engilyin.usefularticles.dao.repositories.users.UserIdRepository;
 import com.engilyin.usefularticles.dao.services.articles.FeedArticlesService;
 import com.engilyin.usefularticles.data.articles.ArticleFeedItem;
 import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -45,12 +43,12 @@ public class AddArticleService {
 
         log.debug("User: {} adding the article: {}", authorUsername, addArticle.getArticleName());
 
-        return userIdRepository.findByUsername(authorUsername)
+        return userIdRepository
+                .findByUsername(authorUsername)
                 .switchIfEmpty(Mono.error(() -> new UserNotFoundExeception(authorUsername)))
                 .doOnNext(u -> addArticle.setAuthorId(u.getUserId()))
-                .flatMap(u -> articlesRepository.save(addArticle)
+                .flatMap(u -> articlesRepository
+                        .save(addArticle)
                         .flatMap(r -> feedArticlesService.articleById(r.getArticleId())));
-
     }
-
 }

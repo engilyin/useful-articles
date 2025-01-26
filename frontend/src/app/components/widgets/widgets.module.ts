@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,33 +12,20 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { EditTextComponent } from "./edit-text/edit-text.component";
+import { CheckboxComponent } from "./checkbox/checkbox.component";
+import { DropdownComponent } from "./dropdown/dropdown.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { IConfig, NgxMaskModule } from "ngx-mask";
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EditTextComponent } from './edit-text/edit-text.component';
-import { CheckboxComponent } from './checkbox/checkbox.component';
-import { DropdownComponent } from './dropdown/dropdown.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { IConfig, NgxMaskModule } from 'ngx-mask';
-
-export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
+export const options: Partial<null | IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
-  declarations: [
-    EditTextComponent,
-    CheckboxComponent,
-    DropdownComponent
-  ],
-  exports: [
-    EditTextComponent,
-    CheckboxComponent,
-    DropdownComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NgxMaskModule.forRoot()
-  ]
+  declarations: [EditTextComponent, CheckboxComponent, DropdownComponent],
+  exports: [EditTextComponent, CheckboxComponent, DropdownComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgxMaskModule.forRoot()],
 })
-export class WidgetsModule { }
+export class WidgetsModule {}

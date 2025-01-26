@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,29 +12,29 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { HttpClient, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ArticleFeedItem } from '@root/app/models/articles/article-feed-item.model';
-import { NewArticleRequest } from '@models/articles/new-article-request.model';
-import { environment } from '@root/environments/environment';
-import { Observable } from 'rxjs';
+*/
+import { HttpClient, HttpRequest } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ArticleFeedItem } from "@root/app/models/articles/article-feed-item.model";
+import { NewArticleRequest } from "@models/articles/new-article-request.model";
+import { environment } from "@root/environments/environment";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AddArticleService {
-
   constructor(private httpClient: HttpClient) {}
 
-  public add(newArticle: NewArticleRequest, attach: File | null | undefined): Observable<any> {
-
+  public add(
+    newArticle: NewArticleRequest,
+    attach: File | null | undefined
+  ): Observable<any> {
     const formData: FormData = new FormData();
-    formData.append('json', JSON.stringify(newArticle));
+    formData.append("json", JSON.stringify(newArticle));
 
-    if(attach) {
-      formData.append('file', attach);
+    if (attach) {
+      formData.append("file", attach);
     }
 
     // return this.httpClient.post<ArticleFeedItem>(`${environment.baseUrl}/api/articles`, formData, {
@@ -42,10 +42,15 @@ export class AddArticleService {
     //   responseType: 'json'
     // });
 
-    const req = new HttpRequest('POST', `${environment.baseUrl}/api/articles`, formData, {
-      reportProgress: true,
-      responseType: 'json'
-    });
+    const req = new HttpRequest(
+      "POST",
+      `${environment.baseUrl}/api/articles`,
+      formData,
+      {
+        reportProgress: true,
+        responseType: "json",
+      }
+    );
 
     return this.httpClient.request(req);
   }

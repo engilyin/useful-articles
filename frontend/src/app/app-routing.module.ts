@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,55 +12,53 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth/auth.guard';
-import { SigninComponent } from './screens/auth/signin/signin.component';
-import { MainComponent } from './screens/main/_node/main.component';
-import { TestComponent } from './screens/test/test/test.component';
-
+*/
 const routes: Routes = [
   {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: '/home'
+    path: "",
+    pathMatch: "full",
+    redirectTo: "/home",
   },
 
   {
-    path: '',
+    path: "",
     component: MainComponent,
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'home',
-        loadChildren: () => import('@screens/main/home/home.module').then((m) => m.HomeModule)
+        path: "home",
+        loadChildren: () =>
+          import("@screens/main/home/home.module").then((m) => m.HomeModule),
       },
       {
-        path: 'users',
-        loadChildren: () => import('@screens/main/users/users.module').then((m) => m.UsersModule)
+        path: "users",
+        loadChildren: () =>
+          import("@screens/main/users/users.module").then((m) => m.UsersModule),
       },
       {
-        path: 'articles',
-        loadChildren: () => import('@screens/main/articles/articles.module').then((m) => m.ArticlesModule)
+        path: "articles",
+        loadChildren: () =>
+          import("@screens/main/articles/articles.module").then(
+            (m) => m.ArticlesModule
+          ),
       },
-    ]
+    ],
   },
   {
-    path: 'signin',
-    component: SigninComponent
+    path: "signin",
+    component: SigninComponent,
   },
   {
-    path: 'test',
-    loadChildren: () => import('@screens/test/test.module').then((m) => m.TestModule)
+    path: "test",
+    loadChildren: () =>
+      import("@screens/test/test.module").then((m) => m.TestModule),
   },
   // otherwise redirect to home
-  {path: '**', redirectTo: ''}
+  { path: "**", redirectTo: "" },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

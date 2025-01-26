@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
+*/
 package com.engilyin.usefularticles.ui.handlers;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -21,6 +20,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import com.engilyin.usefularticles.data.auth.AuthResult;
+import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
+import com.engilyin.usefularticles.services.auth.AuthService;
+import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
+import com.engilyin.usefularticles.ui.errorhandling.GlobalExceptionHandler;
+import com.engilyin.usefularticles.ui.routers.RoutesConfig;
+import com.engilyin.usefularticles.utils.TestSecurityConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,21 +41,18 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import com.engilyin.usefularticles.data.auth.AuthResult;
-import com.engilyin.usefularticles.exceptions.UserNotFoundExeception;
-import com.engilyin.usefularticles.services.auth.AuthService;
-import com.engilyin.usefularticles.ui.data.auth.SigninRequest;
-import com.engilyin.usefularticles.ui.errorhandling.GlobalExceptionHandler;
-import com.engilyin.usefularticles.ui.routers.RoutesConfig;
-import com.engilyin.usefularticles.utils.TestSecurityConfig;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { RoutesConfig.class, AuthHandler.class, TestSecurityConfig.class,
-        GlobalExceptionHandler.class, ErrorProperties.class, ServerCodecConfigurer.class })
+@ContextConfiguration(
+        classes = {
+            RoutesConfig.class,
+            AuthHandler.class,
+            TestSecurityConfig.class,
+            GlobalExceptionHandler.class,
+            ErrorProperties.class,
+            ServerCodecConfigurer.class
+        })
 @WebFluxTest
 @Slf4j
 public class AuthHandlerIntegrtionTest {
@@ -75,9 +79,13 @@ public class AuthHandlerIntegrtionTest {
 
         when(authService.authenticate(anyString(), anyString())).thenReturn(Mono.just(authResult));
 
-        webTestClient.post()
+        webTestClient
+                .post()
                 .uri("/auth/signin") // GET method and URI
-                .bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
+                .bodyValue(SigninRequest.builder()
+                        .username(TEST_USERNAME)
+                        .password("")
+                        .build())
                 .accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
                 .exchange() // gives access to response
                 .expectStatus()
@@ -86,7 +94,6 @@ public class AuthHandlerIntegrtionTest {
                 .value(ar -> {
                     assertThat(ar.getUsername(), equalTo(TEST_USERNAME));
                 });
-
     }
 
     @Test
@@ -94,9 +101,13 @@ public class AuthHandlerIntegrtionTest {
 
         when(authService.authenticate(anyString(), anyString())).thenThrow(new UserNotFoundExeception(TEST_USERNAME));
 
-        webTestClient.post()
+        webTestClient
+                .post()
                 .uri("/auth/signin") // GET method and URI
-                .bodyValue(SigninRequest.builder().username(TEST_USERNAME).password("").build())
+                .bodyValue(SigninRequest.builder()
+                        .username(TEST_USERNAME)
+                        .password("")
+                        .build())
                 .accept(MediaType.APPLICATION_JSON) // setting ACCEPT-Content
                 .exchange() // gives access to response
                 .expectStatus()
@@ -107,6 +118,5 @@ public class AuthHandlerIntegrtionTest {
                 .isEqualTo(404)
                 .jsonPath("message")
                 .isEqualTo(UserNotFoundExeception.ERROR_MESSAGE_PREFIX + TEST_USERNAME);
-
     }
 }

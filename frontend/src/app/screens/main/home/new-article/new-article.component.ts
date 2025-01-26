@@ -1,8 +1,5 @@
-import { catchError, filter, map, tap } from 'rxjs/operators';
-import { ArticleFeedItem } from '@models/articles/article-feed-item.model';
-import { ElementRef, EventEmitter, ViewChild } from '@angular/core';
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,28 +12,29 @@ import { ElementRef, EventEmitter, ViewChild } from '@angular/core';
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { ChangeDetectorRef, Component, OnInit, Output } from '@angular/core';
-import { NonNullableFormBuilder } from '@angular/forms';
-import { ResourceHolder } from '@root/app/components/sys/resource-holder';
-import { AddArticleService } from '@root/app/services/articles/add-article.service';
-import { pipe, takeUntil } from 'rxjs';
-import { newArticleFormModel } from './new-article.form';
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+*/
+import { catchError, filter, map, tap } from "rxjs/operators";
+import { ArticleFeedItem } from "@models/articles/article-feed-item.model";
+import { ElementRef, EventEmitter, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, Output } from "@angular/core";
+import { NonNullableFormBuilder } from "@angular/forms";
+import { ResourceHolder } from "@root/app/components/sys/resource-holder";
+import { AddArticleService } from "@root/app/services/articles/add-article.service";
+import { pipe, takeUntil } from "rxjs";
+import { newArticleFormModel } from "./new-article.form";
+import { HttpEvent, HttpEventType, HttpResponse } from "@angular/common/http";
 
 declare var window: any;
 
 @Component({
-  selector: 'ua-new-article',
-  templateUrl: './new-article.component.html',
-  styleUrls: ['./new-article.component.scss'],
+  selector: "ua-new-article",
+  templateUrl: "./new-article.component.html",
+  styleUrls: ["./new-article.component.scss"],
 })
 export class NewArticleComponent extends ResourceHolder implements OnInit {
-
   @Output() onActicleCreated = new EventEmitter<ArticleFeedItem>();
 
-  @ViewChild('articleAttachment') attachControl!: ElementRef;
+  @ViewChild("articleAttachment") attachControl!: ElementRef;
 
   newArticleForm = newArticleFormModel(this.formBuilder);
 
@@ -48,7 +46,7 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
 
   percentDone = 0;
 
-  errorMessage = '';
+  errorMessage = "";
 
   constructor(
     private readonly addArticleService: AddArticleService,
@@ -60,47 +58,52 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
   ngOnInit(): void {
     // this.newArticleErrorMessage$ = ???;
     this.formModal = new window.bootstrap.Modal(
-      document.getElementById('addNewArticle')
+      document.getElementById("addNewArticle")
     );
   }
 
   post() {
-    console.log('post new article');
+    console.log("post new article");
     if (this.newArticleForm.valid) {
       this.formModal.hide();
       this.posting = true;
       this.addArticleService
-        .add(this.newArticleForm.value, this.attachControl.nativeElement.files?.item(0))
+        .add(
+          this.newArticleForm.value,
+          this.attachControl.nativeElement.files?.item(0)
+        )
         .pipe(takeUntil(this.destroy$))
         .subscribe((event: HttpEvent<any>) => {
           switch (event.type) {
             case HttpEventType.Sent:
-              console.log('Request has been made!');
+              console.log("Request has been made!");
               break;
             case HttpEventType.ResponseHeader:
-              console.log('Response header has been received!');
+              console.log("Response header has been received!");
               break;
             case HttpEventType.UploadProgress:
-              this.percentDone = Math.round(event.loaded / event.total! * 100);
+              this.percentDone = Math.round(
+                (event.loaded / event.total!) * 100
+              );
               console.log(`Uploaded! ${this.percentDone}%`);
               break;
             case HttpEventType.Response:
-              console.log('User successfully created!', event.body);
+              console.log("User successfully created!", event.body);
               const newArticleResult = event.body;
-              this.postedNewArticle(newArticleResult)
+              this.postedNewArticle(newArticleResult);
               this.percentDone = 0;
           }
-        })
-        // .pipe(
-        //   this.uploadProgress((progress) => (this.percentDone = progress)),
-        //   this.toResponseBody()
-        // )
-        // .subscribe({
-        //   next: (newArticleResult) => this.postedNewArticle(newArticleResult as ArticleFeedItem),
-        //   error: (msg) => this.handlePostError(msg),
-        // });
+        });
+      // .pipe(
+      //   this.uploadProgress((progress) => (this.percentDone = progress)),
+      //   this.toResponseBody()
+      // )
+      // .subscribe({
+      //   next: (newArticleResult) => this.postedNewArticle(newArticleResult as ArticleFeedItem),
+      //   error: (msg) => this.handlePostError(msg),
+      // });
     } else {
-      this.errorMessage = 'Please enter valid data!';
+      this.errorMessage = "Please enter valid data!";
     }
     this.cd.detectChanges();
   }
@@ -115,8 +118,8 @@ export class NewArticleComponent extends ResourceHolder implements OnInit {
 
   toResponseBody<T>() {
     return pipe(
-      filter(( event: HttpEvent<T> ) => event.type === HttpEventType.Response),
-      map((event: HttpEvent<T> ) => (event as HttpResponse<T>).body)
+      filter((event: HttpEvent<T>) => event.type === HttpEventType.Response),
+      map((event: HttpEvent<T>) => (event as HttpResponse<T>).body)
     );
   }
 

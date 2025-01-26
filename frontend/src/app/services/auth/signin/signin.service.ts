@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,24 +12,24 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { AuthResult } from '@models/session/auth-result.model';
-import { SigninRequest } from '@models/session/signin-request.model';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from '@root/environments/environment';
+*/
+import { AuthResult } from "@models/session/auth-result.model";
+import { SigninRequest } from "@models/session/signin-request.model";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { environment } from "@root/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SigninService {
-
-  constructor(private readonly httpClient: HttpClient) {
-  }
+  constructor(private readonly httpClient: HttpClient) {}
 
   signin(signinRequest: SigninRequest): Observable<AuthResult> {
-    return this.httpClient.post<AuthResult>(`${environment.baseUrl}/auth/signin`, signinRequest);
+    return this.httpClient.post<AuthResult>(
+      `${environment.baseUrl}/auth/signin`,
+      signinRequest
+    );
   }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,22 +12,21 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { ThemeService } from './services/sys/theme/theme.service';
-import { AppState } from './store/app.state';
-import { selectIsBusy } from './store/global-progress/global-progress.selectors';
+*/
+import { Component } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { ThemeService } from "./services/sys/theme/theme.service";
+import { AppState } from "./store/app.state";
+import { selectIsBusy } from "./store/global-progress/global-progress.selectors";
 
 @Component({
-  selector: 'ua-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: "ua-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  title = 'useful-articles-frontend';
+  title = "useful-articles-frontend";
 
   globallyBusy: Observable<boolean>;
 

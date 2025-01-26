@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,24 +12,21 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { ArticlesFeedService } from './../../../../services/articles/articles-feed.service';
-import { ArticleFeedItem } from '@models/articles/article-feed-item.model';
+*/
+import { catchError, map, switchMap } from "rxjs/operators";
+import { ArticlesFeedService } from "./../../../../services/articles/articles-feed.service";
+import { ArticleFeedItem } from "@models/articles/article-feed-item.model";
+import { ChangeDetectorRef, Component, Input, ViewChild } from "@angular/core";
 import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  ViewChild
-} from '@angular/core';
-import { IPageInfo, VirtualScrollerComponent } from '@iharbeck/ngx-virtual-scroller';
-import { Observable, of } from 'rxjs';
+  IPageInfo,
+  VirtualScrollerComponent,
+} from "@iharbeck/ngx-virtual-scroller";
+import { Observable, of } from "rxjs";
 
 @Component({
-  selector: 'ua-articles-feed',
-  templateUrl: './articles-feed.component.html',
-  styleUrls: ['./articles-feed.component.scss'],
+  selector: "ua-articles-feed",
+  templateUrl: "./articles-feed.component.html",
+  styleUrls: ["./articles-feed.component.scss"],
 })
 export class ArticlesFeedComponent {
   @Input() items: ArticleFeedItem[] = [];
@@ -51,13 +48,13 @@ export class ArticlesFeedComponent {
         return;
       }
 
-
       this.loading = true;
-      const firstItemId: number | undefined = this.items.length > 0? this.items[0].articleId: undefined;
+      const firstItemId: number | undefined =
+        this.items.length > 0 ? this.items[0].articleId : undefined;
       this.fetchNextChunk(this.items.length, 10, firstItemId)
         .pipe(
           switchMap((chunk) => {
-            if(chunk.length == 0) {
+            if (chunk.length == 0) {
               this.loaded = true;
             } else {
               this.items = this.items.concat(chunk);
@@ -67,20 +64,28 @@ export class ArticlesFeedComponent {
           }),
           catchError((error) => {
             this.loading = false;
-            console.log('Unable to load the next chunk' + error.error.message);
+            console.log("Unable to load the next chunk" + error.error.message);
             return of(false);
           })
         )
-        .subscribe((r) => console.log('Page updated: ' + r));
+        .subscribe((r) => console.log("Page updated: " + r));
     }
   }
 
-  fetchNextChunk(offset: number, limit: number, firstItemId?: number): Observable<ArticleFeedItem[]> {
+  fetchNextChunk(
+    offset: number,
+    limit: number,
+    firstItemId?: number
+  ): Observable<ArticleFeedItem[]> {
     return this.articleFeedService.feed(offset, limit, firstItemId);
   }
 
   public newArticleAdded(newArticle: ArticleFeedItem) {
-    console.log(`Home feed see the new message and trying to update the feed with ${JSON.stringify(newArticle)}`);
+    console.log(
+      `Home feed see the new message and trying to update the feed with ${JSON.stringify(
+        newArticle
+      )}`
+    );
     this.items = [];
     this.scroller!.refresh();
   }

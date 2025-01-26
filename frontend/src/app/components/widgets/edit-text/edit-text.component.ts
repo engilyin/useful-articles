@@ -1,5 +1,5 @@
 /*
- Copyright 2022 engilyin
+ Copyright 2022-2025 engilyin
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -12,17 +12,13 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
-
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import {
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
-import { BaseInput } from '../base-input/base-input.abstract';
+*/
+import { Component, Input, ViewEncapsulation } from "@angular/core";
+import { NG_VALIDATORS, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { BaseInput } from "../base-input/base-input.abstract";
 
 @Component({
-  selector: 'ua-edit-text',
+  selector: "ua-edit-text",
   template: `
     <div class="my-2">
       <label [for]="id" class="form-label">{{ label }}</label>
@@ -40,7 +36,7 @@ import { BaseInput } from '../base-input/base-input.abstract';
         (change)="onInputChange($event)"
         [class.is-invalid]="hasErrors"
       />
-      <div class="invalid-feedback" *ngIf="hasErrors">{{errorMessage}}</div>
+      <div class="invalid-feedback" *ngIf="hasErrors">{{ errorMessage }}</div>
     </div>
   `,
   styles: [],
@@ -59,15 +55,13 @@ import { BaseInput } from '../base-input/base-input.abstract';
   ],
 })
 export class EditTextComponent extends BaseInput<string> {
-
-  @Input() type = 'text';
-  @Input() placeholder = '';
-  @Input() mask = '';
-  @Input() prefix = '';
-  @Input() suffix = '';
+  @Input() type = "text";
+  @Input() placeholder = "";
+  @Input() mask = "";
+  @Input() prefix = "";
+  @Input() suffix = "";
 
   defaultValue(): string {
-    return '';
+    return "";
   }
-
 }
