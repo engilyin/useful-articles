@@ -112,6 +112,8 @@ testing {
             dependencies {
                 implementation project()
 
+                sourceSets.main.runtimeClasspath
+
                 implementation 'org.springframework.boot:spring-boot-starter-test'
                 implementation 'org.springframework.security:spring-security-test'
                 implementation "io.rest-assured:rest-assured:${restAssuredVersion}"
@@ -170,7 +172,9 @@ openApiGenerate {
         useSwaggerUI                   : "true",
         useTags                        : "true",
         useResponseEntity              : "false",
-        additionalModelTypeAnnotations : "@jakarta.validation.Valid"
+        jackson                        : "true",
+        //additionalModelTypeAnnotations : "@jakarta.validation.Valid;@lombok.NoArgsConstructor;@lombok.AllArgsConstructor;@lombok.Builder;@lombok.extern.jackson.Jacksonized"
+        additionalModelTypeAnnotations : "@jakarta.validation.Valid;@lombok.NoArgsConstructor"
     ]
 }
 

@@ -22,11 +22,11 @@ paths:
         '200':
           $ref: '#/components/responses/AuthResponse'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Forbidden
+          $ref: '#/components/responses/ErrorResponse'
         '500':
-          description: Internal Server Error
+          $ref: '#/components/responses/ErrorResponse'
       tags:
         - auth
     parameters: []
@@ -39,9 +39,9 @@ paths:
         '200':
           $ref: '#/components/responses/ArticleFeedItemsResponse'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/ErrorResponse'
         '500':
-          description: Internal Server Error
+          $ref: '#/components/responses/ErrorResponse'
       operationId: get-api-articles
       parameters:
         - schema:
@@ -63,9 +63,9 @@ paths:
         '200':
           $ref: '#/components/responses/ArticleAddResponse'
         '400':
-          description: Bad Request
+          $ref: '#/components/responses/ErrorResponse'
         '500':
-          description: Internal Server Error
+          $ref: '#/components/responses/ErrorResponse'
       requestBody:
         $ref: '#/components/requestBodies/ArticleAddRequest'
       tags:
@@ -162,6 +162,23 @@ components:
         - authorFullname
         - commentCount
       description: ''
+    ErrorMessage:
+      title: ErrorMessage
+      x-stoplight:
+        id: 5klis73kam7kx
+      type: object
+      properties:
+        code:
+          type: string
+          x-stoplight:
+            id: 6o51s0c3inxr2
+          description: the unique error code
+        message:
+          type: string
+          x-stoplight:
+            id: 77i2jx7qupb1t
+          description: the error message
+      description: The error details
   securitySchemes: {}
   requestBodies:
     SigninRequest:
@@ -228,3 +245,11 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ArticleFeedItem'
+    ErrorResponse:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
