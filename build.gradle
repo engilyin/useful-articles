@@ -39,12 +39,14 @@ subprojects {
           ratchetFrom 'origin/main'
           format 'misc', {
             target '*.gradle', '*.md'
+            lineEndings = com.diffplug.spotless.LineEnding.UNIX
             trimTrailingWhitespace()
             leadingTabsToSpaces()
             endWithNewline()
           }
           java {
             target 'src/*/java/**/*.java'
+            lineEndings = com.diffplug.spotless.LineEnding.UNIX
             formatAnnotations()
             toggleOffOn()
             palantirJavaFormat()
@@ -55,7 +57,7 @@ subprojects {
           }
           typescript {
             target 'src/**/*.ts'
- 
+            lineEndings = com.diffplug.spotless.LineEnding.UNIX
 //            tsfmt()    
             prettier()
 //            eslint() 
